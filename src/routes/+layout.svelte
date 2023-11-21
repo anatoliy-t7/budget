@@ -1,1 +1,7 @@
-<script>import "../app.pcss";</script><slot></slot>
+<script>
+	import { ModeWatcher } from 'mode-watcher';
+	import '../app.css';
+</script>
+
+<ModeWatcher />
+<slot />

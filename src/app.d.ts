@@ -3,10 +3,19 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		type PocketBase = import('pocketbase').default;
+
+		interface Locals {
+			pb?: PocketBase;
+			user?: Record<string, T>;
+		}
 		// interface PageData {}
 		// interface Platform {}
+
+		interface Error {
+			code?: string;
+		}
 	}
 }
 
-export {};
+export { };
