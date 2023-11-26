@@ -1,27 +1,30 @@
 import { redirect } from '@sveltejs/kit';
-import { sequence } from '@sveltejs/kit/hooks';
 import { pb } from '$lib/server/pocketbase';
 import { PUBLIC_DOMAIN } from '$env/static/public';
 
-export const handleMiddleware = async ({ event, resolve }) => {
+export const handle = async ({ event, resolve }) => {
+
+	event.locals.pb = pb
 
 	// Load the authStore from the cookie
-	pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
+	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 	try {
 		// Check if the user is authenticated
-		if (pb.authStore.isValid) {
+		if (event.locals.pb.authStore.isValid) {
 			// Refresh the user's authentication
-			await pb.collection('users').authRefresh();
+			await event.locals.pb.collection('users').authRefresh();
 
 			// Set the user in the locals object
 			event.locals.user = structuredClone(pb.authStore.model);
 		}
 	} catch (err) {
 		// Clear the authStore if there is an error
-		pb.authStore.clear();
+		event.locals.pb.authStore.clear();
 	}
 
-	if (event.url.pathname.startsWith('/dashboard') && event.locals.user?.role === 'guest') {
+	console.log(event.url.pathname.startsWith('/dashboard') && event.locals.pb.authStore.isValid);
+
+	if (event.url.pathname.startsWith('/dashboard') && !event.locals.pb.authStore.isValid) {
 		throw redirect(303, '/login');
 	}
 
@@ -41,11 +44,10 @@ export const handleMiddleware = async ({ event, resolve }) => {
 	const response = await resolve(event);
 
 	const isProd = process.env.NODE_ENV === 'production' ? true : false;
-	response.headers.append('set-cookie', pb.authStore.exportToCookie({ secure: isProd, sameSite: 'Lax' }));
+	response.headers.append('set-cookie', event.locals.pb.authStore.exportToCookie({ secure: isProd, sameSite: 'Lax' }));
+
 	return response;
 };
-
-export const handle = sequence(handleMiddleware);
 
 export const handleError = ({ error, event }) => {
 	console.error(error);

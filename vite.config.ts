@@ -8,5 +8,12 @@ export default defineConfig({
 		Icons({
 			compiler: 'svelte'
 		})
-	]
+	],
+	server: {
+		proxy: {
+			// proxy "/api" and "/_" to pocketbase_url
+			"/api": "http://localhost:8090",
+			"/_": "http://localhost:8090",
+		},
+	},
 });

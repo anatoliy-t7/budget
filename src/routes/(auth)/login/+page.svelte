@@ -1,62 +1,73 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import { page } from '$app/stores';
-	export let form;
+	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { superForm } from 'sveltekit-superforms/client';
 
-	let message = 'You must be logged in to access this page';
-	$: hasRedirect = $page.url.searchParams.get('redirectTo') ? true : false;
+	export let data;
+
+	const { form, errors, constraints, enhance, delayed, message } = superForm(data.form);
 </script>
 
-<div class="flex justify-center flex-col space-y-6 lg:w-80">
-	{#if hasRedirect}
-		<p class="alert">{message}</p>
-	{/if}
-
+<div class="lg:w-80 flex flex-col justify-center space-y-6">
 	<div class="text-center">
-		<h2 class="text-2xl font-bold tracking-tight text-primary-900 unstyled">
-			Sign in to your account
-		</h2>
-		<p class="mt-2 text-sm text-primary-600">
+		<h2 class=" unstyled text-2xl font-bold tracking-tight">Login to your account</h2>
+		<p class=" mt-2 text-sm">
 			or
-			<a href="/register" class="font-medium text-indigo-600 hover:text-indigo-500">register</a>
+			<a href="/register" class=" font-medium">register</a>
 		</p>
 	</div>
 
 	<div class="mt-6">
-		<form action="#" method="POST" class="space-y-4" use:enhance>
-			<label class="label">
-				<span>Email address</span>
-				<input
-					class="input w-full"
-					id="email"
-					name="email"
-					type="email"
-					autocomplete="email"
-					required
-				/>
-			</label>
+		<form action="#" method="POST" use:enhance>
+			<div class="grid gap-3">
+				<div class="grid gap-1">
+					<Label for="email">Email address</Label>
+					<Input
+						class="input w-full"
+						id="email"
+						name="email"
+						type="email"
+						autocomplete="email"
+						required
+						aria-invalid={$errors.email ? 'true' : undefined}
+						bind:value={$form.email}
+						{...$constraints.email}
+					/>
+					{#if $errors.email}
+						<span class="invalid">{$errors.email}</span>
+					{/if}
+				</div>
 
-			<label class="label">
-				<span>Password</span>
-				<input
-					class="input w-full"
-					id="password"
-					name="password"
-					type="password"
-					autocomplete="current-password"
-					required
-				/>
-			</label>
+				<div class="grid gap-1">
+					<Label for="password">Password</Label>
+					<Input
+						class="input w-full"
+						id="password"
+						name="password"
+						type="password"
+						autocomplete="current-password"
+						required
+						aria-invalid={$errors.password ? 'true' : undefined}
+						bind:value={$form.password}
+						{...$constraints.password}
+					/>
+					{#if $errors.password}
+						<span class="invalid">{$errors.password}</span>
+					{/if}
+				</div>
 
-			<button type="submit" class="btn variant-filled-primary w-full"> Sign in </button>
+				<Button type="submit">Sign in</Button>
+
+				{#if $message}
+					<h3 class:invalid={$page.status >= 400}>{$message}</h3>
+				{/if}
+			</div>
 		</form>
 
-		{#if form?.error}
-			<p class="pt-2 text-red-600">{form?.error}</p>
-		{/if}
-
 		<div class="flex items-center justify-end pt-2">
-			<a href="/password-reset" class="text-sm hover:underline unstyled">Forgot your password?</a>
+			<a href="/password-reset" class="hover:underline unstyled text-sm">Forgot your password?</a>
 		</div>
 	</div>
 </div>

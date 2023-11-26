@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Logo from '$lib/components/Logo.svelte';
+	import Logo from '$lib/components/logo.svelte';
 </script>
 
 <div class="flex w-full max-h-screen min-h-screen">
-	<div class="lg:w-6/12 relative flex items-center justify-center w-full min-h-screen bg-white">
-		<div class="flex justify-center flex-col px-4 space-y-6">
+	<div class="lg:w-6/12 relative flex items-center justify-center w-full min-h-screen">
+		<div class="flex flex-col justify-center px-4 space-y-6">
 			<a href="/" class="flex items-center justify-center">
-				<Logo class="h-6 sm:h-9" />
+				<Logo class="sm:h-9 h-6" />
 			</a>
 
 			<slot />
