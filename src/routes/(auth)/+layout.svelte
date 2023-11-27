@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Logo from '$lib/components/logo.svelte';
+	import Logo from '$lib/components/ui/logo.svelte';
 </script>
 
 <div class="flex w-full max-h-screen min-h-screen">

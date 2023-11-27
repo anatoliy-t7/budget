@@ -12,7 +12,7 @@
 
 <div class="lg:w-80 flex flex-col justify-center space-y-6">
 	<div class="text-center">
-		<h2 class=" unstyled text-2xl font-bold tracking-tight">Login to your account</h2>
+		<h2 class="unstyled text-2xl font-bold tracking-tight">Login to your account</h2>
 		<p class=" mt-2 text-sm">
 			or
 			<a href="/register" class=" font-medium">register</a>
