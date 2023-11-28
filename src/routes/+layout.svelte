@@ -2,8 +2,8 @@
 	import '../app.css';
 
 	import { Toaster } from 'svelte-french-toast';
-	import Auth from '$lib/components/auth.svelte';
-	import { goto } from '$app/navigation';
+	import Auth from '$lib/components/auth/auth.svelte';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { authModel } from '$lib/pocketbase';
 	import Sidebar from '$lib/components/layouts/sidebar.svelte';
 

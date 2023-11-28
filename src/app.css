@@ -3,10 +3,9 @@
 @tailwind utilities;
 
 body {
-	@apply text-slate-900 font-sans;
+	@apply font-sans text-slate-900;
 }
 
-button,
 input:where(:not([type])),
 [type='text'],
 [type='email'],
@@ -23,11 +22,11 @@ input:where(:not([type])),
 [multiple],
 textarea,
 select {
-	@apply rounded-lg;
+	@apply block w-full appearance-none  rounded-lg border border-slate-300 bg-amber-50 bg-opacity-0 px-3 py-2.5 shadow-sm ring-amber-200 transition hover:border-amber-200 hover:bg-opacity-50 focus:border-amber-300 focus:bg-opacity-50 focus:outline-none focus:ring-[3px] focus:ring-amber-200;
 }
 
 button {
-	@apply active:scale-95 transition-all duration-300 cursor-pointer;
+	@apply cursor-pointer rounded-lg transition duration-300 active:scale-95;
 }
 
 .page {
@@ -42,4 +41,23 @@ input::-webkit-inner-spin-button {
 
 input[type='number'] {
 	appearance: textfield;
+}
+
+.hover,
+.hover svg {
+	@apply relative z-20 block cursor-pointer outline-none;
+}
+.hover:after {
+	content: '';
+	@apply absolute inset-0  -z-0 m-auto h-8 w-8 rounded-full bg-slate-200 opacity-0;
+	left: -11px;
+	right: -11px;
+	-webkit-transform: scale(0.3);
+	transform: scale(0.3);
+	-webkit-transition: 0.3s ease;
+	transition: 0.3s ease;
+}
+
+.hover:hover:after {
+	@apply z-0 scale-100 opacity-100;
 }

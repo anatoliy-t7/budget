@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Loader2 } from 'lucide-svelte';
+
 	let className = '';
 	export { className as class };
 	export let loading = false;
@@ -6,17 +8,17 @@
 	export let type: 'button' | 'submit' | 'reset' | null | undefined = 'button';
 
 	export let theme = 'default';
-	let classes = 'bg-green-500 text-white border-green-500';
+	let classes =
+		'text-white bg-lime-600 hover:bg-lime-700 focus:outline-none ring-lime-200 focus:ring-lime-200';
 
 	switch (theme) {
-		case 'default':
-			classes = 'bg-green-500 text-white border-green-500';
-			break;
 		case 'secondary':
-			classes = 'bg-yellow-300 text-slate-900 border-yellow-300';
+			classes =
+				'bg-amber-600 hover:bg-amber-700 focus:outline-none ring-amber-200 focus:ring-amber-200';
 			break;
 		case 'empty':
-			classes = 'bg-transparent text-slate-900 border-slate-900';
+			classes =
+				'bg-gray-50 hover:bg-slate-100 focus:bg-slate-100 border-slate-300 focus:border-slate-300 ring-slate-200 focus:ring-slate-200';
 			break;
 		default:
 			break;
@@ -34,11 +36,12 @@
 	class="
         {className}
         {classes}
-        {disabled && 'cursor-not-allowed'}
+        {disabled && !loading && 'cursor-not-allowed'}
         {loading && 'cursor-wait'}
-        flex gap-2 items-center justify-center py-2 px-4 focus:outline-none focus:ring-0 hover:brightness-90 border"
+        transition w-full inline-flex items-center justify-center py-3 px-4 rounded-lg text-sm font-medium border focus:ring-[3px] focus:outline-none gap-2"
 >
 	{#if loading}
-		loadConfigFromFile{/if}
+		<Loader2 class="animate-spin" />
+	{/if}
 	<slot />
 </button>

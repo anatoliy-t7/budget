@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { client } from '$lib/pocketbase';
+	import { LogOut } from 'lucide-svelte';
 </script>
 
 <div
-	class="fixed top-0 left-0 flex flex-col items-center justify-between w-32 h-full min-h-screen p-4"
+	class="fixed top-0 left-0 flex flex-col items-center justify-between w-32 h-full min-h-screen px-4 py-6"
 >
 	<div>Logo</div>
 
-	<button on:click={() => client.authStore.clear()}>Logout</button>
+	<button on:click={() => client.authStore.clear()} title="Log out" class="hover">
+		<LogOut />
+	</button>
 </div>
