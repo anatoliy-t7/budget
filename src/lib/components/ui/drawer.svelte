@@ -1,48 +1,50 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { openCreateModal } from '$lib/stores/transactions';
-	const dispatch = createEventDispatcher();
+	import { slide, fade } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
+	import { onMount } from 'svelte';
+	import { X } from 'lucide-svelte';
 
-	// by default Drawer opens from right. Make left-0 for left opening
-	export let placement = 'right-0';
-	// max size of content section
-	export let maxScreenSize = 'max-w-lg';
+	export let open: boolean = false;
+	export let maxWidth: string = 'max-w-xl';
 
-	const handleClickAway = () => {
-		dispatch('clickAway');
-		$openCreateModal = !$openCreateModal;
-	};
+	$: if (open) {
+		document.body.classList.toggle('overflow-y-hidden');
+	}
 
-	let mounted = false;
-	// scrolllock for content underneath
-	function scrollLock() {
-		if (mounted) {
-			const body = document.querySelector('body');
-			body.style.overflow = $openCreateModal ? 'hidden' : 'auto';
+	function eventOnEscape(e: any) {
+		if (e.key === 'Escape') {
+			open = false;
 		}
 	}
+
+	onMount(() => {
+		document.addEventListener('keydown', eventOnEscape);
+
+		return () => {
+			window.removeEventListener('keydown', eventOnEscape);
+		};
+	});
 </script>
 
 <aside>
-	<div
-		class="fixed inset-0 w-full h-full z-50 overflow-hidden {$openCreateModal
-			? 'visible'
-			: 'invisible'}"
-	>
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
+	{#if open}
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
-			class="w-screen h-full bg-gray-500 cursor-pointer duration-500 transition-opacity overflow-hidden {$openCreateModal
-				? 'opacity-50'
-				: 'opacity-0'}"
-			on:click={handleClickAway}
+			transition:fade={{ delay: 0, duration: 300 }}
+			class="transform-gpu fixed top-0 bottom-0 left-0 right-0 z-30 w-screen h-screen overflow-hidden transition bg-gray-700 bg-opacity-50 cursor-pointer pointer-events-auto"
+			on:click={() => (open = false)}
 		/>
 		<div
-			class="absolute {placement} top-0 shadow-xl overflow-y-auto bg-white transition-all duration-500 h-full {maxScreenSize} {$openCreateModal
-				? 'w-screen'
-				: 'w-0'}"
+			transition:slide={{ delay: 0, duration: 400, easing: cubicOut, axis: 'x' }}
+			class="{maxWidth} z-60 fixed z-40 inset-y-0 right-0 w-full h-screen px-8 py-6 overflow-y-auto text-gray-600 bg-white"
 		>
+			<div class="top-6 right-6 absolute">
+				<button on:click={() => (open = false)} class="hover">
+					<X />
+				</button>
+			</div>
 			<slot />
 		</div>
-	</div>
+	{/if}
 </aside>

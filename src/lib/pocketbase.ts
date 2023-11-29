@@ -1,13 +1,13 @@
 import PocketBase, {
-  RecordService,
   type AuthProviderInfo,
+  RecordService
 } from "pocketbase";
 import type Record from "pocketbase"
 import { readable } from "svelte/store";
 import { browser } from "$app/environment";
-import { base } from "$app/paths";
 import { invalidateAll } from "$app/navigation";
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+
 
 export const client = new PocketBase(
   browser ? PUBLIC_POCKETBASE_URL : undefined
