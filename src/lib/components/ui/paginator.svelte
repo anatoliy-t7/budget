@@ -1,25 +1,13 @@
 <script lang="ts">
-	import type { PageStore } from '.';
-
-	export let store: PageStore;
-	export let showIfSinglePage = false;
+	export let data: any;
 </script>
 
-{#if showIfSinglePage || $store.totalPages > 1}
-	<div class="paginator">
-		<button type="button" on:click={() => store.prev()} disabled={$store.page <= 1}>&laquo;</button>
-		<div>page {$store.page} of {$store.totalPages}</div>
-		<button type="button" on:click={() => store.next()} disabled={$store.page >= $store.totalPages}
-			>&raquo;</button
-		>
+{#if data.totalItems > data.perPage}
+	<div class="flex">
+		<button type="button" on:click={() => ''} disabled={data.page <= 1}> prev </button>
+
+		<div>page {data.page} of {data.totalPages}</div>
+
+		<button type="button" on:click={() => ''} disabled={data.page >= data.totalPages}>next</button>
 	</div>
 {/if}
-
-<style lang="scss">
-	.paginator {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin: auto;
-	}
-</style>

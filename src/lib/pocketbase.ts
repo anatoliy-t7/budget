@@ -1,9 +1,10 @@
 import PocketBase, {
   type AuthProviderInfo,
-  RecordService
+  RecordService,
+  type ListResult,
 } from "pocketbase";
 import type Record from "pocketbase"
-import { readable } from "svelte/store";
+import { readable, type Readable, type Subscriber } from "svelte/store";
 import { browser } from "$app/environment";
 import { invalidateAll } from "$app/navigation";
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
@@ -70,8 +71,6 @@ function object2formdata(obj: {}) {
   }
   return fd;
 }
-
-
 
 export async function providerLogin(
   provider: AuthProviderInfo,

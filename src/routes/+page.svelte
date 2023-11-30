@@ -3,11 +3,11 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard</title>
+	<title>Overview</title>
 </svelte:head>
 
-<main>
-	<div class="">
-		<h3>Dashboard</h3>
-	</div>
-</main>
+<div class="space-y-4">
+	<h1>Overview</h1>
+
+	<div class="rounded-xl shadow-small p-6 bg-white"></div>
+</div>

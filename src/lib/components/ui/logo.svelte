@@ -1,6 +1,6 @@
 <script lang="ts">
-	let extraClass: string = '';
+	let extraClass: string = 'h-auto';
 	export { extraClass as class };
 </script>
 
-<div class={extraClass}>LOGO</div>
+<div class={extraClass}>Budget</div>

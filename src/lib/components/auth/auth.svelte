@@ -50,7 +50,7 @@
 				{/if}
 				{#if authType === 'reset'}
 					Reset Your Password
-					<p class="text-slate-500 block pb-4 text-sm">
+					<p class="text-gray-500 block pb-4 text-sm">
 						Enter the email associated with your account and we’ll send you password reset
 						instructions.
 					</p>
@@ -78,7 +78,7 @@
 
 					<div class="relative">
 						<div class="absolute inset-0 flex items-center" aria-hidden="true">
-							<div class="border-slate-300 w-full border-t"></div>
+							<div class="border-gray-300 w-full border-t"></div>
 						</div>
 						<div class="relative flex justify-center text-sm">
 							<span class="px-2 font-medium text-gray-400 bg-white"> or </span>

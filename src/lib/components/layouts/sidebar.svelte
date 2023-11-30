@@ -1,29 +1,37 @@
 <script lang="ts">
-	import { client } from '$lib/pocketbase';
-	import { LogOut, ActivitySquare, BarChartBig } from 'lucide-svelte';
-	import Logo from '$lib/components/ui/logo.svelte';
-	import Transaction from '$lib/components/layouts/transaction.svelte';
+	import { ActivitySquare, BarChartBig } from 'lucide-svelte';
+
+	import { page } from '$app/stores';
+
+	$: activeUrl = $page.url;
+	export let links = [
+		{
+			name: 'Overview',
+			url: '/',
+			icon: BarChartBig,
+		},
+		{
+			name: 'Transactions',
+			url: '/transactions',
+			icon: ActivitySquare,
+		},
+	];
 </script>
 
-<div
-	class="fixed top-0 left-0 flex flex-col items-center justify-between w-32 h-full min-h-screen px-4 py-6"
->
-	<div class="flex flex-col items-center justify-center gap-8">
-		<a href="/">
-			<Logo />
-		</a>
-		<Transaction />
-		<div class="space-y-6">
-			<a href="/" class="hover block">
-				<BarChartBig />
+<div class="w-60 fixed top-0 left-0 flex flex-col justify-between h-full min-h-screen p-8">
+	<div class="pt-12 space-y-1 text-gray-700">
+		{#each links as link, a}
+			<a
+				href={link.url}
+				class="{activeUrl.pathname === link.url
+					? 'bg-gray-100'
+					: ''} inline-flex items-center w-full text-sm gap-3 hover:bg-gray-200 rounded-lg p-2"
+			>
+				{#if link.icon}
+					<svelte:component this={link.icon} />
+				{/if}
+				{link.name}
 			</a>
-			<a href="/transactions" class="hover block">
-				<ActivitySquare />
-			</a>
-		</div>
+		{/each}
 	</div>
-
-	<button on:click={() => client.authStore.clear()} title="Log out" class="hover">
-		<LogOut />
-	</button>
 </div>

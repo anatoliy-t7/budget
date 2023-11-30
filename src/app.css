@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	@apply font-sans text-slate-900;
+	@apply font-sans text-gray-900;
 }
 
 input:where(:not([type])),
@@ -22,15 +22,29 @@ input:where(:not([type])),
 [multiple],
 textarea,
 select {
-	@apply block w-full appearance-none  rounded-lg border border-slate-300 bg-amber-50 bg-opacity-0 px-3 py-2.5 shadow-sm ring-amber-200 transition placeholder:text-slate-400 hover:border-amber-200 hover:bg-opacity-50 focus:border-amber-300 focus:bg-opacity-50 focus:outline-none focus:ring-[3px] focus:ring-amber-200;
+	@apply block w-full appearance-none  rounded-lg border border-gray-300 bg-amber-50 bg-opacity-0 px-3 py-2.5 shadow-sm ring-amber-200 transition placeholder:text-gray-400 hover:border-amber-200 hover:bg-opacity-50 focus:border-amber-300 focus:bg-opacity-50 focus:outline-none focus:ring-[3px] focus:ring-amber-200;
 }
 
 button {
-	@apply cursor-pointer rounded-lg transition duration-300 active:scale-95;
+	@apply active:scale-95 transition duration-300 rounded-lg cursor-pointer;
+}
+
+table {
+	@apply w-full table-auto;
+}
+table thead th {
+	@apply p-3 text-sm font-semibold text-left text-gray-600 border-b border-gray-100;
+}
+table tbody tr {
+	@apply even:bg-gray-50 hover:bg-gray-100;
+}
+table tbody td {
+	@apply first:rounded-l-lg last:rounded-r-lg p-3 text-sm;
 }
 
 .page {
 	min-height: calc(100vh - 20px);
+	@apply w-full h-full;
 }
 
 input::-webkit-outer-spin-button,
@@ -45,11 +59,11 @@ input[type='number'] {
 
 .hover,
 .hover svg {
-	@apply relative z-20 block cursor-pointer outline-none;
+	@apply relative z-20 block outline-none cursor-pointer;
 }
 .hover:after {
 	content: '';
-	@apply absolute inset-0 -z-0 m-auto h-8 w-8 rounded-full bg-slate-200 opacity-0;
+	@apply -z-0 absolute inset-0 w-8 h-8 m-auto bg-gray-200 rounded-full opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);
@@ -60,4 +74,8 @@ input[type='number'] {
 
 .hover:hover:after {
 	@apply z-0 scale-100 opacity-100;
+}
+
+h1 {
+	@apply text-2xl font-semibold capitalize;
 }
