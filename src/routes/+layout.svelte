@@ -50,7 +50,6 @@
 			<main class="page pr-8">
 				<slot />
 			</main>
-			``
 		</div>
 	</div>
 {:else}
