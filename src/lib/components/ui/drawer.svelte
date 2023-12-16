@@ -2,7 +2,7 @@
 	import { slide, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
-	import { X } from 'lucide-svelte';
+	import X from '~icons/solar/close-circle-linear';
 
 	export let open: boolean = false;
 	export let maxWidth: string = 'max-w-xl';
@@ -41,7 +41,7 @@
 		>
 			<div class="top-6 right-6 absolute">
 				<button on:click={() => (open = false)} class="hover">
-					<X />
+					<X class="w-6 h-6" />
 				</button>
 			</div>
 			<slot />

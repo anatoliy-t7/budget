@@ -5,7 +5,7 @@
 
 	import { alertOnFailure } from '$lib/utils';
 	import { client, authModel } from '$lib/pocketbase';
-	import { Plus } from 'lucide-svelte';
+	import Plus from '~icons/solar/add-circle-linear';
 	import { categories, accounts, loading } from '$lib/stores/transactions';
 
 	const coll = client.collection('transactions');
@@ -46,7 +46,7 @@
 </script>
 
 <Button on:click={() => (open = true)} small={true} class="max-w-[164px]">
-	<Plus class="w-6 h-6" strokeWidth={1.5} />
+	<Plus class="w-6 h-6" />
 	Add transaction
 </Button>
 

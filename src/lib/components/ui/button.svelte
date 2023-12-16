@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
+	import Loader from '~icons/solar/refresh-linear';
 
 	let className = '';
 	export { className as class };
@@ -43,7 +43,7 @@
         transition w-full inline-flex items-center justify-center text-sm font-medium border focus:ring-[3px] focus:outline-none gap-2 select-none disabled:bg-gray-400 disabled:border-gray-400"
 >
 	{#if loading}
-		<Loader2 class="animate-spin" />
+		<Loader class="animate-spin" />
 	{/if}
 	<slot />
 </button>

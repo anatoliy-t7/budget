@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createPagination, melt } from '@melt-ui/svelte';
-	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+	import ChevronLeft from '~icons/solar/alt-arrow-left-linear';
+	import ChevronRight from '~icons/solar/alt-arrow-right-linear';
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 

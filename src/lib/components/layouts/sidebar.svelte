@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { ActivitySquare, BarChartBig } from 'lucide-svelte';
+	import Overview from '~icons/solar/graph-linear';
+	import Transactions from '~icons/solar/square-transfer-vertical-linear';
 
 	import { page } from '$app/stores';
 
@@ -8,12 +9,12 @@
 		{
 			name: 'Overview',
 			url: '/',
-			icon: BarChartBig,
+			icon: Overview,
 		},
 		{
 			name: 'Transactions',
 			url: '/transactions',
-			icon: ActivitySquare,
+			icon: Transactions,
 		},
 	];
 </script>
@@ -28,7 +29,7 @@
 					: ''} inline-flex items-center w-full text-sm gap-3 hover:bg-gray-200 rounded-lg p-2"
 			>
 				{#if link.icon}
-					<svelte:component this={link.icon} />
+					<svelte:component this={link.icon} class="w-6 h-6" />
 				{/if}
 				{link.name}
 			</a>

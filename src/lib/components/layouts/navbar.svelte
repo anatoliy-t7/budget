@@ -1,6 +1,6 @@
 <script>
 	import { client } from '$lib/pocketbase';
-	import { LogOut } from 'lucide-svelte';
+	import LogOut from '~icons/solar/logout-linear';
 	import Logo from '$lib/components/ui/logo.svelte';
 
 	import Transaction from '$lib/components/layouts/transaction.svelte';
@@ -20,7 +20,7 @@
 
 	<div class="flex items-center justify-end">
 		<button on:click={() => client.authStore.clear()} title="Log out" class="hover">
-			<LogOut />
+			<LogOut class="w-6 h-6" />
 		</button>
 	</div>
 </div>

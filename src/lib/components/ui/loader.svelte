@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Loader2 } from 'lucide-svelte';
+	import Loader from '~icons/solar/refresh-linear';
 
 	let className = 'w-6 h-6 text-green-500';
 	export { className as class };
 </script>
 
-<Loader2 class="{className} animate-spin" />
+<Loader class="{className} animate-spin" />
