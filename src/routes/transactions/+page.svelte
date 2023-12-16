@@ -12,27 +12,33 @@
 
 	const tableHead = ['Date', 'Type', 'Amount', 'Account', 'Category', 'User', ''];
 
-	// const coll = client.collection('transactions');
-	// let transactions: ListResult<RecordModel>;
-	// $: page = transactions?.page || 1;
+	const coll = client.collection('transactions');
+	let transactions: ListResult<RecordModel>;
+	$: page = transactions?.page || 1;
 
-	// async function loadData() {
-	// 	$loading = true;
-	// 	await alertOnFailure(async () => {
-	// 		transactions = await coll.getList(page, 5, {
-	// 			sort: '-created',
-	// 			expand: 'category,account,user',
-	// 			fields:
-	// 				'created,amount,type,note,transfer,expand.category.name,expand.account.name,expand.account.currency,expand.user.email',
-	// 		});
-	// 	});
+	async function loadData() {
+		$loading = true;
 
-	// 	$loading = false;
-	// }
+		await alertOnFailure(async () => {
+			transactions = await coll.getList(page, 10, {
+				sort: '-created',
+				expand: 'category,account,user',
+				fields:
+					'created,amount,type,note,transfer,expand.category.name,expand.account.name,expand.account.currency,expand.user.email',
+			});
+		});
 
-	// onMount(async () => {
-	// 	await loadData();
-	// });
+		$loading = false;
+	}
+
+	async function changePage(nextPage: any) {
+		page = nextPage;
+		await loadData();
+	}
+
+	onMount(async () => {
+		await loadData();
+	});
 
 	$: console.log(transactions);
 </script>
@@ -69,7 +75,7 @@
 				{/each}
 			</Table>
 
-			<Paginator data={transactions} />
+			<Paginator data={transactions} on:onPageChange={(event) => changePage(event.detail)} />
 		{:else}
 			<Loader />
 		{/if}
