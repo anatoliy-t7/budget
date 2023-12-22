@@ -10,9 +10,6 @@ const config = {
 			fallback: 'index.html',
 			// enable SPA mode
 		}),
-		alias: {
-			$lib: './src/lib',
-		},
 		serviceWorker: {
 			register: false,
 		},

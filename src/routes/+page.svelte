@@ -1,5 +1,6 @@
 <script lang="ts">
-	// export let data;
+	import Income from '$lib/components/overview/income.svelte';
+	import RangeCalendar from '$lib/components/ui/range-calendar.svelte';
 </script>
 
 <svelte:head>
@@ -9,5 +10,9 @@
 <div class="space-y-4">
 	<h1>Overview</h1>
 
-	<div class="rounded-xl shadow-small p-6 bg-white"></div>
+	<RangeCalendar />
+
+	<div class="flex flex-wrap gap-6">
+		<Income />
+	</div>
 </div>

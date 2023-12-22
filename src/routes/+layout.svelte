@@ -41,24 +41,24 @@
 	// $: console.log($authModel);
 
 	onMount(async () => {
-		if (pwaInfo) {
-			const { registerSW } = await import('virtual:pwa-register');
-			registerSW({
-				immediate: true,
-				onRegistered(r: any) {
-					// uncomment following code if you want check for updates
-					r &&
-						setInterval(() => {
-							console.log('Checking for sw update');
-							r.update();
-						}, 20000 /* 20s for testing purposes */);
-					console.log(`SW Registered: ${r}`);
-				},
-				onRegisterError(error: Error) {
-					console.log('SW registration error', error);
-				},
-			});
-		}
+		// if (pwaInfo) {
+		// 	const { registerSW } = await import('virtual:pwa-register');
+		// 	registerSW({
+		// 		immediate: true,
+		// 		onRegistered(r: any) {
+		// 			// uncomment following code if you want check for updates
+		// 			r &&
+		// 				setInterval(() => {
+		// 					console.log('Checking for sw update');
+		// 					r.update();
+		// 				}, 20000 /* 20s for testing purposes */);
+		// 			console.log(`SW Registered: ${r}`);
+		// 		},
+		// 		onRegisterError(error: Error) {
+		// 			console.log('SW registration error', error);
+		// 		},
+		// 	});
+		// }
 	});
 
 	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';

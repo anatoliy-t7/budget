@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { alertOnFailure } from '$lib/utils';
-	import { client, authModel } from '$lib/pocketbase';
-	import { categories, accounts, loading } from '$lib/stores/transactions';
+	import { client } from '$lib/pocketbase';
+	import { loading } from '$lib/stores/transactions';
 	import type { ListResult, RecordModel } from 'pocketbase';
 	import dayjs from 'dayjs';
 

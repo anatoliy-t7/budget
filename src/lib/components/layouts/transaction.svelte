@@ -17,7 +17,7 @@
 		type: 'expenses',
 		transfer: null,
 		category: null,
-		budget: $authModel?.defaultBudget,
+		budget: $authModel?.currentBudget,
 
 		user: $authModel?.id,
 	};
