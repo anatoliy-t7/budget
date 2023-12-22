@@ -15,16 +15,16 @@
 		$loading = true;
 
 		await alertOnFailure(async () => {
-			const res = await coll.getFullList({
-				filter: `budget = "${$authModel?.currentBudget}" && created >= "${dayjs($date)
+			const res = await fetch(
+				`http://localhost:8090/api/income?budget=${$authModel?.currentBudget}&startOf=${dayjs($date)
 					.startOf('month')
-					.toISOString()}" &&
-                    created <= "${dayjs($date).endOf('month').toISOString()}" &&
-                    type = "income"`,
-				fields: 'amount',
-			});
+					.toISOString()}&endOf=${dayjs($date).endOf('month').toISOString()}`,
+			);
 
-			income = res?.reduce((total, item) => total + item.amount, 0);
+			if (res.status == 200) {
+				const data = await res.json();
+				income = data.data;
+			}
 		});
 
 		$loading = false;
