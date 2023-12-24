@@ -45,18 +45,21 @@ export const validateData = async (formData: any, schema: any) => {
     }
 };
 
-export function clickOutside(node: Node) {
-    const handleClick = (event: Event) => {
-        if (node && !node.contains(event.target) && !event.defaultPrevented) {
-            node.dispatchEvent(new CustomEvent('click-outside', node));
-        }
-    };
+export function clickOutside(
+    node: HTMLElement,
+    handler: () => void
+): { destroy: () => void } {
+    const onClick = (event: MouseEvent) =>
+        node &&
+        !node.contains(event.target as HTMLElement) &&
+        !event.defaultPrevented &&
+        handler();
 
-    document.addEventListener('click', handleClick, true);
+    document.addEventListener('click', onClick, true);
 
     return {
         destroy() {
-            document.removeEventListener('click', handleClick, true);
-        }
+            document.removeEventListener('click', onClick, true);
+        },
     };
 }

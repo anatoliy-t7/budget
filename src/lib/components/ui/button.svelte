@@ -10,7 +10,7 @@
 
 	export let theme = 'default';
 	let classes =
-		'text-white bg-green-500 hover:bg-green-600 focus:outline-none ring-green-200 focus:ring-green-200';
+		'text-white bg-green-700 border-green-700 hover:bg-green-800 focus:outline-none ring-green-200 focus:ring-green-200';
 
 	switch (theme) {
 		case 'secondary':
