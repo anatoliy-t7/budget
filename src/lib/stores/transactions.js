@@ -1,53 +1,57 @@
-import { writable, readable, readonly, derived } from 'svelte/store';
-import { client } from '$lib/pocketbase';
-
-const coll = client.collection( 'transactions' );
+import { writable, readable, get } from 'svelte/store';
+import { client, authModel } from '$lib/pocketbase';
+import { alertOnFailure } from '$lib/utils';
+import dayjs from 'dayjs';
+import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+export const dateRange = writable( {
+    start: dayjs().startOf('month').toISOString(),
+    end: dayjs().endOf('month').toISOString(),
+})
+const auth = get(authModel);
+const range = get(dateRange);
 
 export const types = readable( [
     'expenses', 'income', 'transfer'
 ] )
 
+export const overview = writable( null )
 export const list = writable( null )
-
 export const loading = writable( false )
 export const error = writable( false )
 export const categories = writable( await getCategories() )
 export const accounts = writable( await getAccounts() )
 
-async function getCategories ()
-{
-    // loading.set(true)
+async function getCategories () {
     const coll = client.collection( 'categories' );
     return await coll.getFullList( {
         sort: '-name', fields: 'id,name,icon',
     } )
 }
 
-async function getAccounts ()
-{
-    // loading.set(true)
+async function getAccounts () {
     const coll = client.collection( 'accounts' );
     return await coll.getFullList( {
         sort: '-name', fields: 'id,name',
     } )
 }
 
-// export const page = writable( 1 )
-// export const getList = async ( { origin, storeId, isCors, forceUpdate = false } ) =>
-// {
+export async function loadData() {
+		loading.set(true)
 
-//     await coll.getList( page, 5, {
-//         sort: '-created',
-//         expand: 'category,account,user',
-//         fields:
-//             'created,amount,type,note,transfer,expand.category.name,expand.account.name,expand.account.currency,expand.user.email',
-//     } );
+		await alertOnFailure(async () => {
+			const res = await fetch(
+				`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${auth?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+				{
+					headers: {
+						Authorization: client.authStore.token,
+					},
+				},
+            );
 
-//     coll.subscribe( '*', function ( e )
-//     {
-//         console.log( e.action );
-//         console.log( e.record );
-//     } );
+             loading.set(false)
 
-
-// }
+			if (res.status == 200) {
+				overview.set(await res.json()) ;
+			}
+		});
+}

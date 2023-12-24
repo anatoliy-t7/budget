@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import { loadData } from '$lib/stores/transactions';
 	import { Toaster } from 'svelte-french-toast';
 	import { goto } from '$app/navigation';
 	import { client, authModel } from '$lib/pocketbase';
@@ -29,16 +30,13 @@
 		});
 	});
 
-	// $: if ($authModel) {
-	// 	coll.subscribe('*', function (e) {
-	// 		console.log(e.action);
-	// 		console.log(e.record);
-	// 	});
-	// } else {
-	// 	coll.unsubscribe();
-	// }
-
-	// $: console.log($authModel);
+	$: if ($authModel) {
+		coll.subscribe('*', async function (e) {
+			await loadData();
+		});
+	} else {
+		coll.unsubscribe();
+	}
 
 	onMount(async () => {
 		// if (pwaInfo) {

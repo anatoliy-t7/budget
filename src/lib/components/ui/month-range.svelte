@@ -1,4 +1,6 @@
 <script>
+	import { onMount } from 'svelte';
+	import { loadData, dateRange } from '$lib/stores/transactions';
 	import { clickOutside } from '$lib/utils';
 	import dayjs from 'dayjs';
 	import { slide } from 'svelte/transition';
@@ -8,24 +10,29 @@
 
 	let isExpanded = false;
 
-	let selected = {
-		start: null,
-		end: dayjs(),
-	};
-
 	function clickHandler() {
 		isExpanded = !isExpanded;
 	}
 
-	function prev() {
-		selected.end = dayjs(selected.end).subtract(1, 'M');
+	async function prev() {
+		$dateRange.start = dayjs($dateRange.start).subtract(1, 'M').startOf('month').toISOString();
+		$dateRange.end = dayjs($dateRange.end).subtract(1, 'M').endOf('month').toISOString();
+
+		await loadData();
 	}
 
-	function next() {
-		selected.end = dayjs(selected.end).add(1, 'M');
+	async function next() {
+		$dateRange.start = dayjs($dateRange.start).add(1, 'M').startOf('month').toISOString();
+		$dateRange.end = dayjs($dateRange.end).add(1, 'M').endOf('month').toISOString();
+
+		await loadData();
 	}
 
-	$: isFuture = dayjs(dayjs(selected.end).add(1, 'M')).isAfter(dayjs(), 'month');
+	$: isFuture = dayjs(dayjs($dateRange.end).add(1, 'M')).isAfter(dayjs(), 'month');
+
+	onMount(async () => {
+		await loadData();
+	});
 </script>
 
 <div class="flex items-center gap-6">
@@ -35,7 +42,7 @@
 		</button>
 
 		<div class="flex justify-center w-24 text-lg font-medium">
-			{dayjs(selected.end).format('MMMM')}
+			{dayjs($dateRange.end).format('MMMM')}
 		</div>
 
 		<button

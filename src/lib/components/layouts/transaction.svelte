@@ -18,7 +18,6 @@
 		transfer: null,
 		category: null,
 		budget: $authModel?.currentBudget,
-
 		user: $authModel?.id,
 	};
 

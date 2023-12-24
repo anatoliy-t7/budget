@@ -56,18 +56,18 @@
 				{#each transactions.items as transaction}
 					<tr>
 						<td>
-							{dayjs(transaction.created).format('D MMM YYYY')}
+							{dayjs(transaction?.created).format('D MMM YYYY')}
 						</td>
 						<td class="capitalize">
 							{transaction.type}
 						</td>
 						<td>
-							{transaction.expand?.account.currency}
+							{transaction.expand?.account?.currency}
 							{transaction.amount}
 						</td>
-						<td>{transaction.expand?.account.name}</td>
-						<td>{transaction.expand?.category.name}</td>
-						<td>{transaction.expand?.user.email}</td>
+						<td>{transaction.expand?.account?.name}</td>
+						<td>{transaction.expand?.category?.name}</td>
+						<td>{transaction.expand?.user?.email}</td>
 						<td>
 							<div class="flex items-center justify-end gap-2"></div>
 						</td>
@@ -75,7 +75,7 @@
 				{/each}
 			</Table>
 
-			<Paginator data={transactions} on:onPageChange={(event) => changePage(event.detail)} />
+			<!-- <Paginator data={transactions} on:onPageChange={(event) => changePage(event.detail)} /> -->
 		{:else}
 			<Loader />
 		{/if}
