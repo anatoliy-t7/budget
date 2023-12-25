@@ -26,7 +26,10 @@ select {
 }
 
 button {
-	@apply active:scale-95 transition duration-300 rounded-lg cursor-pointer;
+	@apply rounded-lg cursor-pointer;
+}
+.click {
+	@apply active:scale-95 transition duration-300;
 }
 
 table {
@@ -63,7 +66,7 @@ input[type='number'] {
 }
 .hover:after {
 	content: '';
-	@apply -z-0 absolute inset-0 w-8 h-8 m-auto bg-gray-200 rounded-full opacity-0;
+	@apply -z-0 absolute inset-0 w-10 h-10 m-auto bg-gray-100 rounded-full opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);

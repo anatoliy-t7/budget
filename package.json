@@ -23,7 +23,6 @@
     "@typescript-eslint/parser": "^6.15.0",
     "@vite-pwa/sveltekit": "^0.3.0",
     "autoprefixer": "^10.4.16",
-    "daisyui": "latest",
     "dayjs": "^1.11.10",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -46,5 +45,5 @@
     "vite": "^5.0.10"
   },
   "type": "module",
-  "dependencies": {}
+  "dependencies": { "@iconify-json/tabler": "^1.1.102", "svelte-headlessui": "^0.0.32" }
 }

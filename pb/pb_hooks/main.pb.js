@@ -67,7 +67,6 @@ cronAdd( "checkCDs", "0 0 1 * *", () =>
         )
         transactions = JSON.parse( JSON.stringify( transactions ) );
 
-        console.log(JSON.stringify( transactions ));
         const cd = transactions?.find((t) => t.type === 'cd' );
 
         if (!cd) {

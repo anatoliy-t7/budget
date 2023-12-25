@@ -3,12 +3,12 @@ import { client, authModel } from '$lib/pocketbase';
 import { alertOnFailure } from '$lib/utils';
 import dayjs from 'dayjs';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-export const dateRange = writable( {
+export const monthRange = writable( {
     start: dayjs().startOf('month').toISOString(),
     end: dayjs().endOf('month').toISOString(),
 })
 const auth = get(authModel);
-const range = get(dateRange);
+const range = get(monthRange);
 
 export const types = readable( [
     'expenses', 'income', 'transfer'
@@ -31,7 +31,7 @@ async function getCategories () {
 async function getAccounts () {
     const coll = client.collection( 'accounts' );
     return await coll.getFullList( {
-        sort: '-name', fields: 'id,name',
+        sort: '-name', fields: 'id,name,currency',
     } )
 }
 

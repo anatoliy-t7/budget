@@ -8,9 +8,7 @@
 </svelte:head>
 
 <div class="space-y-6">
-	<h1>Overview</h1>
-
-	<div class="space-y-2">
+	<div class="space-y-4">
 		<MonthRange />
 
 		<Stat />

@@ -2,6 +2,7 @@
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
 	import TypeSwitch from '$lib/components/ui/type-switch.svelte';
+	import ListboxAccount from '$lib/components/ui/listbox-account.svelte';
 
 	import { alertOnFailure } from '$lib/utils';
 	import { client, authModel } from '$lib/pocketbase';
@@ -13,19 +14,33 @@
 	let open: boolean = false;
 	let transaction = {
 		amount: null,
-		account: null,
+		account: $accounts[0].id,
 		type: 'expenses',
-		transfer: null,
+		transfer: $accounts[1].id,
 		category: null,
 		budget: $authModel?.currentBudget,
 		user: $authModel?.id,
 	};
+	let transferAmount: number | null = null;
 
 	$: disabled = !transaction.amount;
-	$: transfer = transaction.type === 'transfer';
+
+	$: transactionAccount = $accounts?.find((a) => a.id == transaction.account);
+
+	$: transferAccount = $accounts?.find((a) => a.id == transaction?.transfer);
+
+	async function changedType(type: string) {
+		if (transaction.type !== 'transfer') {
+			transaction.transfer = $accounts[1].id;
+		} else {
+			transaction.transfer = null;
+		}
+		transaction.type = type;
+	}
 
 	async function submit() {
 		$loading = true;
+
 		alertOnFailure(async () => {
 			if (transaction.type === 'transfer') {
 				transaction.type = 'expenses';
@@ -34,13 +49,22 @@
 				transaction.type = 'income';
 				const from = transaction.account;
 				transaction.account = transaction.transfer;
+				transaction.amount = transferAmount;
 				transaction.transfer = from;
 			}
 			await coll.create(transaction);
 		});
 
 		$loading = false;
+		await close();
+	}
+
+	async function close() {
 		open = false;
+		transferAmount = null;
+		transaction.transfer = null;
+		transaction.amount = null;
+		transaction.type = 'expenses';
 	}
 </script>
 
@@ -53,46 +77,63 @@
 	<div class="pb-12 text-xl font-medium">Add transaction</div>
 
 	<form on:submit|preventDefault={submit} class="grid max-w-xs gap-5">
-		<TypeSwitch
-			selected={transaction.type}
-			on:changed={(event) => (transaction.type = event.detail)}
-		/>
+		<TypeSwitch selected={transaction.type} on:changed={(event) => changedType(event.detail)} />
 
 		<div class="flex gap-6">
-			<label class="block w-full space-y-1 text-sm font-medium">
+			<div class="block w-full space-y-1 text-sm font-medium">
 				<div>
-					{#if transfer}
+					{#if transaction.type === 'transfer'}
 						From
 					{:else}
 						Account
 					{/if}
 				</div>
+				<ListboxAccount bind:value={transaction.account} />
+			</div>
 
-				<select bind:value={transaction.account} required>
-					{#each $accounts as account}
-						<option value={account.id}>{account.name}</option>
-					{/each}
-				</select>
-			</label>
-
-			{#if transfer}
-				<label class="block w-full space-y-1 text-sm font-medium">
+			{#if transaction.type === 'transfer'}
+				<div class="block w-full space-y-1 text-sm font-medium">
 					<div>To</div>
 
-					<select bind:value={transaction.transfer} required>
-						{#each $accounts as account}
-							<option value={account.id}>{account.name}</option>
-						{/each}
-					</select>
-				</label>
+					<ListboxAccount bind:value={transaction.transfer} />
+				</div>
 			{/if}
 		</div>
 
-		<label class="block space-y-1 text-sm font-medium">
-			<span>Amount</span>
+		<div class="flex gap-6">
+			<label class="block w-full space-y-1 text-sm font-medium">
+				<span>
+					{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
+						Send amount
+					{:else}
+						Amount
+					{/if}
+				</span>
 
-			<input bind:value={transaction.amount} required type="number" placeholder="100" />
-		</label>
+				<div class="relative">
+					<input bind:value={transaction.amount} required type="number" placeholder="100" />
+					{#if transactionAccount}
+						<div class="right-3 top-3 absolute text-gray-400">
+							{transactionAccount?.currency}
+						</div>
+					{/if}
+				</div>
+			</label>
+
+			{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
+				<label class="block w-full space-y-1 text-sm font-medium">
+					<span> Get amount </span>
+					<div class="relative">
+						<input bind:value={transferAmount} type="number" placeholder="100" />
+						{#if transferAccount}
+							<div class="right-3 top-3 absolute text-gray-400">
+								{transferAccount?.currency}
+							</div>
+						{/if}
+					</div>
+				</label>
+			{/if}
+		</div>
 
 		<label class="block space-y-1 text-sm font-medium">
 			<span>Category</span>

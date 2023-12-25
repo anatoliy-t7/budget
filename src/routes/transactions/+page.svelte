@@ -50,7 +50,7 @@
 <div class="space-y-4">
 	<h1>Transactions</h1>
 
-	<div class="rounded-xl shadow-small p-6 bg-white">
+	<div class="rounded-xl p-6 bg-white">
 		{#if transactions?.items?.length}
 			<Table head={tableHead}>
 				{#each transactions.items as transaction}

@@ -38,10 +38,14 @@
 	}
 </script>
 
-<div class="flex w-full max-h-screen min-h-screen px-4">
-	<div class="lg:w-6/12 relative flex items-center justify-center w-full min-h-screen">
-		<div class="w-80 flex flex-col justify-center space-y-8">
-			<h1 class="text-3xl font-medium">
+<div class="flex items-center justify-center w-full max-h-screen min-h-screen bg-gray-100">
+	<div>
+		<div class="flex justify-center pb-6">
+			<Logo />
+		</div>
+
+		<div class="w-80 flex flex-col justify-center p-6 space-y-8 bg-white rounded-lg min-w-[360px]">
+			<h1 class="text-2xl font-medium text-center">
 				{#if authType === 'signup'}
 					Sign up for an Account
 				{/if}
@@ -50,7 +54,7 @@
 				{/if}
 				{#if authType === 'reset'}
 					Reset Your Password
-					<p class="text-gray-500 block pb-4 text-sm">
+					<p class="block pb-4 text-sm text-gray-500">
 						Enter the email associated with your account and we’ll send you password reset
 						instructions.
 					</p>
@@ -78,7 +82,7 @@
 
 					<div class="relative">
 						<div class="absolute inset-0 flex items-center" aria-hidden="true">
-							<div class="border-gray-300 w-full border-t"></div>
+							<div class="w-full border-t border-gray-300"></div>
 						</div>
 						<div class="relative flex justify-center text-sm">
 							<span class="px-2 font-medium text-gray-400 bg-white"> or </span>
@@ -157,10 +161,5 @@
 				</form>
 			{/if}
 		</div>
-	</div>
-	<div
-		class="lg:flex lg:w-6/12 bg-lime-100 md:flex items-center justify-center hidden min-h-screen overflow-hidden"
-	>
-		<Logo />
 	</div>
 </div>

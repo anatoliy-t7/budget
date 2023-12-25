@@ -3,33 +3,31 @@
 	import CourseUp from '~icons/solar/course-up-linear';
 	import CourseDown from '~icons/solar/course-down-linear';
 	import { overview } from '$lib/stores/transactions';
+	import { moneyFormat } from '$lib/utils';
 </script>
 
-<div class="stats border border-gray-300">
-	<div class="stat">
-		<div class="stat-figure text-secondary">
-			<CourseUp class="w-8 h-8" />
+<div class="flex flex-wrap gap-4">
+	<div class="rounded-xl flex items-center gap-4 p-6 bg-white min-w-[225px] justify-between">
+		<div>
+			<div class=" text-gray-500">Income</div>
+			<div class="text-2xl font-bold">{moneyFormat($overview?.income, $overview?.currency)}</div>
 		</div>
-		<div class="stat-title">Income</div>
-		<div class="stat-value">{$overview?.income}</div>
-		<div class="stat-desc">{$overview?.currency}</div>
+		<CourseUp class="w-12 h-12 text-green-600" />
 	</div>
 
-	<div class="stat">
-		<div class="stat-figure text-secondary">
-			<CourseDown class="w-8 h-8" />
+	<div class="rounded-xl flex items-center gap-4 p-6 bg-white min-w-[225px] justify-between">
+		<div>
+			<div class=" text-gray-500">Expenses</div>
+			<div class="text-2xl font-bold">{moneyFormat($overview?.expenses, $overview?.currency)}</div>
 		</div>
-		<div class="stat-title">Expenses</div>
-		<div class="stat-value">{$overview?.expenses}</div>
-		<div class="stat-desc">{$overview?.currency}</div>
+		<CourseDown class="w-12 h-12 text-red-400" />
 	</div>
 
-	<div class="stat">
-		<div class="stat-figure text-secondary">
-			<Money class="w-8 h-8" />
+	<div class="rounded-xl flex items-center gap-4 p-6 bg-white min-w-[225px] justify-between">
+		<div>
+			<div class=" text-gray-500">Balance</div>
+			<div class="text-2xl font-bold">{moneyFormat($overview?.balance, $overview?.currency)}</div>
 		</div>
-		<div class="stat-title">Balance</div>
-		<div class="stat-value">{$overview?.balance}</div>
-		<div class="stat-desc">{$overview?.currency}</div>
+		<Money class="text-sky-500 w-12 h-12" />
 	</div>
 </div>

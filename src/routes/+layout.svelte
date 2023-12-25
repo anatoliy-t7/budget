@@ -67,10 +67,10 @@
 </svelte:head>
 
 {#if $authModel}
-	<div class="relative">
+	<div class="relative bg-gray-100">
 		<Navbar />
 
-		<div class="ml-60 flex w-auto h-full gap-4 pt-20">
+		<div class="ml-72 flex w-auto h-full gap-4 pt-24">
 			<Sidebar />
 
 			<main class="page pr-8">
