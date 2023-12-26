@@ -1,4 +1,11 @@
 // @ts-nocheck
+
+onRecordBeforeCreateRequest((e) => {
+	const info = $apis.requestInfo(e.httpContext);
+
+	e.record.set('created', info.data.created);
+}, 'transactions');
+
 // Get income
 routerAdd(
 	'GET',

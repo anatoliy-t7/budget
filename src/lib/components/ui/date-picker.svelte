@@ -1,17 +1,14 @@
 <script lang="ts">
-	import ChevronLeft from '~icons/solar/round-alt-arrow-left-linear';
-	import ChevronRight from '~icons/solar/round-alt-arrow-right-linear';
 	import Calendar from '~icons/solar/calendar-linear';
-	import { fade } from 'svelte/transition';
 
 	import { onDestroy, onMount } from 'svelte';
-	import { easepick, RangePlugin } from '@easepick/bundle';
+	import { easepick, RangePlugin, LockPlugin } from '@easepick/bundle';
+
+	export let range: boolean = false;
+	export let value: Date | string = new Date();
 
 	let datepicker: HTMLDivElement;
 	let picker: easepick.Core;
-
-	const today = new Date();
-	let selectedDate: Date | null = today;
 
 	onMount(() => {
 		// https://easepick.com/
@@ -20,16 +17,18 @@
 			css: [
 				'https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.1/dist/index.css',
 				'https://cdn.jsdelivr.net/npm/@easepick/lock-plugin@1.2.1/dist/index.css',
-				//Set custom css
-				//'/css/calendar.css'
 			],
+			format: 'D MMM YYYY',
 			zIndex: 10,
-			plugins: [RangePlugin],
-			date: selectedDate!,
+			plugins: range ? [RangePlugin, LockPlugin] : [LockPlugin],
+			date: value!,
+			LockPlugin: {
+				maxDate: new Date(),
+			},
 		});
 
 		picker.on('select', (e) => {
-			selectedDate = e.detail.date;
+			value = e.detail.date;
 			console.log(`Select ${e.detail.start}  ${e.detail.end}`);
 		});
 
@@ -39,7 +38,7 @@
 		});
 
 		picker.on('clear', () => {
-			selectedDate = null;
+			value = null;
 		});
 	});
 
@@ -51,7 +50,7 @@
 	});
 </script>
 
-<div class=" relative w-6 h-6">
-	<input bind:this={datepicker} class=" absolute inset-0 w-6 h-6 opacity-0 cursor-pointer" />
-	<Calendar />
+<div class="relative">
+	<input bind:this="{datepicker}" class=" cursor-pointer" />
+	<Calendar class="absolute right-3 top-1.5 h-7 w-7" />
 </div>

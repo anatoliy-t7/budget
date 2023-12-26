@@ -3,11 +3,14 @@
 	import Button from '$lib/components/ui/button.svelte';
 	import TypeSwitch from '$lib/components/ui/type-switch.svelte';
 	import ListboxAccount from '$lib/components/ui/listbox-account.svelte';
+	import DatePicker from '$lib/components/ui/date-picker.svelte';
 
+	import dayjs from 'dayjs';
 	import { alertOnFailure } from '$lib/utils';
 	import { client, authModel } from '$lib/stores/pocketbase';
 	import Plus from '~icons/solar/add-circle-linear';
 	import { categories, accounts, loading } from '$lib/stores/transactions';
+	import toast from 'svelte-french-toast';
 
 	const coll = client.collection('transactions');
 
@@ -20,6 +23,7 @@
 		category: null,
 		budget: $authModel?.currentBudget,
 		user: $authModel?.id,
+		created: dayjs().toISOString(),
 	};
 	let transferAmount: number | null = null;
 
@@ -42,9 +46,16 @@
 		$loading = true;
 
 		alertOnFailure(async () => {
+			transaction.created = dayjs(transaction.created)
+				.set('hour', dayjs().get('hour'))
+				.set('minute', dayjs().get('minute'))
+				.set('second', dayjs().get('second'))
+				.toISOString();
+
 			if (transaction.type === 'transfer') {
 				transaction.type = 'expenses';
 				await coll.create(transaction);
+				toast.success(`${transaction.type} was added`);
 
 				transaction.type = 'income';
 				const from = transaction.account;
@@ -53,6 +64,8 @@
 				transaction.transfer = from;
 			}
 			await coll.create(transaction);
+
+			toast.success(`${transaction.type} was added`);
 		});
 
 		$loading = false;
@@ -84,6 +97,11 @@
 
 	<form on:submit|preventDefault="{submit}" class="grid max-w-sm gap-5">
 		<TypeSwitch selected="{transaction.type}" on:changed="{(event) => changedType(event.detail)}" />
+
+		<div class="block w-full space-y-1 text-sm font-medium">
+			<span> Date </span>
+			<DatePicker bind:value="{transaction.created}" />
+		</div>
 
 		<div class="flex gap-6">
 			<div class="block w-full space-y-1 text-sm font-medium">
