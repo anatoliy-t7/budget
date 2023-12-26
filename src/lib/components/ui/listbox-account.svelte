@@ -4,6 +4,8 @@
 	import { slide } from 'svelte/transition';
 	import Selector from '~icons/solar/alt-arrow-down-linear';
 	import Check from '~icons/tabler/check';
+	let className = 'left-0';
+	export { className as class };
 
 	export let value: string | null = $accounts[0]?.id;
 
@@ -12,45 +14,41 @@
 	$: selectedAccount = $accounts?.find((a) => a.id == value);
 </script>
 
-<div use:clickOutside={() => (isExpanded = false)} class="relative">
+<div use:clickOutside="{() => (isExpanded = false)}" class="relative">
 	<button
-		on:click={() => (isExpanded = true)}
+		on:click="{() => (isExpanded = true)}"
 		type="button"
-		class="block w-full appearance-none rounded-lg border border-gray-300 bg-amber-50 bg-opacity-0 px-3 py-2.5 shadow-sm ring-amber-200 transition placeholder:text-gray-400 hover:border-amber-200 hover:bg-opacity-50 focus:outline-none cursor-pointer text-left"
-	>
+		class="block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-left shadow-sm ring-sky-300 transition placeholder:text-gray-400 hover:border-sky-300 focus:outline-none">
 		<span class="block truncate">{selectedAccount?.name}</span>
-		<span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-			<Selector class="w-5 h-5 text-gray-400" />
+		<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+			<Selector class="h-5 w-5 text-gray-400" />
 		</span>
 	</button>
 
 	{#if isExpanded}
 		<div
 			transition:slide
-			class="max-h-60 min-w-[320px] focus:outline-none shadow-small absolute z-30 w-full py-1 mt-1 overflow-auto text-sm bg-white border border-gray-200 rounded-md"
-		>
+			class="{className} absolute z-30 mt-1 max-h-60 w-full min-w-[320px] overflow-auto rounded-md border border-gray-200 bg-white py-1 text-sm shadow-small focus:outline-none">
 			{#each $accounts as account}
 				<button
-					on:click={() => ((value = account.id), (isExpanded = false))}
+					on:click="{() => ((value = account.id), (isExpanded = false))}"
 					type="button"
-					class="relative text-left w-full cursor-pointer select-none py-2 px-4 flex gap-4 items-center justify-between {account.id ===
+					class="relative flex w-full cursor-pointer select-none items-center justify-between gap-4 px-4 py-2 text-left {account.id ===
 					selectedAccount?.id
 						? 'bg-amber-100 text-amber-900'
-						: 'text-gray-900'}"
-				>
+						: 'text-gray-900'}">
 					<div class="flex items-center gap-4">
 						<div class="w-5">
 							{#if account.id === selectedAccount?.id}
-								<span class="text-amber-600 flex items-center">
-									<Check class="w-5 h-5" />
+								<span class="flex items-center text-amber-600">
+									<Check class="h-5 w-5" />
 								</span>
 							{/if}
 						</div>
 						<span
 							class="block truncate {account.id === selectedAccount?.id
 								? 'font-medium'
-								: 'font-normal'}">{account.name}</span
-						>
+								: 'font-normal'}">{account.name}</span>
 					</div>
 
 					<div class="w-8 text-left text-gray-400">{account?.currency}</div>

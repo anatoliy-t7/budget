@@ -40,7 +40,7 @@
         {disabled && !loading && 'cursor-not-allowed'}
         {loading && 'cursor-wait'}
 		{small ? 'px-3 py-2' : 'px-4 py-3'}
-        inline-flex w-full select-none items-center justify-center gap-2 border text-sm font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-400 disabled:bg-gray-400">
+        inline-flex w-full select-none items-center justify-center gap-2 border font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-300 disabled:bg-gray-300">
 	{#if loading}
 		<Loader class="animate-spin" />
 	{/if}

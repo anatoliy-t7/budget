@@ -22,32 +22,32 @@ input:where(:not([type])),
 [multiple],
 textarea,
 select {
-	@apply block w-full appearance-none  rounded-lg border border-gray-300 bg-amber-50 bg-opacity-0 px-3 py-2.5 shadow-sm ring-amber-200 transition placeholder:text-gray-400 hover:border-amber-200 hover:bg-opacity-50 focus:border-amber-300 focus:bg-opacity-50 focus:outline-none focus:ring-[3px] focus:ring-amber-200;
+	@apply block w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 ring-sky-300 transition placeholder:text-gray-400 hover:border-sky-300 focus:border-sky-300 focus:outline-none focus:ring-[3px] focus:ring-sky-300;
 }
 
 button {
-	@apply rounded-lg cursor-pointer;
+	@apply cursor-pointer rounded-lg;
 }
 .click {
-	@apply active:scale-95 transition duration-300;
+	@apply transition duration-300 active:scale-95;
 }
 
 table {
 	@apply w-full table-auto;
 }
 table thead th {
-	@apply p-3 text-sm font-semibold text-left text-gray-600 border-b border-gray-100;
+	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
 }
 table tbody tr {
 	@apply even:bg-gray-50 hover:bg-gray-100;
 }
 table tbody td {
-	@apply first:rounded-l-lg last:rounded-r-lg p-3 text-sm;
+	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;
 }
 
 .page {
 	min-height: calc(100vh - 20px);
-	@apply w-full h-full;
+	@apply h-full w-full;
 }
 
 input::-webkit-outer-spin-button,
@@ -62,11 +62,11 @@ input[type='number'] {
 
 .hover,
 .hover svg {
-	@apply relative z-20 block outline-none cursor-pointer;
+	@apply relative z-20 block cursor-pointer outline-none;
 }
 .hover:after {
 	content: '';
-	@apply -z-0 absolute inset-0 w-10 h-10 m-auto bg-gray-100 rounded-full opacity-0;
+	@apply absolute inset-0 -z-0 m-auto h-10 w-10 rounded-full bg-gray-100 opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);

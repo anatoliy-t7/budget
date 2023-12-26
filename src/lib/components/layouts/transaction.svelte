@@ -87,7 +87,7 @@
 	}
 </script>
 
-<Button on:click="{() => onOpen()}" small="{true}" class="max-w-[164px]">
+<Button on:click="{() => onOpen()}" small="{true}" class="max-w-[164px] text-sm">
 	<Plus class="h-6 w-6" />
 	Add transaction
 </Button>
@@ -98,14 +98,14 @@
 	<form on:submit|preventDefault="{submit}" class="grid max-w-sm gap-5">
 		<TypeSwitch selected="{transaction.type}" on:changed="{(event) => changedType(event.detail)}" />
 
-		<div class="block w-full space-y-1 text-sm font-medium">
-			<span> Date </span>
+		<div class="block w-full space-y-1 font-medium">
+			<span class="text-sm"> Date </span>
 			<DatePicker bind:value="{transaction.created}" />
 		</div>
 
 		<div class="flex gap-6">
-			<div class="block w-full space-y-1 text-sm font-medium">
-				<div>
+			<div class="block w-full space-y-1 font-medium">
+				<div class="text-sm">
 					{#if transaction.type === 'transfer'}
 						From
 					{:else}
@@ -116,17 +116,17 @@
 			</div>
 
 			{#if transaction.type === 'transfer'}
-				<div class="block w-full space-y-1 text-sm font-medium">
-					<div>To</div>
+				<div class="block w-full space-y-1 font-medium">
+					<div class="text-sm">To</div>
 
-					<ListboxAccount bind:value="{transaction.transfer}" />
+					<ListboxAccount bind:value="{transaction.transfer}" class="right-0" />
 				</div>
 			{/if}
 		</div>
 
 		<div class="flex gap-6">
-			<label class="block w-full space-y-1 text-sm font-medium">
-				<span>
+			<label class="block w-full space-y-1 font-medium">
+				<span class="text-sm">
 					{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
 						Sent amount
 					{:else}
@@ -145,8 +145,8 @@
 			</label>
 
 			{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
-				<label class="block w-full space-y-1 text-sm font-medium">
-					<span> Got amount </span>
+				<label class="block w-full space-y-1 font-medium">
+					<span class="text-sm"> Got amount </span>
 					<div class="relative">
 						<input bind:value="{transferAmount}" type="number" placeholder="100" />
 						{#if transferAccount}
@@ -159,10 +159,10 @@
 			{/if}
 		</div>
 
-		<label class="block space-y-1 text-sm font-medium">
-			<span>Category</span>
+		<label class="block space-y-1 font-medium">
+			<span class="text-sm">Category</span>
 
-			<select bind:value="{transaction.category}" required>
+			<select bind:value="{transaction.category}">
 				{#each $categories as category}
 					<option value="{category.id}">{category.name}</option>
 				{/each}

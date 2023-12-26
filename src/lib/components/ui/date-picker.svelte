@@ -29,12 +29,7 @@
 
 		picker.on('select', (e) => {
 			value = e.detail.date;
-			console.log(`Select ${e.detail.start}  ${e.detail.end}`);
-		});
-
-		picker.on('change', () => {
-			console.log(picker.getStartDate());
-			console.log(picker.getEndDate());
+			// console.log(`Select ${e.detail.start}  ${e.detail.end}`);
 		});
 
 		picker.on('clear', () => {
@@ -50,7 +45,9 @@
 	});
 </script>
 
-<div class="relative">
-	<input bind:this="{datepicker}" class=" cursor-pointer" />
-	<Calendar class="absolute right-3 top-1.5 h-7 w-7" />
+<div class="relative cursor-pointer">
+	<input bind:this="{datepicker}" class="text-base" />
+	<button on:click="{() => picker.show()}" type="button" class="absolute right-3 top-2">
+		<Calendar class="h-7 w-7" />
+	</button>
 </div>
