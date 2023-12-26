@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { client, providerLogin } from '$lib/pocketbase';
+	import { client, providerLogin, loading } from '$lib/stores/pocketbase';
 	import Button from '$lib/components/ui/button.svelte';
 	import { alertOnFailure } from '$lib/utils';
 	import GoogleIcon from '$lib/components/ui/google-icon.svelte';
@@ -38,14 +38,14 @@
 	}
 </script>
 
-<div class="flex items-center justify-center w-full max-h-screen min-h-screen bg-gray-100">
+<div class="flex max-h-screen min-h-screen w-full items-center justify-center bg-gray-100">
 	<div>
 		<div class="flex justify-center pb-6">
 			<Logo />
 		</div>
 
-		<div class="w-80 flex flex-col justify-center p-6 space-y-8 bg-white rounded-lg min-w-[360px]">
-			<h1 class="text-2xl font-medium text-center">
+		<div class="flex w-80 min-w-[360px] flex-col justify-center space-y-8 rounded-lg bg-white p-6">
+			<h1 class="text-center text-2xl font-medium">
 				{#if authType === 'signup'}
 					Sign up for an Account
 				{/if}
@@ -61,10 +61,15 @@
 				{/if}
 			</h1>
 			{#if authType !== 'reset'}
-				<form on:submit|preventDefault={submit} class="grid gap-5">
+				<form on:submit|preventDefault="{submit}" class="grid gap-5">
 					{#await coll.listAuthMethods({ $autoCancel: false }) then methods}
 						{#each methods.authProviders as p}
-							<Button theme={'empty'} type="button" on:click={() => providerLogin(p, coll)}>
+							<Button
+								theme="{'empty'}"
+								type="button"
+								on:click="{() => providerLogin(p, coll)}"
+								disabled="{$loading}"
+								loading="{$loading}">
 								{#if p.name === 'google'}
 									<GoogleIcon />
 								{/if}
@@ -85,7 +90,7 @@
 							<div class="w-full border-t border-gray-300"></div>
 						</div>
 						<div class="relative flex justify-center text-sm">
-							<span class="px-2 font-medium text-gray-400 bg-white"> or </span>
+							<span class="bg-white px-2 font-medium text-gray-400"> or </span>
 						</div>
 					</div>
 
@@ -93,33 +98,31 @@
 						<span> Email Address</span>
 
 						<input
-							bind:value={email}
+							bind:value="{email}"
 							autocapitalize="off"
 							autocorrect="off"
 							autofocus
 							pattern="[^@]+@[^@]+.[a-zA-Z]"
 							required
 							type="email"
-						/>
+							disabled="{$loading}" />
 					</label>
 
 					<label class="block space-y-1 text-sm font-medium">
 						<span>Password</span>
-						<input bind:value={password} required type="password" />
+						<input bind:value="{password}" required type="password" />
 					</label>
-					<div class="text-cyan-600 flex items-center justify-between text-sm">
+					<div class="flex items-center justify-between text-sm text-cyan-600">
 						<button
-							on:click={() => (authType = 'reset')}
+							on:click="{() => (authType = 'reset')}"
 							type="button"
-							class="hover:text-cyan-700 transition-colors"
-						>
+							class="transition-colors hover:text-cyan-700">
 							Forgot Your Password?
 						</button>
 						<button
-							on:click={() => toggleAuth()}
+							on:click="{() => toggleAuth()}"
 							type="button"
-							class="hover:text-cyan-700 transition-colors"
-						>
+							class="transition-colors hover:text-cyan-700">
 							{#if authType === 'signup'}
 								Have an Account?
 							{:else}
@@ -129,33 +132,33 @@
 					</div>
 
 					{#if authType === 'signup'}
-						<Button on:click={() => (authType = 'signup')} {disabled} type="submit">Sign Up</Button>
+						<Button on:click="{() => (authType = 'signup')}" disabled="{disabled}" type="submit"
+							>Sign Up</Button>
 					{:else}
-						<Button on:click={() => (authType = 'signin')} {disabled} type="submit">Sign In</Button>
+						<Button on:click="{() => (authType = 'signin')}" disabled="{disabled}" type="submit"
+							>Sign In</Button>
 					{/if}
 				</form>
 			{:else}
-				<form on:submit|preventDefault={reset} class="grid gap-5">
+				<form on:submit|preventDefault="{reset}" class="grid gap-5">
 					<label class="block space-y-1 text-sm font-medium">
 						<span>Email Address</span>
 
 						<input
-							bind:value={email}
+							bind:value="{email}"
 							autocapitalize="off"
 							autocorrect="off"
 							pattern="[^@]+@[^@]+.[a-zA-Z]"
 							required
-							type="email"
-						/>
+							type="email" />
 					</label>
 
-					<Button {disabled} type="submit">Send Reset Instructions</Button>
+					<Button disabled="{disabled || $loading}" type="submit">Send Reset Instructions</Button>
 
 					<button
-						on:click={() => (authType = 'signin')}
+						on:click="{() => (authType = 'signin')}"
 						type="button"
-						class="hover:text-cyan-700 transition-colors"
-					>
+						class="transition-colors hover:text-cyan-700">
 						Return to Sign In
 					</button>
 				</form>

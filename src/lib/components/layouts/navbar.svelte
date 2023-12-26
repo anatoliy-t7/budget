@@ -1,5 +1,5 @@
 <script>
-	import { client } from '$lib/pocketbase';
+	import { client } from '$lib/stores/pocketbase';
 	import LogOut from '~icons/solar/logout-linear';
 	import Logo from '$lib/components/ui/logo.svelte';
 

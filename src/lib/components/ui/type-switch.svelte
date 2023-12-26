@@ -6,15 +6,14 @@
 	export let selected: any = null;
 </script>
 
-<div class="bg-gray-50 grid w-full max-w-xs grid-cols-3 p-1 rounded-lg">
+<div class="grid w-full max-w-sm grid-cols-3 rounded-lg bg-gray-50 p-1">
 	{#each $types as item}
 		<button
-			on:click={() => ((selected = item), dispatch('changed', item))}
+			on:click="{() => ((selected = item), dispatch('changed', item))}"
 			type="button"
 			class="{selected === item
 				? 'bg-amber-400'
-				: 'bg-gray-50 text-gray-500'} p-3 rounded-lg transition duration-300 text-base capitalize font-medium"
-		>
+				: 'bg-gray-50 text-gray-500'} rounded-lg p-3 text-base font-medium capitalize transition duration-300">
 			{item}
 		</button>
 	{/each}

@@ -5,7 +5,7 @@
 	import ListboxAccount from '$lib/components/ui/listbox-account.svelte';
 
 	import { alertOnFailure } from '$lib/utils';
-	import { client, authModel } from '$lib/pocketbase';
+	import { client, authModel } from '$lib/stores/pocketbase';
 	import Plus from '~icons/solar/add-circle-linear';
 	import { categories, accounts, loading } from '$lib/stores/transactions';
 
@@ -14,18 +14,18 @@
 	let open: boolean = false;
 	let transaction = {
 		amount: null,
-		account: $accounts[0].id,
+		account: null,
 		type: 'expenses',
-		transfer: $accounts[1].id,
+		transfer: null,
 		category: null,
 		budget: $authModel?.currentBudget,
 		user: $authModel?.id,
 	};
 	let transferAmount: number | null = null;
 
-	$: disabled = !transaction.amount;
+	$: disabled = !transaction?.amount;
 
-	$: transactionAccount = $accounts?.find((a) => a.id == transaction.account);
+	$: transactionAccount = $accounts?.find((a) => a.id == transaction?.account);
 
 	$: transferAccount = $accounts?.find((a) => a.id == transaction?.transfer);
 
@@ -66,18 +66,24 @@
 		transaction.amount = null;
 		transaction.type = 'expenses';
 	}
+
+	async function onOpen() {
+		transaction.account = $accounts[0]?.id;
+		transaction.transfer = $accounts[1]?.id;
+		open = true;
+	}
 </script>
 
-<Button on:click={() => (open = true)} small={true} class="max-w-[164px]">
-	<Plus class="w-6 h-6" />
+<Button on:click="{() => onOpen()}" small="{true}" class="max-w-[164px]">
+	<Plus class="h-6 w-6" />
 	Add transaction
 </Button>
 
-<Drawer bind:open>
+<Drawer bind:open="{open}">
 	<div class="pb-12 text-xl font-medium">Add transaction</div>
 
-	<form on:submit|preventDefault={submit} class="grid max-w-xs gap-5">
-		<TypeSwitch selected={transaction.type} on:changed={(event) => changedType(event.detail)} />
+	<form on:submit|preventDefault="{submit}" class="grid max-w-sm gap-5">
+		<TypeSwitch selected="{transaction.type}" on:changed="{(event) => changedType(event.detail)}" />
 
 		<div class="flex gap-6">
 			<div class="block w-full space-y-1 text-sm font-medium">
@@ -88,14 +94,14 @@
 						Account
 					{/if}
 				</div>
-				<ListboxAccount bind:value={transaction.account} />
+				<ListboxAccount bind:value="{transaction.account}" />
 			</div>
 
 			{#if transaction.type === 'transfer'}
 				<div class="block w-full space-y-1 text-sm font-medium">
 					<div>To</div>
 
-					<ListboxAccount bind:value={transaction.transfer} />
+					<ListboxAccount bind:value="{transaction.transfer}" />
 				</div>
 			{/if}
 		</div>
@@ -104,16 +110,16 @@
 			<label class="block w-full space-y-1 text-sm font-medium">
 				<span>
 					{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
-						Send amount
+						Sent amount
 					{:else}
 						Amount
 					{/if}
 				</span>
 
 				<div class="relative">
-					<input bind:value={transaction.amount} required type="number" placeholder="100" />
+					<input bind:value="{transaction.amount}" required type="number" placeholder="100" />
 					{#if transactionAccount}
-						<div class="right-3 top-3 absolute text-gray-400">
+						<div class="absolute right-3 top-3 text-gray-400">
 							{transactionAccount?.currency}
 						</div>
 					{/if}
@@ -122,11 +128,11 @@
 
 			{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
 				<label class="block w-full space-y-1 text-sm font-medium">
-					<span> Get amount </span>
+					<span> Got amount </span>
 					<div class="relative">
-						<input bind:value={transferAmount} type="number" placeholder="100" />
+						<input bind:value="{transferAmount}" type="number" placeholder="100" />
 						{#if transferAccount}
-							<div class="right-3 top-3 absolute text-gray-400">
+							<div class="absolute right-3 top-3 text-gray-400">
 								{transferAccount?.currency}
 							</div>
 						{/if}
@@ -138,13 +144,13 @@
 		<label class="block space-y-1 text-sm font-medium">
 			<span>Category</span>
 
-			<select bind:value={transaction.category} required>
+			<select bind:value="{transaction.category}" required>
 				{#each $categories as category}
-					<option value={category.id}>{category.name}</option>
+					<option value="{category.id}">{category.name}</option>
 				{/each}
 			</select>
 		</label>
 
-		<Button loading={$loading} {disabled} type="submit">Add</Button>
+		<Button loading="{$loading}" disabled="{disabled}" type="submit">Add</Button>
 	</form>
 </Drawer>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { alertOnFailure } from '$lib/utils';
-	import { client } from '$lib/pocketbase';
+	import { client } from '$lib/stores/pocketbase';
 	import { loading } from '$lib/stores/transactions';
 	import type { ListResult, RecordModel } from 'pocketbase';
 	import dayjs from 'dayjs';
@@ -50,9 +50,9 @@
 <div class="space-y-4">
 	<h1>Transactions</h1>
 
-	<div class="rounded-xl p-6 bg-white">
+	<div class="rounded-xl bg-white p-6">
 		{#if transactions?.items?.length}
-			<Table head={tableHead}>
+			<Table head="{tableHead}">
 				{#each transactions.items as transaction}
 					<tr>
 						<td>

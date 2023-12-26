@@ -1,57 +1,61 @@
 import { writable, readable, get } from 'svelte/store';
-import { client, authModel } from '$lib/pocketbase';
+import { client } from '$lib/stores/pocketbase';
 import { alertOnFailure } from '$lib/utils';
 import dayjs from 'dayjs';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-export const monthRange = writable( {
-    start: dayjs().startOf('month').toISOString(),
-    end: dayjs().endOf('month').toISOString(),
-})
-const auth = get(authModel);
+export const monthRange = writable({
+	start: dayjs().startOf('month').toISOString(),
+	end: dayjs().endOf('month').toISOString(),
+});
+
 const range = get(monthRange);
 
-export const types = readable( [
-    'expenses', 'income', 'transfer'
-] )
+export const types = readable(['expenses', 'income', 'transfer']);
 
-export const overview = writable( null )
-export const list = writable( null )
-export const loading = writable( false )
-export const error = writable( false )
-export const categories = writable( await getCategories() )
-export const accounts = writable( await getAccounts() )
+export const overview = writable(null);
+export const list = writable(null);
+export const loading = writable(false);
+export const error = writable(false);
+export const categories = writable(null);
+export const accounts = writable(null);
 
-async function getCategories () {
-    const coll = client.collection( 'categories' );
-    return await coll.getFullList( {
-        sort: '-name', fields: 'id,name,icon',
-    } )
+export async function getCategories() {
+	const coll = client.collection('categories');
+	const res = await coll.getFullList({
+		sort: '-name',
+		fields: 'id,name,icon',
+	});
+
+	categories.set(res);
 }
 
-async function getAccounts () {
-    const coll = client.collection( 'accounts' );
-    return await coll.getFullList( {
-        sort: '-name', fields: 'id,name,currency',
-    } )
+export async function getAccounts() {
+	const coll = client.collection('accounts');
+	const res = await coll.getFullList({
+		sort: '-name',
+		fields: 'id,name,currency',
+	});
+
+	accounts.set(res);
 }
 
-export async function loadData() {
-		loading.set(true)
+export async function getOverview(currentBudget) {
+	loading.set(true);
 
-		await alertOnFailure(async () => {
-			const res = await fetch(
-				`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${auth?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
-				{
-					headers: {
-						Authorization: client.authStore.token,
-					},
+	await alertOnFailure(async () => {
+		const res = await fetch(
+			`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+			{
+				headers: {
+					Authorization: client.authStore.token,
 				},
-            );
+			},
+		);
 
-             loading.set(false)
+		loading.set(false);
 
-			if (res.status == 200) {
-				overview.set(await res.json()) ;
-			}
-		});
+		if (res.status == 200) {
+			overview.set(await res.json());
+		}
+	});
 }

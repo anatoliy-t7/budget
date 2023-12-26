@@ -32,16 +32,15 @@
 	on:mouseover
 	on:mouseenter
 	on:mouseleave
-	{type}
-	{disabled}
+	type="{type}"
+	disabled="{disabled}"
 	class="
         {className}
         {classes}
         {disabled && !loading && 'cursor-not-allowed'}
         {loading && 'cursor-wait'}
-		{small ? 'py-2 px-3' : 'py-3 px-4'}
-        transition w-full inline-flex items-center justify-center text-sm font-medium border focus:ring-[3px] focus:outline-none gap-2 select-none disabled:bg-gray-400 disabled:border-gray-400"
->
+		{small ? 'px-3 py-2' : 'px-4 py-3'}
+        inline-flex w-full select-none items-center justify-center gap-2 border text-sm font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-400 disabled:bg-gray-400">
 	{#if loading}
 		<Loader class="animate-spin" />
 	{/if}

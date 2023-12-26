@@ -1,9 +1,9 @@
 <script lang="ts">
 	import '../app.css';
-	import { loadData } from '$lib/stores/transactions';
+	import { getOverview } from '$lib/stores/transactions';
 	import { Toaster } from 'svelte-french-toast';
 	import { goto } from '$app/navigation';
-	import { client, authModel } from '$lib/pocketbase';
+	import { client, authModel } from '$lib/stores/pocketbase';
 	import { onNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { pwaInfo } from 'virtual:pwa-info';
@@ -11,6 +11,7 @@
 	import Auth from '$lib/components/auth/auth.svelte';
 	import Sidebar from '$lib/components/layouts/sidebar.svelte';
 	import Navbar from '$lib/components/layouts/navbar.svelte';
+	import FirstLoadData from '$lib/components/layouts/first-load-data.svelte';
 
 	export let destination: string | null = null;
 	$: if (destination != null && $authModel) {
@@ -32,7 +33,7 @@
 
 	$: if ($authModel) {
 		coll.subscribe('*', async function (e) {
-			await loadData();
+			await getOverview($authModel?.currentBudget);
 		});
 	} else {
 		coll.unsubscribe();
@@ -67,10 +68,11 @@
 </svelte:head>
 
 {#if $authModel}
+	<FirstLoadData />
 	<div class="relative bg-gray-100">
 		<Navbar />
 
-		<div class="ml-72 flex w-auto h-full gap-4 pt-24">
+		<div class="ml-72 flex h-full w-auto gap-4 pt-24">
 			<Sidebar />
 
 			<main class="page pr-8">

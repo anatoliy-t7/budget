@@ -5,7 +5,7 @@
 	import Selector from '~icons/solar/alt-arrow-down-linear';
 	import Check from '~icons/tabler/check';
 
-	export let value: string | null = $accounts[0].id;
+	export let value: string | null = $accounts[0]?.id;
 
 	let isExpanded = false;
 
