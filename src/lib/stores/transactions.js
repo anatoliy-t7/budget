@@ -23,9 +23,9 @@ export async function getCategories() {
 	const coll = client.collection('categories');
 	const res = await coll.getFullList({
 		sort: '-name',
-		fields: 'id,name,icon',
+		fields: 'id,name,icon,type,popular,budget',
 	});
-
+	console.log(res);
 	categories.set(res);
 }
 

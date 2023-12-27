@@ -26,7 +26,7 @@ select {
 }
 
 button {
-	@apply cursor-pointer rounded-lg;
+	@apply cursor-pointer;
 }
 .click {
 	@apply transition duration-300 active:scale-95;

@@ -110,7 +110,7 @@
 
 					<label class="block space-y-1 text-sm font-medium">
 						<span>Password</span>
-						<input bind:value="{password}" required type="password" />
+						<input bind:value="{password}" disabled="{$loading}" required type="password" />
 					</label>
 					<div class="flex items-center justify-between text-sm text-cyan-600">
 						<button
@@ -150,6 +150,7 @@
 							autocorrect="off"
 							pattern="[^@]+@[^@]+.[a-zA-Z]"
 							required
+							disabled="{$loading}"
 							type="email" />
 					</label>
 

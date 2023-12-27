@@ -28,7 +28,7 @@
 	{#if isExpanded}
 		<div
 			transition:slide
-			class="{className} absolute z-30 mt-1 max-h-60 w-full min-w-[320px] overflow-auto rounded-md border border-gray-200 bg-white py-1 text-sm shadow-small focus:outline-none">
+			class="{className} absolute z-30 mt-1 max-h-60 w-full min-w-[320px] overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm shadow-small focus:outline-none">
 			{#each $accounts as account}
 				<button
 					on:click="{() => ((value = account.id), (isExpanded = false))}"

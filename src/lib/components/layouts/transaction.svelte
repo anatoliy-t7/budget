@@ -4,6 +4,7 @@
 	import TypeSwitch from '$lib/components/ui/type-switch.svelte';
 	import ListboxAccount from '$lib/components/ui/listbox-account.svelte';
 	import DatePicker from '$lib/components/ui/date-picker.svelte';
+	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 
 	import dayjs from 'dayjs';
 	import { alertOnFailure } from '$lib/utils';
@@ -11,7 +12,6 @@
 	import Plus from '~icons/solar/add-circle-linear';
 	import { categories, accounts, loading } from '$lib/stores/transactions';
 	import toast from 'svelte-french-toast';
-
 	const coll = client.collection('transactions');
 
 	let open: boolean = false;
@@ -19,6 +19,7 @@
 		amount: null,
 		account: null,
 		type: 'expenses',
+		note: null,
 		transfer: null,
 		category: null,
 		budget: $authModel?.currentBudget,
@@ -77,7 +78,9 @@
 		transferAmount = null;
 		transaction.transfer = null;
 		transaction.amount = null;
+		transaction.note = null;
 		transaction.type = 'expenses';
+		transaction.created = dayjs().toISOString();
 	}
 
 	async function onOpen() {
@@ -85,17 +88,28 @@
 		transaction.transfer = $accounts[1]?.id;
 		open = true;
 	}
+
+	function categoryFilter(item: any, keywords: any) {
+		if (transaction.type === 'expenses') {
+			return item.type === 'expenses';
+		}
+
+		if (transaction.type === 'income') {
+			return item.type === 'income';
+		}
+		return true;
+	}
 </script>
 
 <Button on:click="{() => onOpen()}" small="{true}" class="max-w-[164px] text-sm">
-	<Plus class="h-6 w-6" />
+	<Plus class="w-6 h-6" />
 	Add transaction
 </Button>
 
 <Drawer bind:open="{open}">
 	<div class="pb-12 text-xl font-medium">Add transaction</div>
 
-	<form on:submit|preventDefault="{submit}" class="grid max-w-sm gap-5">
+	<form on:submit|preventDefault="{submit}" class="grid max-w-sm gap-4">
 		<TypeSwitch selected="{transaction.type}" on:changed="{(event) => changedType(event.detail)}" />
 
 		<div class="block w-full space-y-1 font-medium">
@@ -125,7 +139,7 @@
 		</div>
 
 		<div class="flex gap-6">
-			<label class="block w-full space-y-1 font-medium">
+			<div class="block w-full space-y-1 font-medium">
 				<span class="text-sm">
 					{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
 						Sent amount
@@ -137,38 +151,50 @@
 				<div class="relative">
 					<input bind:value="{transaction.amount}" required type="number" placeholder="100" />
 					{#if transactionAccount}
-						<div class="absolute right-3 top-3 text-gray-400">
+						<div class="right-3 top-3 absolute text-gray-400">
 							{transactionAccount?.currency}
 						</div>
 					{/if}
 				</div>
-			</label>
-
+			</div>
 			{#if transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
-				<label class="block w-full space-y-1 font-medium">
+				<div class="block w-full space-y-1 font-medium">
 					<span class="text-sm"> Got amount </span>
 					<div class="relative">
 						<input bind:value="{transferAmount}" type="number" placeholder="100" />
 						{#if transferAccount}
-							<div class="absolute right-3 top-3 text-gray-400">
+							<div class="right-3 top-3 absolute text-gray-400">
 								{transferAccount?.currency}
 							</div>
 						{/if}
 					</div>
-				</label>
+				</div>
 			{/if}
 		</div>
 
-		<label class="block space-y-1 font-medium">
-			<span class="text-sm">Category</span>
+		<div class="block space-y-1 font-medium">
+			<div class="text-sm">Category <span class="font-normal text-gray-400">(optional)</span></div>
 
-			<select bind:value="{transaction.category}">
-				{#each $categories as category}
-					<option value="{category.id}">{category.name}</option>
-				{/each}
-			</select>
-		</label>
+			<Autocomplete
+				items="{$categories}"
+				bind:value="{transaction.category}"
+				itemFilterFunction="{categoryFilter}"
+				labelFieldName="name"
+				valueFieldName="id"
+				matchAllKeywords="{false}"
+				sortByMatchedKeywords="{true}"
+				keywordsFieldName="name" />
+		</div>
 
-		<Button loading="{$loading}" disabled="{disabled}" type="submit">Add</Button>
+		<div class="block w-full pt-2 space-y-1 font-medium">
+			<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
+			<div class="">
+				<input bind:value="{transaction.note}" type="text" />
+			</div>
+		</div>
+
+		<div class="pt-4">
+			<Button loading="{$loading}" disabled="{disabled}" type="submit">Add</Button>
+		</div>
 	</form>
 </Drawer>
