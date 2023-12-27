@@ -20,7 +20,7 @@
 		$loading = true;
 
 		await alertOnFailure(async () => {
-			transactions = await coll.getList(page, 10, {
+			transactions = await coll.getList(page, 15, {
 				sort: '-created',
 				expand: 'category,account,user',
 				fields:
@@ -50,7 +50,7 @@
 <div class="space-y-4">
 	<h1>Transactions</h1>
 
-	<div class="rounded-xl bg-white p-6">
+	<div class="rounded-xl p-6 bg-white">
 		{#if transactions?.items?.length}
 			<Table head="{tableHead}">
 				{#each transactions.items as transaction}
@@ -75,7 +75,7 @@
 				{/each}
 			</Table>
 
-			<!-- <Paginator data={transactions} on:onPageChange={(event) => changePage(event.detail)} /> -->
+			<Paginator data="{transactions}" on:onPageChange="{(event) => changePage(event.detail)}" />
 		{:else}
 			<Loader />
 		{/if}

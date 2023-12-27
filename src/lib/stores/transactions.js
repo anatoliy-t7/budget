@@ -25,7 +25,6 @@ export async function getCategories() {
 		sort: '-name',
 		fields: 'id,name,icon,type,popular,budget',
 	});
-	console.log(res);
 	categories.set(res);
 }
 

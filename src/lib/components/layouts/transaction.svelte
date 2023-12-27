@@ -27,6 +27,8 @@
 		created: dayjs().toISOString(),
 	};
 	let transferAmount: number | null = null;
+	let selectedCategory = {};
+	let disabledCategory = false;
 
 	$: disabled = !transaction?.amount;
 
@@ -41,6 +43,14 @@
 			transaction.transfer = null;
 		}
 		transaction.type = type;
+
+		if (transaction.type === 'transfer') {
+			selectedCategory = $categories?.find((c) => c.id == '1o2o1fdok8m1ek9');
+			disabledCategory = true;
+		} else {
+			selectedCategory = {};
+			disabledCategory = false;
+		}
 	}
 
 	async function submit() {
@@ -97,7 +107,9 @@
 		if (transaction.type === 'income') {
 			return item.type === 'income';
 		}
-		return true;
+		if (transaction.type === 'transfer') {
+			return item.type === 'transfer';
+		}
 	}
 </script>
 
@@ -173,17 +185,20 @@
 		</div>
 
 		<div class="block space-y-1 font-medium">
-			<div class="text-sm">Category <span class="font-normal text-gray-400">(optional)</span></div>
+			<div class="text-sm">Category</div>
 
 			<Autocomplete
 				items="{$categories}"
 				bind:value="{transaction.category}"
+				selectedItem="{selectedCategory}"
 				itemFilterFunction="{categoryFilter}"
 				labelFieldName="name"
 				valueFieldName="id"
 				matchAllKeywords="{false}"
 				sortByMatchedKeywords="{true}"
-				keywordsFieldName="name" />
+				keywordsFieldName="name"
+				disabled="{disabledCategory}"
+				required />
 		</div>
 
 		<div class="block w-full pt-2 space-y-1 font-medium">

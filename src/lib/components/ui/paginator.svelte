@@ -14,33 +14,26 @@
 </script>
 
 {#if data.totalPages > 1}
-	<nav class="flex items-center justify-center pt-6" aria-label="pagination">
+	<nav class="pt-6" aria-label="pagination">
 		<div class="flex items-center gap-2">
 			<button
-				disabled={data.page === 1}
-				class="hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-white disabled:text-gray-400 grid items-center h-8 px-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-md"
-				on:click={() => changePage(data.page - 1)}
-			>
+				disabled="{data.page === 1}"
+				class="hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400 grid items-center h-8 px-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-md"
+				on:click="{() => changePage(data.page - 1)}">
 				<ChevronLeft class="square-4" />
 			</button>
-			{#each data.totalPages as page (page.key)}
-				{#if page.type === 'ellipsis'}
-					<span>...</span>
-				{:else}
-					<button
-						disabled={data.page === page.value}
-						class="hover:opacity-75 disabled:cursor-not-allowed disabled:bg-gray-200 grid items-center h-8 px-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-md"
-						on:click={() => changePage(page.value)}
-					>
-						{page.value}
-					</button>
-				{/if}
+			{#each { length: data.totalPages } as _, i}
+				<button
+					disabled="{data.page === i + 1}"
+					class="hover:opacity-75 disabled:cursor-not-allowed disabled:bg-gray-200 grid items-center h-8 px-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-md"
+					on:click="{() => changePage(i + 1)}">
+					{i + 1}
+				</button>
 			{/each}
 			<button
-				disabled={data.page === data.totalPages}
-				class="hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-white disabled:text-gray-400 grid items-center h-8 px-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-md"
-				on:click={() => changePage(data.page + 1)}
-			>
+				disabled="{data.page === data.totalPages}"
+				class="hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-100 disabled:bg-gray-100 disabled:text-gray-400 grid items-center h-8 px-3 text-sm text-gray-900 bg-white border border-gray-200 rounded-md"
+				on:click="{() => changePage(data.page + 1)}">
 				<ChevronRight class="square-4" />
 			</button>
 		</div>
