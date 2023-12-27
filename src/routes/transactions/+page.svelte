@@ -1,46 +1,48 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { alertOnFailure } from '$lib/utils';
-	import { client } from '$lib/stores/pocketbase';
-	import { loading } from '$lib/stores/transactions';
-	import type { ListResult, RecordModel } from 'pocketbase';
+	import { getTransactions, transactions, loading } from '$lib/stores/transactions';
 	import dayjs from 'dayjs';
 
 	import Loader from '$lib/components/ui/loader.svelte';
 	import Table from '$lib/components/ui/table.svelte';
 	import Paginator from '$lib/components/ui/paginator.svelte';
+	import TypeToggle from '$lib/components/ui/type-toggle.svelte';
 
 	const tableHead = ['Date', 'Type', 'Amount', 'Account', 'Category', 'User', ''];
 
-	const coll = client.collection('transactions');
-	let transactions: ListResult<RecordModel>;
-	$: page = transactions?.page || 1;
+	$: page = $transactions?.page || 1;
 
-	async function loadData() {
-		$loading = true;
+	let type: string = '';
+	let transfer: string = '~';
 
-		await alertOnFailure(async () => {
-			transactions = await coll.getList(page, 15, {
-				sort: '-created',
-				expand: 'category,account,user',
-				fields:
-					'created,amount,type,note,transfer,expand.category.name,expand.account.name,expand.account.currency,expand.user.email',
-			});
-		});
+	async function changedType(value: string) {
+		if (!value) {
+			transfer = '~';
+		}
 
-		$loading = false;
+		if (value === 'transfer') {
+			transfer = '!=';
+			value = '';
+		}
+
+		if (value === 'expenses' || value === 'income') {
+			transfer = '=';
+		}
+
+		type = value;
+		page = 1;
+
+		await getTransactions(page, value, transfer);
 	}
 
 	async function changePage(nextPage: any) {
 		page = nextPage;
-		await loadData();
+		await getTransactions(page, type, transfer);
 	}
 
 	onMount(async () => {
-		await loadData();
+		await getTransactions(page, type);
 	});
-
-	$: console.log(transactions);
 </script>
 
 <svelte:head>
@@ -48,36 +50,42 @@
 </svelte:head>
 
 <div class="space-y-4">
-	<h1>Transactions</h1>
+	<div class="flex gap-4">
+		<TypeToggle on:changed="{(event) => changedType(event.detail)}" />
+	</div>
 
-	<div class="rounded-xl p-6 bg-white">
-		{#if transactions?.items?.length}
+	<div class="rounded-xl bg-white p-6">
+		{#if $loading == true}
+			<Loader />
+		{:else}
 			<Table head="{tableHead}">
-				{#each transactions.items as transaction}
-					<tr>
-						<td>
-							{dayjs(transaction?.created).format('D MMM YYYY')}
-						</td>
-						<td class="capitalize">
-							{transaction.type}
-						</td>
-						<td>
-							{transaction.expand?.account?.currency}
-							{transaction.amount}
-						</td>
-						<td>{transaction.expand?.account?.name}</td>
-						<td>{transaction.expand?.category?.name}</td>
-						<td>{transaction.expand?.user?.email}</td>
-						<td>
-							<div class="flex items-center justify-end gap-2"></div>
-						</td>
-					</tr>
-				{/each}
+				{#if $transactions?.items?.length}
+					{#each $transactions?.items as transaction}
+						<tr>
+							<td>
+								{dayjs(transaction?.created).format('D MMM YYYY')}
+							</td>
+							<td class="capitalize">
+								{transaction?.type}
+							</td>
+							<td>
+								{transaction?.expand?.account?.currency}
+								{transaction?.amount}
+							</td>
+							<td>{transaction?.expand?.account?.name}</td>
+							<td>{transaction?.expand?.category?.name}</td>
+							<td>{transaction?.expand?.user?.email}</td>
+							<td>
+								<div class="flex items-center justify-end gap-2"></div>
+							</td>
+						</tr>
+					{/each}
+				{/if}
 			</Table>
 
-			<Paginator data="{transactions}" on:onPageChange="{(event) => changePage(event.detail)}" />
-		{:else}
-			<Loader />
+			{#if $transactions?.items?.length}
+				<Paginator data="{$transactions}" on:onPageChange="{(event) => changePage(event.detail)}" />
+			{/if}
 		{/if}
 	</div>
 </div>

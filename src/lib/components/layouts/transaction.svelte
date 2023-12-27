@@ -15,7 +15,7 @@
 	const coll = client.collection('transactions');
 
 	let open: boolean = false;
-	let transaction = {
+	let transaction: any = {
 		amount: null,
 		account: null,
 		type: 'expenses',
@@ -63,24 +63,33 @@
 				.set('second', dayjs().get('second'))
 				.toISOString();
 
+			if (transaction.type !== 'transfer') {
+				transaction.transfer = null;
+			}
+
 			if (transaction.type === 'transfer') {
 				transaction.type = 'expenses';
+
 				await coll.create(transaction);
 				toast.success(`${transaction.type} was added`);
 
 				transaction.type = 'income';
-				const from = transaction.account;
-				transaction.account = transaction.transfer;
-				transaction.amount = transferAmount;
-				transaction.transfer = from;
+				const fromAccount = transaction.transfer;
+				transaction.transfer = transaction.account;
+				transaction.account = fromAccount;
+
+				if (transactionAccount?.currency != transferAccount?.currency) {
+					transaction.amount = transferAmount;
+				}
 			}
+
 			await coll.create(transaction);
 
 			toast.success(`${transaction.type} was added`);
-		});
 
-		$loading = false;
-		await close();
+			$loading = false;
+			await close();
+		});
 	}
 
 	async function close() {
@@ -90,6 +99,7 @@
 		transaction.amount = null;
 		transaction.note = null;
 		transaction.type = 'expenses';
+		transaction.category = null;
 		transaction.created = dayjs().toISOString();
 	}
 
@@ -114,7 +124,7 @@
 </script>
 
 <Button on:click="{() => onOpen()}" small="{true}" class="max-w-[164px] text-sm">
-	<Plus class="w-6 h-6" />
+	<Plus class="h-6 w-6" />
 	Add transaction
 </Button>
 
@@ -150,6 +160,8 @@
 			{/if}
 		</div>
 
+		{transaction.amount}
+
 		<div class="flex gap-6">
 			<div class="block w-full space-y-1 font-medium">
 				<span class="text-sm">
@@ -163,7 +175,7 @@
 				<div class="relative">
 					<input bind:value="{transaction.amount}" required type="number" placeholder="100" />
 					{#if transactionAccount}
-						<div class="right-3 top-3 absolute text-gray-400">
+						<div class="absolute right-3 top-3 text-gray-400">
 							{transactionAccount?.currency}
 						</div>
 					{/if}
@@ -175,7 +187,7 @@
 					<div class="relative">
 						<input bind:value="{transferAmount}" type="number" placeholder="100" />
 						{#if transferAccount}
-							<div class="right-3 top-3 absolute text-gray-400">
+							<div class="absolute right-3 top-3 text-gray-400">
 								{transferAccount?.currency}
 							</div>
 						{/if}
@@ -201,7 +213,7 @@
 				required />
 		</div>
 
-		<div class="block w-full pt-2 space-y-1 font-medium">
+		<div class="block w-full space-y-1 pt-2 font-medium">
 			<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
 			<div class="">
 				<input bind:value="{transaction.note}" type="text" />

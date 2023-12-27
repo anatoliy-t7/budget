@@ -72,10 +72,10 @@
 	<div class="relative bg-gray-100">
 		<Navbar />
 
-		<div class="ml-72 flex w-auto h-full gap-4 pt-24 overflow-hidden">
+		<div class="ml-72 flex h-full w-auto gap-4">
 			<Sidebar />
 
-			<main class="page pr-8">
+			<main class="page relative z-20 pr-8 pt-24">
 				<slot />
 			</main>
 		</div>

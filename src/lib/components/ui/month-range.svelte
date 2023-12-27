@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getOverview, monthRange, overview } from '$lib/stores/transactions';
+	import { getOverview, monthRange, getTransactions } from '$lib/stores/transactions';
 	import { clickOutside } from '$lib/utils';
 	import { authModel } from '$lib/stores/pocketbase';
 	import dayjs from 'dayjs';
@@ -19,6 +19,7 @@
 		$monthRange.end = dayjs($monthRange.end).subtract(1, 'M').endOf('month').toISOString();
 
 		await getOverview($authModel?.currentBudget);
+		await getTransactions(1);
 	}
 
 	async function next() {
@@ -26,6 +27,7 @@
 		$monthRange.end = dayjs($monthRange.end).add(1, 'M').endOf('month').toISOString();
 
 		await getOverview($authModel?.currentBudget);
+		await getTransactions(1);
 	}
 
 	async function setRange(mode: String) {
@@ -52,18 +54,19 @@
 
 		isExpanded = false;
 		await getOverview($authModel?.currentBudget);
+		await getTransactions(1);
 	}
 
 	$: isFuture = dayjs(dayjs($monthRange.end).add(1, 'M')).isAfter(dayjs(), 'month');
 </script>
 
-<div class="inline-flex items-center gap-6 rounded-xl bg-white p-3">
-	<div class="flex items-center gap-4">
+<div class="inline-flex items-center w-full gap-4">
+	<div class="flex items-center gap-2">
 		<button on:click="{() => prev()}" class="hover">
 			<ChevronLeft class="h-7 w-7" />
 		</button>
 
-		<div class="flex min-w-24 justify-center text-lg font-medium">
+		<div class="min-w-24 flex justify-center text-lg font-medium">
 			{#if dayjs($monthRange.start).format('MMMM') !== dayjs($monthRange.end).format('MMMM')}
 				{dayjs($monthRange.start).format('MMMM')} -
 			{/if}
@@ -86,25 +89,25 @@
 		{#if isExpanded}
 			<div
 				transition:slide
-				class="absolute right-0 top-8 w-40 space-y-1 rounded-xl bg-white p-4 text-sm shadow-small">
+				class="top-8 rounded-xl shadow-small absolute right-0 w-40 p-4 space-y-1 text-sm bg-white">
 				<button
 					on:click="{() => setRange('current_month')}"
-					class="w-full px-2 py-1 text-left hover:bg-gray-100">
+					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Current month
 				</button>
 				<button
 					on:click="{() => setRange('last_month')}"
-					class="w-full px-2 py-1 text-left hover:bg-gray-100">
+					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Last month
 				</button>
 				<button
 					on:click="{() => setRange('last_3months')}"
-					class="w-full px-2 py-1 text-left hover:bg-gray-100">
+					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Last 3 months
 				</button>
 				<button
 					on:click="{() => setRange('current_year')}"
-					class="w-full px-2 py-1 text-left hover:bg-gray-100">
+					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Current year
 				</button>
 			</div>

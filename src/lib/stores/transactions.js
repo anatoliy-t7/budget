@@ -18,6 +18,7 @@ export const loading = writable(false);
 export const error = writable(false);
 export const categories = writable(null);
 export const accounts = writable(null);
+export const transactions = writable(null);
 
 export async function getCategories() {
 	const coll = client.collection('categories');
@@ -34,7 +35,6 @@ export async function getAccounts() {
 		sort: '-name',
 		fields: 'id,name,currency',
 	});
-
 	accounts.set(res);
 }
 
@@ -55,6 +55,28 @@ export async function getOverview(currentBudget) {
 
 		if (res.status == 200) {
 			overview.set(await res.json());
+		}
+	});
+}
+
+export async function getTransactions(page = 1, type = '', transfer = '~') {
+	loading.set(true);
+
+	const coll = client.collection('transactions');
+
+	await alertOnFailure(async () => {
+		const res = await coll.getList(page, 15, {
+			filter: `type ?~ "${type}" && type != "cd" && transfer ${transfer} ""`,
+			sort: '-created',
+			expand: 'category,account,user',
+			fields:
+				'created,amount,type,note,transfer,expand.category.name,expand.account.name,expand.account.currency,expand.user.email',
+		});
+
+		loading.set(false);
+
+		if (res.items?.length) {
+			transactions.set(res);
 		}
 	});
 }

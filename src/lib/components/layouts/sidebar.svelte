@@ -19,17 +19,16 @@
 	];
 </script>
 
-<div class="w-72 fixed top-0 left-0 flex flex-col justify-between h-full min-h-screen p-8">
-	<div class="pt-16 space-y-1 text-gray-700">
+<div class="fixed left-0 top-0 z-10 flex h-full min-h-screen w-72 flex-col justify-between p-8">
+	<div class="space-y-1 pt-16 text-gray-700">
 		{#each links as link, a}
 			<a
-				href={link.url}
+				href="{link.url}"
 				class="{activeUrl.pathname === link.url
-					? 'bg-sky-500 text-white font-medium'
-					: 'hover:bg-gray-200'} inline-flex items-center w-full text-base gap-3 rounded-xl px-4 py-3"
-			>
+					? 'bg-sky-500 font-medium text-white'
+					: 'hover:bg-gray-200'} inline-flex w-full items-center gap-3 rounded-xl px-4 py-3 text-base">
 				{#if link.icon}
-					<svelte:component this={link.icon} class="w-6 h-6" />
+					<svelte:component this="{link.icon}" class="h-6 w-6" />
 				{/if}
 				{link.name}
 			</a>

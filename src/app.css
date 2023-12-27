@@ -46,6 +46,7 @@ table tbody td {
 }
 
 .page {
+	min-height: calc(100vh - 24px);
 	@apply w-full h-full;
 }
 
