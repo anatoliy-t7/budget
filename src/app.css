@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	@apply font-sans text-gray-900 bg-gray-100;
+	@apply bg-gray-100 font-sans text-gray-900;
 }
 
 input:where(:not([type])),
@@ -29,25 +29,25 @@ button {
 	@apply cursor-pointer;
 }
 .click {
-	@apply active:scale-95 transition duration-300;
+	@apply transition duration-300 active:scale-95;
 }
 
 table {
 	@apply w-full table-auto;
 }
 table thead th {
-	@apply p-3 text-sm font-semibold text-left text-gray-600 border-b border-gray-100;
+	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
 }
 table tbody tr {
 	@apply even:bg-gray-50 hover:bg-gray-100;
 }
 table tbody td {
-	@apply first:rounded-l-lg last:rounded-r-lg p-3 text-sm;
+	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;
 }
 
 .page {
 	min-height: calc(100vh - 24px);
-	@apply w-full h-full;
+	@apply h-full w-full;
 }
 
 input::-webkit-outer-spin-button,
@@ -62,11 +62,11 @@ input[type='number'] {
 
 .hover,
 .hover svg {
-	@apply relative z-20 block outline-none cursor-pointer;
+	@apply relative z-20 block cursor-pointer outline-none;
 }
 .hover:after {
 	content: '';
-	@apply -z-0 absolute inset-0 w-10 h-10 m-auto bg-gray-100 rounded-full opacity-0;
+	@apply absolute inset-0 -z-0 m-auto h-10 w-10 rounded-full bg-gray-100 opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);
@@ -81,4 +81,48 @@ input[type='number'] {
 
 h1 {
 	@apply text-2xl font-semibold capitalize;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	100% {
+		opacity: 1;
+	}
+	0% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:root::view-transition-old(root) {
+		animation: 300ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
+	}
+
+	:root::view-transition-new(root) {
+		animation: 300ms cubic-bezier(0, 0, 0.2, 1) 90ms both fadeIn;
+	}
+}
+
+.scrollbar::-webkit-scrollbar-track {
+	@apply rounded-lg bg-gray-100;
+}
+
+.scrollbar::-webkit-scrollbar {
+	@apply w-1 bg-gray-100;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+	@apply rounded-lg bg-gray-200;
+}
+
+.scrollbar:hover::-webkit-scrollbar-thumb {
+	@apply bg-gray-300;
 }

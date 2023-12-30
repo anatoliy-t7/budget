@@ -1,5 +1,4 @@
 <script lang="ts">
-	import MonthRange from '$lib/components/ui/month-range.svelte';
 	import Stat from '$lib/components/overview/stat.svelte';
 </script>
 

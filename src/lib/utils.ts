@@ -1,10 +1,11 @@
 import toast from 'svelte-french-toast';
+import { onNavigate } from '$app/navigation';
 
 export const getImageURL = (collectionId: string, recordId: string, fileName: string, size = '24x24') => {
     return `http://localhost:8090/api/files/${collectionId}/${recordId}/${fileName}?thumb=${size}`;
 };
 
-// wrapper to execute a pocketbase client request and generate alerts on failure
+// wrapper to execute a pocketbase pb request and generate alerts on failure
 export async function alertOnFailure(request: () => void) {
     try {
         await request();
@@ -48,3 +49,18 @@ export function moneyFormat(value: number, currency: string = 'USD') {
         minimumFractionDigits: 0
     }).format(value);
 }
+
+export const preparePageTransition = () => {
+    onNavigate(async (navigation) => {
+        if (!document.startViewTransition) {
+            return;
+        }
+
+        return new Promise((oldStateCaptureResolve) => {
+            document.startViewTransition(async () => {
+                oldStateCaptureResolve();
+                await navigation.complete;
+            });
+        });
+    });
+};

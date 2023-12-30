@@ -7,8 +7,22 @@
 		getAccounts,
 		getCategories,
 	} from '$lib/stores/transactions';
-	import { authModel } from '$lib/stores/pocketbase';
+	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { onMount } from 'svelte';
+	import { pwaInfo } from 'virtual:pwa-info';
+	import { preparePageTransition } from '$lib/utils';
+
+	preparePageTransition();
+
+	const coll = pb.collection('transactions');
+
+	$: if ($authModel) {
+		coll.subscribe('*', async function (e) {
+			await getOverview($authModel?.currentBudget);
+		});
+	} else {
+		coll.unsubscribe();
+	}
 
 	onMount(async () => {
 		if (!$overview) {
@@ -20,5 +34,30 @@
 		if (!$categories) {
 			getCategories();
 		}
+
+		// if (pwaInfo) {
+		// 	const { registerSW } = await import('virtual:pwa-register');
+		// 	registerSW({
+		// 		immediate: true,
+		// 		onRegistered(r: any) {
+		// 			// uncomment following code if you want check for updates
+		// 			r &&
+		// 				setInterval(() => {
+		// 					console.log('Checking for sw update');
+		// 					r.update();
+		// 				}, 20000 /* 20s for testing purposes */);
+		// 			console.log(`SW Registered: ${r}`);
+		// 		},
+		// 		onRegisterError(error: Error) {
+		// 			console.log('SW registration error', error);
+		// 		},
+		// 	});
+		// }
 	});
+
+	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 </script>
+
+<svelte:head>
+	{@html webManifest}
+</svelte:head>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { client, providerLogin, loading } from '$lib/stores/pocketbase';
+	import { pb, providerLogin, loading } from '$lib/stores/pocketbase';
 	import Button from '$lib/components/ui/button.svelte';
 	import { alertOnFailure } from '$lib/utils';
 	import GoogleIcon from '$lib/components/ui/google-icon.svelte';
@@ -8,7 +8,7 @@
 	export let authCollection = 'users';
 	export let authType = 'signin';
 
-	const coll = client.collection(authCollection);
+	const coll = pb.collection(authCollection);
 
 	let email: string;
 	let password: string;

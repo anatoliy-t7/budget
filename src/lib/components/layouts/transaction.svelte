@@ -8,11 +8,11 @@
 
 	import dayjs from 'dayjs';
 	import { alertOnFailure } from '$lib/utils';
-	import { client, authModel } from '$lib/stores/pocketbase';
-	import Plus from '~icons/solar/add-circle-linear';
+	import { pb, authModel } from '$lib/stores/pocketbase';
+	import Plus from '~icons/tabler/plus';
 	import { categories, accounts, loading } from '$lib/stores/transactions';
 	import toast from 'svelte-french-toast';
-	const coll = client.collection('transactions');
+	const coll = pb.collection('transactions');
 
 	let open: boolean = false;
 	let transaction: any = {
@@ -123,20 +123,20 @@
 	}
 </script>
 
-<Button on:click="{() => onOpen()}" small="{true}" class="max-w-[164px] text-sm">
+<Button on:click={() => onOpen()} small={true} class="max-w-[164px] text-sm">
 	<Plus class="h-6 w-6" />
 	Add transaction
 </Button>
 
-<Drawer bind:open="{open}">
+<Drawer bind:open={open}>
 	<div class="pb-12 text-xl font-medium">Add transaction</div>
 
-	<form on:submit|preventDefault="{submit}" class="grid max-w-sm gap-4">
-		<TypeSwitch selected="{transaction.type}" on:changed="{(event) => changedType(event.detail)}" />
+	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
+		<TypeSwitch selected={transaction.type} on:changed={(event) => changedType(event.detail)} />
 
 		<div class="block w-full space-y-1 font-medium">
 			<span class="text-sm"> Date </span>
-			<DatePicker bind:value="{transaction.created}" />
+			<DatePicker bind:value={transaction.created} />
 		</div>
 
 		<div class="flex gap-6">
@@ -148,19 +148,17 @@
 						Account
 					{/if}
 				</div>
-				<ListboxAccount bind:value="{transaction.account}" />
+				<ListboxAccount bind:value={transaction.account} />
 			</div>
 
 			{#if transaction.type === 'transfer'}
 				<div class="block w-full space-y-1 font-medium">
 					<div class="text-sm">To</div>
 
-					<ListboxAccount bind:value="{transaction.transfer}" class="right-0" />
+					<ListboxAccount bind:value={transaction.transfer} class="right-0" />
 				</div>
 			{/if}
 		</div>
-
-		{transaction.amount}
 
 		<div class="flex gap-6">
 			<div class="block w-full space-y-1 font-medium">
@@ -173,7 +171,7 @@
 				</span>
 
 				<div class="relative">
-					<input bind:value="{transaction.amount}" required type="number" placeholder="100" />
+					<input bind:value={transaction.amount} required type="number" placeholder="100" />
 					{#if transactionAccount}
 						<div class="absolute right-3 top-3 text-gray-400">
 							{transactionAccount?.currency}
@@ -185,7 +183,7 @@
 				<div class="block w-full space-y-1 font-medium">
 					<span class="text-sm"> Got amount </span>
 					<div class="relative">
-						<input bind:value="{transferAmount}" type="number" placeholder="100" />
+						<input bind:value={transferAmount} type="number" placeholder="100" />
 						{#if transferAccount}
 							<div class="absolute right-3 top-3 text-gray-400">
 								{transferAccount?.currency}
@@ -200,28 +198,28 @@
 			<div class="text-sm">Category</div>
 
 			<Autocomplete
-				items="{$categories}"
-				bind:value="{transaction.category}"
-				selectedItem="{selectedCategory}"
-				itemFilterFunction="{categoryFilter}"
+				items={$categories}
+				bind:value={transaction.category}
+				selectedItem={selectedCategory}
+				itemFilterFunction={categoryFilter}
 				labelFieldName="name"
 				valueFieldName="id"
-				matchAllKeywords="{false}"
-				sortByMatchedKeywords="{true}"
+				matchAllKeywords={false}
+				sortByMatchedKeywords={true}
 				keywordsFieldName="name"
-				disabled="{disabledCategory}"
+				disabled={disabledCategory}
 				required />
 		</div>
 
 		<div class="block w-full space-y-1 pt-2 font-medium">
 			<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
 			<div class="">
-				<input bind:value="{transaction.note}" type="text" />
+				<input bind:value={transaction.note} type="text" />
 			</div>
 		</div>
 
 		<div class="pt-4">
-			<Button loading="{$loading}" disabled="{disabled}" type="submit">Add</Button>
+			<Button loading={$loading} disabled={disabled} type="submit">Add</Button>
 		</div>
 	</form>
 </Drawer>

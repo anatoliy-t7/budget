@@ -1,18 +1,30 @@
 <script lang="ts">
+	import Wallet from '~icons/solar/wallet-money-broken';
+
 	let extraClass: string = 'h-8 w-8';
 	export { extraClass as class };
 </script>
 
 <div class="flex items-center gap-2 text-green-700">
 	<svg class={extraClass} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-		<g fill="none" stroke="currentColor" stroke-width="2">
+		<g fill="none">
 			<path
-				d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.634 1.634 0 0 1 1.149.133A9.958 9.958 0 0 0 12 22Z"
-			/>
-			<path
+				stroke="currentColor"
 				stroke-linecap="round"
-				d="M12 15.333c1.105 0 2-.746 2-1.666c0-.92-.895-1.667-2-1.667s-2-.746-2-1.667c0-.92.895-1.666 2-1.666m0 6.666c-1.105 0-2-.746-2-1.666m2 1.666V16m0-8v.667m0 0c1.105 0 2 .746 2 1.666"
-			/>
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M6 10h4" />
+			<path
+				stroke="currentColor"
+				stroke-linecap="round"
+				stroke-width="2"
+				d="M21.998 12.5c0-.077.002-.533 0-.565c-.036-.501-.465-.9-1.005-.933c-.035-.002-.076-.002-.16-.002h-2.602C16.446 11 15 12.343 15 14s1.447 3 3.23 3h2.603c.084 0 .125 0 .16-.002c.54-.033.97-.432 1.005-.933c.002-.032.002-.488.002-.565" />
+			<circle cx="18" cy="14" r="1" fill="currentColor" />
+			<path
+				stroke="currentColor"
+				stroke-linecap="round"
+				stroke-width="2"
+				d="M10 22h3c3.771 0 5.657 0 6.828-1.172c.809-.808 1.06-1.956 1.137-3.828m0-6c-.078-1.872-.328-3.02-1.137-3.828C18.657 6 16.771 6 13 6h-3C6.229 6 4.343 6 3.172 7.172C2 8.343 2 10.229 2 14c0 3.771 0 5.657 1.172 6.828c.653.654 1.528.943 2.828 1.07M6 6l3.735-2.477a3.237 3.237 0 0 1 3.53 0L17 6" />
 		</g>
 	</svg>
 	<div class="text-2xl font-semibold">budget</div>

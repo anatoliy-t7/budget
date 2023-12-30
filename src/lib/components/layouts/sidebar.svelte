@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Overview from '~icons/solar/graph-broken';
 	import Transactions from '~icons/solar/square-transfer-vertical-broken';
+	import Settings from '~icons/solar/settings-broken';
 
 	import { page } from '$app/stores';
 
@@ -15,6 +16,11 @@
 			name: 'Transactions',
 			url: '/transactions',
 			icon: Transactions,
+		},
+		{
+			name: 'Settings',
+			url: '/settings',
+			icon: Settings,
 		},
 	];
 </script>

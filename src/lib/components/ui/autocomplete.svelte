@@ -1,5 +1,6 @@
 <script>
 	// @ts-nocheck
+	//https://github.com/pstanoev/simple-svelte-autocomplete
 
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
@@ -1125,53 +1126,53 @@
 	}
 </script>
 
-<svelte:window on:click="{onDocumentClick}" on:scroll="{() => (setPositionOnNextUpdate = true)}" />
+<svelte:window on:click={onDocumentClick} on:scroll={() => (setPositionOnNextUpdate = true)} />
 
 <div
 	class="{className ? className : ''} autocomplete select is-fullwidth {uniqueId}"
-	class:hide-arrow="{hideArrow || !items.length}"
-	class:is-multiple="{multiple}"
-	class:show-clear="{clearable}"
-	class:is-loading="{showLoadingIndicator && loading}">
-	<select name="{selectName}" id="{selectId}" multiple="{multiple}">
+	class:hide-arrow={hideArrow || !items.length}
+	class:is-multiple={multiple}
+	class:show-clear={clearable}
+	class:is-loading={showLoadingIndicator && loading}>
+	<select name={selectName} id={selectId} multiple={multiple}>
 		{#if !multiple && hasSelection}
-			<option value="{valueFunction(selectedItem, true)}" selected>
+			<option value={valueFunction(selectedItem, true)} selected>
 				{safeLabelFunction(selectedItem)}
 			</option>
 		{:else if multiple && hasSelection}
 			{#each selectedItem as i}
-				<option value="{valueFunction(i, true)}" selected>
+				<option value={valueFunction(i, true)} selected>
 					{safeLabelFunction(i)}
 				</option>
 			{/each}
 		{/if}
 	</select>
-	<div class="input-container" bind:this="{inputContainer}">
+	<div bind:this={inputContainer} class="input-container">
 		{#if multiple && hasSelection}
 			{#each selectedItem as tagItem, i (valueFunction(tagItem, true))}
 				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				<div
-					draggable="{true}"
-					animate:flip="{{ duration: 200 }}"
-					transition:fade="{{ duration: 200 }}"
-					on:dragstart="{(event) => dragstart(event, i)}"
-					on:dragover="{(event) => dragover(event, i)}"
-					on:dragleave="{(event) => dragleave(event, i)}"
-					on:drop="{(event) => drop(event, i)}"
-					class:is-active="{draggingOver === i}">
+					draggable={true}
+					animate:flip={{ duration: 200 }}
+					transition:fade={{ duration: 200 }}
+					on:dragstart={(event) => dragstart(event, i)}
+					on:dragover={(event) => dragover(event, i)}
+					on:dragleave={(event) => dragleave(event, i)}
+					on:drop={(event) => drop(event, i)}
+					class:is-active={draggingOver === i}>
 					<slot
 						name="tag"
-						label="{safeLabelFunction(tagItem)}"
-						item="{tagItem}"
-						unselectItem="{unselectItem}">
+						label={safeLabelFunction(tagItem)}
+						item={tagItem}
+						unselectItem={unselectItem}>
 						<div class="tags has-addons">
 							<span class="tag">{safeLabelFunction(tagItem)}</span>
 							<span
 								class="tag is-delete"
-								on:click|preventDefault="{unselectItem(tagItem)}"
-								on:keypress|preventDefault="{(e) => {
+								on:click|preventDefault={unselectItem(tagItem)}
+								on:keypress|preventDefault={(e) => {
 									e.key == 'Enter' && unselectItem(tagItem);
-								}}"></span>
+								}}></span>
 						</div>
 					</slot>
 				</div>
@@ -1182,33 +1183,33 @@
 			class="{inputClassName ? inputClassName : ''} {noInputStyles
 				? ''
 				: 'input autocomplete-input'}"
-			id="{inputId ? inputId : ''}"
-			autocomplete="{html5autocomplete ? 'on' : autocompleteOffValue}"
-			placeholder="{placeholder}"
-			name="{name}"
-			disabled="{disabled}"
-			required="{required}"
-			title="{title}"
-			readonly="{readonly || locked}"
-			tabindex="{tabindex}"
-			bind:this="{input}"
-			bind:value="{text}"
-			on:input="{onInput}"
-			on:focus="{onFocusInternal}"
-			on:blur="{onBlurInternal}"
-			on:keydown="{onKeyDown}"
-			on:click="{onInputClick}"
-			on:keypress="{onKeyPress}"
-			on:dragover="{(event) => dragover(event, selectedItem.length - 1)}"
-			on:drop="{(event) => drop(event, selectedItem.length - 1)}"
+			id={inputId ? inputId : ''}
+			autocomplete={html5autocomplete ? 'on' : autocompleteOffValue}
+			placeholder={placeholder}
+			name={name}
+			disabled={disabled}
+			required={required}
+			title={title}
+			readonly={readonly || locked}
+			tabindex={tabindex}
+			bind:this={input}
+			bind:value={text}
+			on:input={onInput}
+			on:focus={onFocusInternal}
+			on:blur={onBlurInternal}
+			on:keydown={onKeyDown}
+			on:click={onInputClick}
+			on:keypress={onKeyPress}
+			on:dragover={(event) => dragover(event, selectedItem.length - 1)}
+			on:drop={(event) => drop(event, selectedItem.length - 1)}
 			{...$$restProps} />
 		{#if clearable}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<span
-				on:click="{clear}"
-				on:keypress="{(e) => {
+				on:click={clear}
+				on:keypress={(e) => {
 					e.key == 'Enter' && clear();
-				}}"
+				}}
 				class="autocomplete-clear-button">{@html clearText}</span>
 		{/if}
 	</div>
@@ -1217,31 +1218,31 @@
 			? ''
 			: 'hidden'} is-full width z-50 mt-1 max-h-96 w-full min-w-[320px] select-none overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm
     shadow-small focus:outline-none"
-		bind:this="{list}">
+		bind:this={list}>
 		{#if filteredListItems && filteredListItems.length > 0}
 			<slot
 				name="dropdown-header"
-				nbItems="{filteredListItems.length}"
-				maxItemsToShowInList="{maxItemsToShowInList}" />
+				nbItems={filteredListItems.length}
+				maxItemsToShowInList={maxItemsToShowInList} />
 
 			{#each filteredListItems as listItem, i}
 				{#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
 					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div
-						class="autocomplete-list-item w-full gap-4 px-4 py-2 cursor-pointer"
-						class:selected="{i === highlightIndex}"
-						class:confirmed="{isConfirmed(listItem.item)}"
-						on:click="{() => onListItemClick(listItem)}"
-						on:keypress="{(e) => {
+						class="autocomplete-list-item w-full cursor-pointer gap-4 px-4 py-2"
+						class:selected={i === highlightIndex}
+						class:confirmed={isConfirmed(listItem.item)}
+						on:click={() => onListItemClick(listItem)}
+						on:keypress={(e) => {
 							e.key == 'Enter' && onListItemClick(listItem);
-						}}"
-						on:pointerenter="{() => {
+						}}
+						on:pointerenter={() => {
 							highlightIndex = i;
-						}}">
+						}}>
 						<slot
 							name="item"
-							item="{listItem.item}"
-							label="{listItem.highlighted ? listItem.highlighted : listItem.label}">
+							item={listItem.item}
+							label={listItem.highlighted ? listItem.highlighted : listItem.label}>
 							{#if listItem.highlighted}
 								{@html listItem.highlighted}
 							{:else}
@@ -1254,8 +1255,8 @@
 
 			<slot
 				name="dropdown-footer"
-				nbItems="{filteredListItems.length}"
-				maxItemsToShowInList="{maxItemsToShowInList}">
+				nbItems={filteredListItems.length}
+				maxItemsToShowInList={maxItemsToShowInList}>
 				{#if maxItemsToShowInList > 0 && filteredListItems.length > maxItemsToShowInList}
 					{#if moreItemsText}
 						<div class="autocomplete-list-item-no-results">
@@ -1267,21 +1268,21 @@
 			</slot>
 		{:else if loading && loadingText}
 			<div class="autocomplete-list-item-loading">
-				<slot name="loading" loadingText="{loadingText}">{loadingText}</slot>
+				<slot name="loading" loadingText={loadingText}>{loadingText}</slot>
 			</div>
 		{:else if create}
 			<!-- svelte-ignore a11y-no-static-element-interactions -->
 			<div
 				class="autocomplete-list-item-create"
-				on:click="{selectItem}"
-				on:keypress="{(e) => {
+				on:click={selectItem}
+				on:keypress={(e) => {
 					e.key == 'Enter' && selectItem();
-				}}">
-				<slot name="create" createText="{createText}">{createText}</slot>
+				}}>
+				<slot name="create" createText={createText}>{createText}</slot>
 			</div>
 		{:else if noResultsText}
 			<div class="autocomplete-list-item-no-results">
-				<slot name="no-results" noResultsText="{noResultsText}">{noResultsText}</slot>
+				<slot name="no-results" noResultsText={noResultsText}>{noResultsText}</slot>
 			</div>
 		{/if}
 	</div>

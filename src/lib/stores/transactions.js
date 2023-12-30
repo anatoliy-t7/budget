@@ -1,5 +1,5 @@
 import { writable, readable, get } from 'svelte/store';
-import { client } from '$lib/stores/pocketbase';
+import { pb } from '$lib/stores/pocketbase';
 import { alertOnFailure } from '$lib/utils';
 import dayjs from 'dayjs';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
@@ -21,16 +21,16 @@ export const accounts = writable(null);
 export const transactions = writable(null);
 
 export async function getCategories() {
-	const coll = client.collection('categories');
+	const coll = pb.collection('categories');
 	const res = await coll.getFullList({
-		sort: '-name',
+		sort: '+name',
 		fields: 'id,name,icon,type,popular,budget',
 	});
 	categories.set(res);
 }
 
 export async function getAccounts() {
-	const coll = client.collection('accounts');
+	const coll = pb.collection('accounts');
 	const res = await coll.getFullList({
 		sort: '-name',
 		fields: 'id,name,currency',
@@ -46,7 +46,7 @@ export async function getOverview(currentBudget) {
 			`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
 			{
 				headers: {
-					Authorization: client.authStore.token,
+					Authorization: pb.authStore.token,
 				},
 			},
 		);
@@ -62,7 +62,7 @@ export async function getOverview(currentBudget) {
 export async function getTransactions(page = 1, type = '', transfer = '~') {
 	loading.set(true);
 
-	const coll = client.collection('transactions');
+	const coll = pb.collection('transactions');
 
 	await alertOnFailure(async () => {
 		const res = await coll.getList(page, 15, {

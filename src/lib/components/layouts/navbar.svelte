@@ -1,5 +1,5 @@
 <script>
-	import { client } from '$lib/stores/pocketbase';
+	import { pb } from '$lib/stores/pocketbase';
 	import LogOut from '~icons/solar/logout-linear';
 	import Logo from '$lib/components/ui/logo.svelte';
 
@@ -8,8 +8,8 @@
 </script>
 
 <div
-	class="md:px-8 fixed inset-x-0 top-0 z-30 flex justify-between w-full gap-4 px-4 py-4 bg-white border-b border-gray-200">
-	<div class="flex items-center w-full gap-4">
+	class="fixed inset-x-0 top-0 z-30 flex w-full justify-between gap-4 border-b border-gray-200 bg-white px-4 py-4 md:px-8">
+	<div class="flex w-full items-center gap-4">
 		<div class="w-[332px]">
 			<a href="/" class="block p-1">
 				<Logo />
@@ -22,7 +22,7 @@
 	</div>
 
 	<div class="flex items-center justify-end">
-		<button on:click="{() => client.authStore.clear()}" title="Log out" class="hover">
+		<button on:click="{() => pb.authStore.clear()}" title="Log out" class="hover">
 			<LogOut class="h-7 w-7" />
 		</button>
 	</div>

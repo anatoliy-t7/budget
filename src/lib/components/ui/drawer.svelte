@@ -2,7 +2,7 @@
 	import { slide, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
-	import X from '~icons/solar/close-circle-linear';
+	import X from '~icons/tabler/x';
 
 	export let open: boolean = false;
 	export let maxWidth: string = 'max-w-xl';
@@ -31,15 +31,15 @@
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
-			transition:fade="{{ delay: 0, duration: 300 }}"
-			class="pointer-events-auto fixed bottom-0 left-0 right-0 top-0 z-30 h-screen w-screen transform-gpu cursor-pointer overflow-hidden bg-gray-700 bg-opacity-50 transition"
-			on:click="{() => (open = false)}">
+			transition:fade={{ delay: 0, duration: 300 }}
+			class="pointer-events-auto fixed bottom-0 left-0 right-0 top-0 z-40 h-screen w-screen transform-gpu cursor-pointer overflow-hidden bg-gray-700 bg-opacity-50 transition"
+			on:click={() => (open = false)}>
 		</div>
 		<div
-			transition:slide="{{ delay: 0, duration: 400, easing: cubicOut, axis: 'x' }}"
-			class="{maxWidth} z-60 fixed inset-y-0 right-0 z-40 h-screen w-full overflow-y-auto bg-gray-50 px-8 py-6 text-gray-600">
+			transition:slide={{ delay: 0, duration: 400, easing: cubicOut, axis: 'x' }}
+			class="{maxWidth} z-60 fixed inset-y-0 right-0 z-50 h-screen w-full overflow-y-auto bg-gray-50 px-8 py-6 text-gray-600">
 			<div class="absolute right-6 top-6">
-				<button on:click="{() => (open = false)}" class="hover">
+				<button on:click={() => (open = false)} class="hover">
 					<X class="h-6 w-6" />
 				</button>
 			</div>

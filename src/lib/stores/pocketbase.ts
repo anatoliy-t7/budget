@@ -10,14 +10,14 @@ import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 
 export const loading = writable(false);
 
-export const client = new PocketBase(
+export const pb = new PocketBase(
   browser ? PUBLIC_POCKETBASE_URL : undefined
 );
 
 export const authModel = readable<Record | null>(
   null,
   function (set: any) {
-    client.authStore.onChange((token, model) => {
+    pb.authStore.onChange((token, model) => {
       set(model);
       invalidateAll(); // re-run load functions for current page
 
@@ -34,9 +34,9 @@ export async function save(collection: string, record: any, create = false) {
   const data = object2formdata(record);
   if (record.id && !create) {
     // "create" flag overrides update
-    return await client.collection(collection).update(record.id, data);
+    return await pb.collection(collection).update(record.id, data);
   } else {
-    return await client.collection(collection).create(data);
+    return await pb.collection(collection).create(data);
   }
 }
 
