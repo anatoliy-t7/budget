@@ -18,7 +18,7 @@
 		$monthRange.start = dayjs($monthRange.start).subtract(1, 'M').startOf('month').toISOString();
 		$monthRange.end = dayjs($monthRange.end).subtract(1, 'M').endOf('month').toISOString();
 
-		await getOverview($authModel?.currentBudget);
+		await getOverview();
 		await getTransactions(1);
 	}
 
@@ -26,7 +26,7 @@
 		$monthRange.start = dayjs($monthRange.start).add(1, 'M').startOf('month').toISOString();
 		$monthRange.end = dayjs($monthRange.end).add(1, 'M').endOf('month').toISOString();
 
-		await getOverview($authModel?.currentBudget);
+		await getOverview();
 		await getTransactions(1);
 	}
 
@@ -53,7 +53,7 @@
 		}
 
 		isExpanded = false;
-		await getOverview($authModel?.currentBudget);
+		await getOverview();
 		await getTransactions(1);
 	}
 
@@ -62,7 +62,7 @@
 
 <div class="inline-flex items-center w-full gap-4">
 	<div class="flex items-center gap-2">
-		<button on:click="{() => prev()}" class="hover">
+		<button on:click={() => prev()} class="hover">
 			<ChevronLeft class="h-7 w-7" />
 		</button>
 
@@ -75,15 +75,15 @@
 		</div>
 
 		<button
-			on:click="{() => next()}"
+			on:click={() => next()}
 			class="{isFuture ? 'cursor-not-allowed text-gray-400' : 'hover'} "
-			disabled="{isFuture}">
+			disabled={isFuture}>
 			<ChevronRight class="h-7 w-7" />
 		</button>
 	</div>
 
-	<div use:clickOutside="{() => (isExpanded = false)}" class="relative">
-		<button on:click="{clickHandler}" class="hover flex items-center p-1">
+	<div use:clickOutside={() => (isExpanded = false)} class="relative">
+		<button on:click={clickHandler} class="hover flex items-center p-1">
 			<Calendar class="h-7 w-7" />
 		</button>
 		{#if isExpanded}
@@ -91,22 +91,22 @@
 				transition:slide
 				class="top-8 rounded-xl shadow-small absolute right-0 w-40 p-4 space-y-1 text-sm bg-white">
 				<button
-					on:click="{() => setRange('current_month')}"
+					on:click={() => setRange('current_month')}
 					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Current month
 				</button>
 				<button
-					on:click="{() => setRange('last_month')}"
+					on:click={() => setRange('last_month')}
 					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Last month
 				</button>
 				<button
-					on:click="{() => setRange('last_3months')}"
+					on:click={() => setRange('last_3months')}
 					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Last 3 months
 				</button>
 				<button
-					on:click="{() => setRange('current_year')}"
+					on:click={() => setRange('current_year')}
 					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
 					Current year
 				</button>

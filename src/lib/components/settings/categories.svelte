@@ -1,16 +1,26 @@
 <script lang="ts">
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
-	import TypeSwitch from '$lib/components/ui/type-switch.svelte';
+	import Radio from '$lib/components/ui/radio.svelte';
 	import Pencil from '~icons/tabler/pencil';
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
 	// import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 
 	import { alertOnFailure } from '$lib/utils';
 	import { pb, authModel } from '$lib/stores/pocketbase';
-	import { categories, loading, getCategories } from '$lib/stores/transactions';
+	import { categories, getCategories, loading } from '$lib/stores/main';
 	import toast from 'svelte-french-toast';
-	import { onDestroy } from 'svelte';
+
+	const radioOptions = [
+		{
+			value: 'income',
+			label: 'Income',
+		},
+		{
+			value: 'expenses',
+			label: 'Expenses',
+		},
+	];
 	const coll = pb.collection('categories');
 
 	let open: boolean = false;
@@ -77,34 +87,40 @@
 	<div>
 		<div class="flex items-center justify-between gap-6 px-6 pb-4">
 			<div class="text-lg font-medium">Categories</div>
-			<Button on:click={() => onOpen()} small={true} theme={'empty'} class="max-w-24 text-sm">
+			<Button on:click={() => onOpen()} size={'sm'} color={'outline'} class="max-w-24 text-sm">
 				Add new
 			</Button>
 		</div>
 
-		{#if $categories?.length}
-			<div class="scrollbar max-h-96 w-full overflow-y-auto pb-6">
-				{#each $categories as item}
-					<div class="group grid grid-cols-12 gap-6 px-6 py-1.5 hover:bg-gray-100">
-						<div class="col-span-6 capitalize">
-							{item.name}
-						</div>
-						<div class="col-span-4 capitalize">
-							{item.type}
-						</div>
-						<div class="col-span-2 flex justify-end">
-							<button
-								on:click={() => onOpenEdit(item)}
-								class="click hidden hover:text-sky-500 group-hover:flex">
-								<Pencil class="h-6 w-6" />
-							</button>
-						</div>
-					</div>
-				{/each}
+		<div>
+			<div class="grid grid-cols-12 gap-6 px-6 py-1.5 text-sm text-gray-500">
+				<div class="col-span-6">Name</div>
+				<div class="col-span-6">Type</div>
 			</div>
-		{:else}
-			empty
-		{/if}
+			{#if $categories?.length}
+				<div class="scrollbar max-h-96 w-full overflow-y-auto pb-6">
+					{#each $categories?.filter((c) => c.type !== 'transfer') as item}
+						<div class="group grid grid-cols-12 gap-6 px-6 py-1.5 hover:bg-gray-100">
+							<div class="col-span-6 capitalize">
+								{item.name}
+							</div>
+							<div class="col-span-4 capitalize">
+								{item.type}
+							</div>
+							<div class="col-span-2 flex justify-end">
+								<button
+									on:click={() => onOpenEdit(item)}
+									class="click hidden hover:text-sky-500 group-hover:flex">
+									<Pencil class="h-6 w-6" />
+								</button>
+							</div>
+						</div>
+					{/each}
+				</div>
+			{:else}
+				empty
+			{/if}
+		</div>
 	</div>
 
 	<Drawer bind:open={open}>
@@ -119,7 +135,7 @@
 				{/if}
 			</div>
 
-			<form on:submit|preventDefault={submit} class="grid gap-4">
+			<form on:submit|preventDefault={submit} class="grid gap-6">
 				<div class="flex gap-6">
 					<div class="block w-full space-y-1 font-medium">
 						<span class="text-sm"> Name </span>
@@ -128,7 +144,13 @@
 					</div>
 				</div>
 
-				<TypeSwitch bind:selected={category.type} />
+				<div class="flex gap-6">
+					<div class="block w-full space-y-1 font-medium">
+						<span class="text-sm">Transactions type </span>
+
+						<Radio options={radioOptions} bind:selected={category.type} />
+					</div>
+				</div>
 
 				<div class="block space-y-1 font-medium">
 					<div class="text-sm">Icon</div>
@@ -147,7 +169,7 @@
 				required /> -->
 				</div>
 
-				<div class="pt-4">
+				<div class="pt-6">
 					<Button loading={$loading} disabled={disabled} type="submit">
 						{#if category.id}
 							Update

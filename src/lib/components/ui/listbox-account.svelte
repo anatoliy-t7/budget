@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { clickOutside } from '$lib/utils';
-	import { accounts } from '$lib/stores/transactions';
+	import { accounts } from '$lib/stores/main';
 	import { slide } from 'svelte/transition';
 	import Selector from '~icons/solar/alt-arrow-down-linear';
 	import Check from '~icons/tabler/check';
@@ -14,9 +14,9 @@
 	$: selectedAccount = $accounts?.find((a) => a.id == value);
 </script>
 
-<div use:clickOutside="{() => (isExpanded = false)}" class="relative">
+<div use:clickOutside={() => (isExpanded = false)} class="relative">
 	<button
-		on:click="{() => (isExpanded = true)}"
+		on:click={() => (isExpanded = true)}
 		type="button"
 		class="block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-left shadow-sm ring-sky-300 transition placeholder:text-gray-400 hover:border-sky-300 focus:outline-none">
 		<span class="block truncate">{selectedAccount?.name}</span>
@@ -31,7 +31,7 @@
 			class="{className} absolute z-30 mt-1 max-h-60 w-full min-w-[320px] overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm shadow-small focus:outline-none">
 			{#each $accounts as account}
 				<button
-					on:click="{() => ((value = account.id), (isExpanded = false))}"
+					on:click={() => ((value = account.id), (isExpanded = false))}
 					type="button"
 					class="relative flex w-full cursor-pointer select-none items-center justify-between gap-4 px-4 py-2 text-left {account.id ===
 					selectedAccount?.id

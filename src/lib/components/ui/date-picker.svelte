@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Calendar from '~icons/solar/calendar-linear';
-
+	import dayjs from 'dayjs';
 	import { onDestroy, onMount } from 'svelte';
 	import { easepick, RangePlugin, LockPlugin } from '@easepick/bundle';
 
 	export let range: boolean = false;
-	export let value: Date | string = new Date();
+	export let value: Date | string | null = new Date();
 
 	let datepicker: HTMLDivElement;
 	let picker: easepick.Core;
@@ -21,7 +21,7 @@
 			format: 'D MMM YYYY',
 			zIndex: 10,
 			plugins: range ? [RangePlugin, LockPlugin] : [LockPlugin],
-			date: value!,
+			date: dayjs(value).toDate(),
 			LockPlugin: {
 				maxDate: new Date(),
 			},
@@ -46,8 +46,8 @@
 </script>
 
 <div class="relative cursor-pointer">
-	<input bind:this="{datepicker}" class="text-base" />
-	<button on:click="{() => picker.show()}" type="button" class="absolute right-3 top-2">
+	<input bind:this={datepicker} class="text-base" />
+	<button on:click={() => picker.show()} type="button" class="absolute right-3 top-2">
 		<Calendar class="h-7 w-7" />
 	</button>
 </div>

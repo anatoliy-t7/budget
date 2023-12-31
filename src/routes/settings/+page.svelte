@@ -1,7 +1,7 @@
 <script>
 	import Categories from '$lib/components/settings/categories.svelte';
-
 	import Accounts from '$lib/components/settings/accounts.svelte';
+	import Settings from '$lib/components/settings/settings.svelte';
 </script>
 
 <svelte:head>
@@ -9,7 +9,11 @@
 </svelte:head>
 
 <div class="flex flex-wrap gap-4">
-	<Categories />
+	<div class="w-full">
+		<Settings />
+	</div>
 
 	<Accounts />
+
+	<Categories />
 </div>

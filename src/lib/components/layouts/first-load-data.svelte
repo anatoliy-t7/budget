@@ -1,32 +1,31 @@
 <script>
-	import {
-		getOverview,
-		accounts,
-		categories,
-		overview,
-		getAccounts,
-		getCategories,
-	} from '$lib/stores/transactions';
-	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { onMount } from 'svelte';
 	import { pwaInfo } from 'virtual:pwa-info';
 	import { preparePageTransition } from '$lib/utils';
+	import { accounts, categories, getAccounts, getCategories } from '$lib/stores/main';
+	import { getOverview, overview, getTransactions } from '$lib/stores/transactions';
+	import { pb, authModel } from '$lib/stores/pocketbase';
 
 	preparePageTransition();
 
 	const coll = pb.collection('transactions');
 
 	$: if ($authModel) {
-		coll.subscribe('*', async function (e) {
-			await getOverview($authModel?.currentBudget);
-		});
+		coll.subscribe(
+			'*',
+			async function (e) {
+				await getOverview();
+				await getTransactions();
+			},
+			{ filter: 'type != "cd"' },
+		);
 	} else {
 		coll.unsubscribe();
 	}
 
 	onMount(async () => {
 		if (!$overview) {
-			getOverview($authModel?.currentBudget);
+			getOverview();
 		}
 		if (!$accounts) {
 			getAccounts();

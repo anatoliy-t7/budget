@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Wallet from '~icons/solar/wallet-money-broken';
-
 	let extraClass: string = 'h-8 w-8';
 	export { extraClass as class };
 </script>

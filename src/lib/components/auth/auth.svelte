@@ -61,15 +61,15 @@
 				{/if}
 			</h1>
 			{#if authType !== 'reset'}
-				<form on:submit|preventDefault="{submit}" class="grid gap-5">
+				<form on:submit|preventDefault={submit} class="grid gap-5">
 					{#await coll.listAuthMethods({ $autoCancel: false }) then methods}
 						{#each methods.authProviders as p}
 							<Button
-								theme="{'empty'}"
+								color={'outline'}
 								type="button"
-								on:click="{() => providerLogin(p, coll)}"
-								disabled="{$loading}"
-								loading="{$loading}">
+								on:click={() => providerLogin(p, coll)}
+								disabled={$loading}
+								loading={$loading}>
 								{#if p.name === 'google'}
 									<GoogleIcon />
 								{/if}
@@ -98,29 +98,29 @@
 						<span> Email Address</span>
 
 						<input
-							bind:value="{email}"
+							bind:value={email}
 							autocapitalize="off"
 							autocorrect="off"
 							autofocus
 							pattern="[^@]+@[^@]+.[a-zA-Z]"
 							required
 							type="email"
-							disabled="{$loading}" />
+							disabled={$loading} />
 					</label>
 
 					<label class="block space-y-1 text-sm font-medium">
 						<span>Password</span>
-						<input bind:value="{password}" disabled="{$loading}" required type="password" />
+						<input bind:value={password} disabled={$loading} required type="password" />
 					</label>
 					<div class="flex items-center justify-between text-sm text-cyan-600">
 						<button
-							on:click="{() => (authType = 'reset')}"
+							on:click={() => (authType = 'reset')}
 							type="button"
 							class="transition-colors hover:text-cyan-700">
 							Forgot Your Password?
 						</button>
 						<button
-							on:click="{() => toggleAuth()}"
+							on:click={() => toggleAuth()}
 							type="button"
 							class="transition-colors hover:text-cyan-700">
 							{#if authType === 'signup'}
@@ -132,32 +132,32 @@
 					</div>
 
 					{#if authType === 'signup'}
-						<Button on:click="{() => (authType = 'signup')}" disabled="{disabled}" type="submit"
+						<Button on:click={() => (authType = 'signup')} disabled={disabled} type="submit"
 							>Sign Up</Button>
 					{:else}
-						<Button on:click="{() => (authType = 'signin')}" disabled="{disabled}" type="submit"
+						<Button on:click={() => (authType = 'signin')} disabled={disabled} type="submit"
 							>Sign In</Button>
 					{/if}
 				</form>
 			{:else}
-				<form on:submit|preventDefault="{reset}" class="grid gap-5">
+				<form on:submit|preventDefault={reset} class="grid gap-5">
 					<label class="block space-y-1 text-sm font-medium">
 						<span>Email Address</span>
 
 						<input
-							bind:value="{email}"
+							bind:value={email}
 							autocapitalize="off"
 							autocorrect="off"
 							pattern="[^@]+@[^@]+.[a-zA-Z]"
 							required
-							disabled="{$loading}"
+							disabled={$loading}
 							type="email" />
 					</label>
 
-					<Button disabled="{disabled || $loading}" type="submit">Send Reset Instructions</Button>
+					<Button disabled={disabled || $loading} type="submit">Send Reset Instructions</Button>
 
 					<button
-						on:click="{() => (authType = 'signin')}"
+						on:click={() => (authType = 'signin')}
 						type="button"
 						class="transition-colors hover:text-cyan-700">
 						Return to Sign In

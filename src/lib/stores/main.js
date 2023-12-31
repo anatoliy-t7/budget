@@ -1,6 +1,40 @@
 import { writable, readable } from 'svelte/store';
-
+import { pb } from '$lib/stores/pocketbase';
 export const CURRENCY = readable(['USD', 'EUR', 'INR']);
+
+export const loading = writable(false);
+export const categories = writable(null);
+export const accounts = writable(null);
+
+export const budget = writable(null);
+
+export async function getCategories() {
+	const coll = pb.collection('categories');
+	const res = await coll.getFullList({
+		sort: '+name',
+		fields: 'id,name,icon,type,popular,budget',
+	});
+	categories.set(res);
+}
+
+export async function getAccounts() {
+	const coll = pb.collection('accounts');
+	const res = await coll.getFullList({
+		sort: '-name',
+		fields: 'id,name,currency',
+	});
+	accounts.set(res);
+}
+
+export async function getBudget() {
+	const coll = pb.collection('budgets');
+	const res = await coll.getOne(pb.authStore.model?.currentBudget, {
+		sort: '-name',
+		fields: 'id,name,defaultCurrency',
+	});
+	budget.set(res);
+}
+
 /**
  * @param {string | URL | Request} url
  */

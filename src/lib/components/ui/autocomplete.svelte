@@ -1214,9 +1214,9 @@
 		{/if}
 	</div>
 	<div
-		class="{dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList
+		class="{dropdownClassName ? dropdownClassName : 'min-w-[320px]'} autocomplete-list {showList
 			? ''
-			: 'hidden'} is-full width z-50 mt-1 max-h-96 w-full min-w-[320px] select-none overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm
+			: 'hidden'} is-full width z-50 mt-1 max-h-96 w-full select-none overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm
     shadow-small focus:outline-none"
 		bind:this={list}>
 		{#if filteredListItems && filteredListItems.length > 0}
@@ -1290,7 +1290,6 @@
 
 <style>
 	.autocomplete {
-		min-width: 200px;
 		display: inline-block;
 		width: 100%;
 		position: relative;

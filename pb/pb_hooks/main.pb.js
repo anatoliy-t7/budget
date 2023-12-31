@@ -6,7 +6,13 @@ onRecordBeforeCreateRequest((e) => {
 	e.record.set('created', info.data.created);
 }, 'transactions');
 
-// Get income
+onRecordBeforeUpdateRequest((e) => {
+	const info = $apis.requestInfo(e.httpContext);
+
+	e.record.set('created', info.data.created);
+}, 'transactions');
+
+// Get overview
 routerAdd(
 	'GET',
 	'/api/overview',
@@ -129,7 +135,10 @@ cronAdd('checkCDs', '0 0 1 * *', () => {
 });
 
 onRecordAfterDeleteRequest((e) => {
-	const oldMonth = isNotCurrentMonth(e.record.created);
+	const utils = require(`${__hooks}/utils.js`);
+
+	const oldMonth = utils.isNotCurrentMonth(e.record.created);
+
 	if (oldMonth) {
 		updateCdTransaction();
 	}
@@ -153,34 +162,14 @@ onRecordAfterDeleteRequest((e) => {
 
 			$app.dao().saveRecord(cd);
 		});
-	}
-
-	function isNotCurrentMonth(dateTime) {
-		const dateString = JSON.stringify(dateTime);
-		const dateTimeParts = dateString.replace('"', '').split(' ');
-		const parts = dateTimeParts[0].split('-');
-
-		var month = parts[1];
-		var year = parts[0];
-		var currentdate = new Date();
-		var cur_month = currentdate.getMonth() + 1;
-		var cur_year = currentdate.getFullYear();
-
-		if (cur_month == month && year == cur_year) {
-			return false;
-		} else {
-			const extra = dateString.replace('"', '').split('.');
-			const jsDate = new Date(extra[0]);
-			const nextMonth = jsDate.setMonth(jsDate.getMonth() + 1);
-			const nextMonthWithFirstDay = new Date(nextMonth).setDate(1);
-
-			return new Date(nextMonthWithFirstDay).toISOString();
-		}
 	}
 }, 'transactions');
 
 onRecordAfterCreateRequest((e) => {
-	const oldMonth = isNotCurrentMonth(e.record.created);
+	const utils = require(`${__hooks}/utils.js`);
+
+	const oldMonth = utils.isNotCurrentMonth(e.record.created);
+
 	if (oldMonth) {
 		updateCdTransaction();
 	}
@@ -204,28 +193,5 @@ onRecordAfterCreateRequest((e) => {
 
 			$app.dao().saveRecord(cd);
 		});
-	}
-
-	function isNotCurrentMonth(dateTime) {
-		const dateString = JSON.stringify(dateTime);
-		const dateTimeParts = dateString.replace('"', '').split(' ');
-		const parts = dateTimeParts[0].split('-');
-
-		var month = parts[1];
-		var year = parts[0];
-		var currentdate = new Date();
-		var cur_month = currentdate.getMonth() + 1;
-		var cur_year = currentdate.getFullYear();
-
-		if (cur_month == month && year == cur_year) {
-			return false;
-		} else {
-			const extra = dateString.replace('"', '').split('.');
-			const jsDate = new Date(extra[0]);
-			const nextMonth = jsDate.setMonth(jsDate.getMonth() + 1);
-			const nextMonthWithFirstDay = new Date(nextMonth).setDate(1);
-
-			return new Date(nextMonthWithFirstDay).toISOString();
-		}
 	}
 }, 'transactions');

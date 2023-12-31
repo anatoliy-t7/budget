@@ -6,20 +6,47 @@
 	export let loading = false;
 	export let disabled = false;
 	export let type: 'button' | 'submit' | 'reset' | null | undefined = 'button';
-	export let small = false;
 
-	export let theme = 'default';
-	let classes =
-		'text-white bg-green-700 border-green-700 hover:bg-green-800 focus:outline-none ring-green-200 focus:ring-green-200';
+	export let size = 'md';
+	let sizeClass = 'px-4 py-3 text-base';
 
-	switch (theme) {
-		case 'secondary':
-			classes =
-				'bg-amber-200 hover:bg-amber-400 focus:outline-none ring-amber-200 focus:ring-amber-200 text-gray-700 border-amber-200 hover:border-amber-400';
+	switch (size) {
+		case 'xs':
+			sizeClass = 'px-2 py-1 text-xs';
 			break;
-		case 'empty':
-			classes =
-				'bg-gray-50 hover:bg-gray-100 focus:bg-gray-100 border-gray-300 focus:border-gray-300 ring-gray-200 focus:ring-gray-200';
+		case 'sm':
+			sizeClass = 'px-3 py-2 text-sm';
+			break;
+		case 'md':
+			sizeClass = 'px-4 py-3 text-base';
+			break;
+		case 'lg':
+			sizeClass = 'px-5 py-4 text-lg';
+			break;
+		default:
+			break;
+	}
+
+	export let color = 'green';
+	let colorClass =
+		'text-white bg-green-700 border-green-700 hover:bg-green-800 ring-green-200 focus:ring-green-200';
+
+	switch (color) {
+		case 'amber':
+			colorClass =
+				'bg-amber-400 hover:bg-amber-500 ring-amber-200 focus:ring-amber-200 text-gray-800 border-amber-400 hover:border-amber-500';
+			break;
+		case 'green':
+			colorClass =
+				'text-white bg-green-700 border-green-700 hover:bg-green-800 ring-green-200 focus:ring-green-200';
+			break;
+		case 'outline':
+			colorClass =
+				'bg-white hover:bg-gray-100 focus:bg-gray-100 border-gray-300 focus:border-gray-300 ring-gray-200 focus:ring-gray-200';
+			break;
+		case 'blue':
+			colorClass =
+				'bg-sky-500 hover:bg-sky-400 ring-sky-200 focus:ring-sky-200 text-gray-700 border-sky-500 hover:border-sky-400 text-white';
 			break;
 		default:
 			break;
@@ -32,15 +59,15 @@
 	on:mouseover
 	on:mouseenter
 	on:mouseleave
-	type="{type}"
-	disabled="{disabled}"
+	type={type}
+	disabled={disabled}
 	class="
+		{sizeClass}
+		{colorClass}
         {className}
-        {classes}
         {disabled && !loading && 'cursor-not-allowed'}
         {loading && 'cursor-wait'}
-		{small ? 'px-3 py-2' : 'px-4 py-3'}
-        inline-flex w-full select-none items-center justify-center gap-2 rounded-lg border font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-300 disabled:bg-gray-300">
+        inline-flex select-none items-center justify-center gap-2 rounded-lg border font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-300 disabled:bg-gray-300">
 	{#if loading}
 		<Loader class="animate-spin" />
 	{/if}

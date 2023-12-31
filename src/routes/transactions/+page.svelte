@@ -1,47 +1,93 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getTransactions, transactions, loading } from '$lib/stores/transactions';
+	import toast from 'svelte-french-toast';
+	import {
+		getTransactions,
+		transactions,
+		transaction,
+		drawerIsOpen,
+		loading,
+		transactionType,
+		transfer,
+		selectedCategory,
+	} from '$lib/stores/transactions';
+	import { pb } from '$lib/stores/pocketbase';
+	import { categories } from '$lib/stores/main';
 	import dayjs from 'dayjs';
 
+	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
+	import Pencil from '~icons/tabler/pencil';
 	import Loader from '$lib/components/ui/loader.svelte';
 	import Table from '$lib/components/ui/table.svelte';
+	import TransactionType from '$lib/components/ui/transaction-type.svelte';
 	import Paginator from '$lib/components/ui/paginator.svelte';
 	import TypeToggle from '$lib/components/ui/type-toggle.svelte';
 
-	const tableHead = ['Date', 'Type', 'Amount', 'Account', 'Category', 'User', ''];
+	const tableHead = ['Date', 'Type', 'Amount', 'Account', 'Category', 'User', 'Note', ''];
+	const coll = pb.collection('transactions');
 
 	$: page = $transactions?.page || 1;
 
-	let type: string = '';
-	let transfer: string = '~';
-
 	async function changedType(value: string) {
 		if (!value) {
-			transfer = '~';
+			$transfer = '~';
 		}
 
 		if (value === 'transfer') {
-			transfer = '!=';
+			$transfer = '!=';
 			value = '';
 		}
 
 		if (value === 'expenses' || value === 'income') {
-			transfer = '=';
+			$transfer = '=';
 		}
 
-		type = value;
+		$transactionType = value;
+
 		page = 1;
 
-		await getTransactions(page, value, transfer);
+		await getTransactions(page);
 	}
 
 	async function changePage(nextPage: any) {
 		page = nextPage;
-		await getTransactions(page, type, transfer);
+		await getTransactions(page);
+	}
+
+	async function onOpenEdit(item: any) {
+		$transaction = {
+			id: item.id,
+			amount: item.amount,
+			account: item.account,
+			type: item.type,
+			note: item.note,
+			transfer: item.transfer,
+			category: item.category,
+			budget: item.budget,
+			user: item.user,
+			created: item.created,
+		};
+
+		$selectedCategory = $categories?.find((c) => c.id === $transaction.category);
+		$drawerIsOpen = true;
+	}
+
+	function canEdit(created: string) {
+		return dayjs().isSame(created, 'month');
+	}
+
+	async function onDelete(item: any) {
+		if (confirm(`Do you confirm to delete the "${item.type}" transaction?`)) {
+			$loading = true;
+			await coll.delete(item.id);
+			toast.success(`${item.type} was deleted`);
+
+			$loading = false;
+		}
 	}
 
 	onMount(async () => {
-		await getTransactions(page, type);
+		await getTransactions(page);
 	});
 </script>
 
@@ -51,32 +97,50 @@
 
 <div class="space-y-4">
 	<div class="flex gap-4">
-		<TypeToggle on:changed="{(event) => changedType(event.detail)}" />
+		<TypeToggle on:changed={(event) => changedType(event.detail)} />
 	</div>
 
 	<div class="rounded-xl bg-white p-6">
 		{#if $loading == true}
 			<Loader />
 		{:else}
-			<Table head="{tableHead}">
+			<Table head={tableHead}>
 				{#if $transactions?.items?.length}
-					{#each $transactions?.items as transaction}
-						<tr>
+					{#each $transactions?.items as item}
+						<tr class="group">
 							<td>
-								{dayjs(transaction?.created).format('D MMM YYYY')}
-							</td>
-							<td class="capitalize">
-								{transaction?.type}
+								{dayjs(item.created).format('D MMM YYYY')}
 							</td>
 							<td>
-								{transaction?.expand?.account?.currency}
-								{transaction?.amount}
+								<TransactionType type={item.type} />
 							</td>
-							<td>{transaction?.expand?.account?.name}</td>
-							<td>{transaction?.expand?.category?.name}</td>
-							<td>{transaction?.expand?.user?.email}</td>
 							<td>
-								<div class="flex items-center justify-end gap-2"></div>
+								{item.expand.account.currency}
+								{item.amount}
+							</td>
+							<td>{item.expand.account.name}</td>
+							<td>{item.expand.category.name}</td>
+							<td>{item.expand.user.email}</td>
+							<td>
+								<div class="w-full max-w-52 truncate">
+									{item.note}
+								</div>
+							</td>
+							<td class="w-32">
+								<div class="hidden w-full items-center justify-end gap-2 group-hover:flex">
+									{#if canEdit(item.created)}
+										<button on:click={() => onOpenEdit(item)} class="click hover:text-sky-500">
+											<Pencil class="h-6 w-6" />
+										</button>
+									{/if}
+
+									<button
+										disabled={$loading}
+										on:click={() => onDelete(item)}
+										class="click hover text-red-500 disabled:cursor-not-allowed disabled:opacity-50">
+										<Trash class=" h-6 w-6" />
+									</button>
+								</div>
 							</td>
 						</tr>
 					{/each}
@@ -84,7 +148,7 @@
 			</Table>
 
 			{#if $transactions?.items?.length}
-				<Paginator data="{$transactions}" on:onPageChange="{(event) => changePage(event.detail)}" />
+				<Paginator data={$transactions} on:onPageChange={(event) => changePage(event.detail)} />
 			{/if}
 		{/if}
 	</div>
