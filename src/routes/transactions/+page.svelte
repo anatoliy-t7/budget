@@ -10,6 +10,8 @@
 		transactionType,
 		transfer,
 		selectedCategory,
+		tags,
+		filterTag,
 	} from '$lib/stores/transactions';
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories } from '$lib/stores/main';
@@ -86,6 +88,11 @@
 		}
 	}
 
+	async function filterByTag(tag: string) {
+		$filterTag = $filterTag === tag ? '' : tag;
+		await getTransactions(page);
+	}
+
 	onMount(async () => {
 		await getTransactions(page);
 	});
@@ -100,27 +107,40 @@
 		<TypeToggle on:changed={(event) => changedType(event.detail)} />
 	</div>
 
+	{#if $tags.length > 0}
+		<div class="flex items-center gap-2 text-sm font-medium">
+			<div class="text-gray-500">Tags:</div>
+			{#each $tags as tag}
+				<button
+					on:click={() => filterByTag(tag)}
+					class="{$filterTag === tag ? 'bg-amber-400' : 'bg-white'} rounded-full px-3 py-1">
+					{tag?.replace('#', '')}
+				</button>
+			{/each}
+		</div>
+	{/if}
+
 	<div class="rounded-xl bg-white p-6">
-		{#if $loading == true}
+		{#if $loading}
 			<Loader />
 		{:else}
 			<Table head={tableHead}>
-				{#if $transactions?.items?.length}
+				{#if $transactions?.items?.length > 0}
 					{#each $transactions?.items as item}
 						<tr class="group">
 							<td>
-								{dayjs(item.created).format('D MMM YYYY')}
+								{dayjs(item?.created).format('D MMM YYYY')}
 							</td>
 							<td>
-								<TransactionType type={item.type} />
+								<TransactionType type={item?.type} />
 							</td>
 							<td>
-								{item.expand.account.currency}
-								{item.amount}
+								{item?.expand?.account?.currency}
+								{item?.amount}
 							</td>
-							<td>{item.expand.account.name}</td>
-							<td>{item.expand.category.name}</td>
-							<td>{item.expand.user.email}</td>
+							<td>{item?.expand?.account?.name}</td>
+							<td>{item?.expand?.category?.name}</td>
+							<td>{item?.expand?.user?.email}</td>
 							<td>
 								<div class="w-full max-w-52 truncate">
 									{item.note}
@@ -128,7 +148,7 @@
 							</td>
 							<td class="w-32">
 								<div class="hidden w-full items-center justify-end gap-2 group-hover:flex">
-									{#if canEdit(item.created)}
+									{#if canEdit(item?.created)}
 										<button on:click={() => onOpenEdit(item)} class="click hover:text-sky-500">
 											<Pencil class="h-6 w-6" />
 										</button>

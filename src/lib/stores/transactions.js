@@ -18,6 +18,8 @@ export const list = writable(null);
 export const loading = writable(false);
 export const drawerIsOpen = writable(false);
 export const selectedCategory = writable({});
+export const tags = writable([]);
+export const filterTag = writable('');
 export const transaction = writable({
 	id: null,
 	amount: null,
@@ -58,13 +60,14 @@ export async function getTransactions(page = 1) {
 	const coll = pb.collection('transactions');
 
 	await alertOnFailure(async () => {
-		const res = await coll.getList(page, 15, {
+		const res = await coll.getList(page, 12, {
 			filter: `type ?~ "${get(transactionType)}"
 			&& type != "cd"
 			&& transfer ${get(transfer)} ""
 			&& budget = "${pb.authStore.model?.currentBudget}"
 			&& created >= "${range?.start}"
-			&& created <= "${range?.end}"`,
+			&& created <= "${range?.end}"
+			&& note ~ "${get(filterTag)}"`,
 			sort: '-created',
 			expand: 'category,account,user',
 			fields:
@@ -75,6 +78,22 @@ export async function getTransactions(page = 1) {
 
 		if (res.items?.length) {
 			transactions.set(res);
+			await getTags();
 		}
 	});
+}
+
+export async function getTags() {
+	const res = await fetch(
+		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+		{
+			headers: {
+				Authorization: pb.authStore.token,
+			},
+		},
+	);
+
+	if (res.status == 200) {
+		tags.set(await res.json());
+	}
 }
