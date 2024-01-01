@@ -4,24 +4,19 @@ import { defineConfig } from 'vite';
 import Icons from 'unplugin-icons/vite'
 
 export default defineConfig({
-	server: {
-		fs: {
-			strict: true,
-		}
-	},
 	plugins: [
 		sveltekit(),
 		SvelteKitPWA({
 			srcDir: './src',
-			mode: 'development',
+			mode: 'production',
 			strategies: 'generateSW',
 			filename: undefined,
 			scope: '/',
 			base: '/',
 			selfDestroying: false,
 			manifest: {
-				short_name: process.env.VITE_APP_NAME,
-				name: process.env.VITE_APP_NAME,
+				short_name: 'Budget',
+				name: 'Budget',
 				start_url: '/',
 				scope: '/',
 				display: 'standalone',
@@ -40,12 +35,8 @@ export default defineConfig({
 					},
 				],
 			},
-			injectManifest: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
-			},
-			workbox: {
-				globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,woff,woff2}']
-			},
+			injectManifest: { globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,webmanifest}'] },
+			workbox: { globPatterns: ['client/**/*.{js,css,ico,png,svg,webp,webmanifest}'] },
 			devOptions: {
 				enabled: true,
 				suppressWarnings: process.env.SUPPRESS_WARNING === 'true',

@@ -45,7 +45,7 @@
 		</div>
 
 		<div class="flex w-80 min-w-[360px] flex-col justify-center space-y-8 rounded-lg bg-white p-6">
-			<h1 class="text-center text-2xl font-medium">
+			<div class="text-center text-2xl font-medium">
 				{#if authType === 'signup'}
 					Sign up for an Account
 				{/if}
@@ -59,7 +59,7 @@
 						instructions.
 					</p>
 				{/if}
-			</h1>
+			</div>
 			{#if authType !== 'reset'}
 				<form on:submit|preventDefault={submit} class="grid gap-5">
 					{#await coll.listAuthMethods({ $autoCancel: false }) then methods}
@@ -101,7 +101,6 @@
 							bind:value={email}
 							autocapitalize="off"
 							autocorrect="off"
-							autofocus
 							pattern="[^@]+@[^@]+.[a-zA-Z]"
 							required
 							type="email"

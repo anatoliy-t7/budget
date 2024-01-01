@@ -43,11 +43,11 @@ export function clickOutside(
 }
 
 export function moneyFormat(value: number, currency: string = 'USD') {
-    return new Intl.NumberFormat('en-US', {
+    return !Number.isNaN(value) ? new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: currency,
         minimumFractionDigits: 0
-    }).format(value);
+    }).format(value) : 0;
 }
 
 export const preparePageTransition = () => {

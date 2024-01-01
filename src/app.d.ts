@@ -1,6 +1,8 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 import PocketBase from 'pocketbase';
+import 'vite-plugin-pwa/svelte';
+import 'vite-plugin-pwa/info';
 
 declare global {
 	namespace App {

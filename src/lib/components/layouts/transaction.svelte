@@ -226,7 +226,7 @@
 		</div>
 
 		<div class="pt-4">
-			<Button loading={$loading} disabled={disabled} type="submit">
+			<Button loading={$loading} disabled={disabled} type="submit" class="w-full">
 				{$transaction.id ? 'Update' : 'Add'}
 			</Button>
 		</div>

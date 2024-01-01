@@ -21,8 +21,11 @@
 		<MonthRange />
 	</div>
 
-	<div class="flex items-center justify-end">
-		<button on:click="{() => pb.authStore.clear()}" title="Log out" class="hover">
+	<div class="flex w-full items-center justify-end gap-6">
+		<div>
+			{pb.authStore.model?.name}
+		</div>
+		<button on:click={() => pb.authStore.clear()} title="Log out" class="hover">
 			<LogOut class="h-7 w-7" />
 		</button>
 	</div>

@@ -96,7 +96,13 @@
 	}
 
 	async function onCloseMonth() {
-		if (confirm(`Do you confirm to close ${dayjs($monthRange.start).format('MMMM')} month?`)) {
+		if (
+			confirm(
+				`Do you confirm to close ${dayjs($monthRange.start).format(
+					'MMMM',
+				)} month? \nYou can't edit transactions of the month.`,
+			)
+		) {
 			$loading = true;
 
 			await alertOnFailure(async () => {

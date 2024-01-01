@@ -71,7 +71,7 @@
 	}
 </script>
 
-<div class="gap-4 rounded-xl bg-white pt-6">
+<div class="rounded-xl gap-4 pt-6 bg-white">
 	<div>
 		<div class="flex items-center justify-between gap-6 px-6 pb-4">
 			<div class="text-lg font-medium">Accounts</div>
@@ -85,7 +85,7 @@
 				<div class="col-span-6">Currency</div>
 			</div>
 			{#if $accounts?.length}
-				<div class="scrollbar max-h-96 w-full overflow-y-auto pb-6">
+				<div class="scrollbar max-h-96 w-full pb-6 overflow-y-auto">
 					{#each $accounts as item}
 						<div class="group grid grid-cols-12 gap-6 px-6 py-1.5 hover:bg-gray-100">
 							<div class="col-span-6 capitalize">
@@ -94,18 +94,18 @@
 							<div class="col-span-4 capitalize">
 								{item.currency}
 							</div>
-							<div class="col-span-2 flex justify-end">
+							<div class="flex justify-end col-span-2">
 								<button
 									on:click={() => onOpenEdit(item)}
-									class="click hidden hover:text-sky-500 group-hover:flex">
-									<Pencil class="h-6 w-6" />
+									class="click hover:text-sky-500 group-hover:flex hidden">
+									<Pencil class="w-6 h-6" />
 								</button>
 							</div>
 						</div>
 					{/each}
 				</div>
 			{:else}
-				empty
+				<div class="flex items-center justify-center py-4">You don't have any account</div>
 			{/if}
 		</div>
 	</div>
@@ -117,7 +117,7 @@
 
 				{#if account.id}
 					<button on:click={onDelete} class="click hover text-red-500">
-						<Trash class=" h-6 w-6" />
+						<Trash class=" w-6 h-6" />
 					</button>
 				{/if}
 			</div>
@@ -144,7 +144,7 @@
 				</div>
 
 				<div class="pt-6">
-					<Button loading={$loading} disabled={disabled} type="submit">
+					<Button loading={$loading} disabled={disabled} type="submit" class="w-full">
 						{#if account.id}
 							Update
 						{:else}
