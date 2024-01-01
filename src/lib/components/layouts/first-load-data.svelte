@@ -17,7 +17,9 @@
 				await getOverview();
 				await getTransactions();
 			},
-			{ filter: 'type != "cd"' },
+			{
+				filter: "type != 'closed' && type != 'opened'",
+			},
 		);
 	} else {
 		coll.unsubscribe();

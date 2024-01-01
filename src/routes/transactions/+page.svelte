@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
 	import {
@@ -12,6 +13,9 @@
 		selectedCategory,
 		tags,
 		filterTag,
+		monthRange,
+		monthIsClosed,
+		getTypeClosedTransactions,
 	} from '$lib/stores/transactions';
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories } from '$lib/stores/main';
@@ -24,6 +28,8 @@
 	import TransactionType from '$lib/components/ui/transaction-type.svelte';
 	import Paginator from '$lib/components/ui/paginator.svelte';
 	import TypeToggle from '$lib/components/ui/type-toggle.svelte';
+	import Button from '$lib/components/ui/button.svelte';
+	import { alertOnFailure } from '$lib/utils';
 
 	const tableHead = ['Date', 'Type', 'Amount', 'Account', 'Category', 'User', 'Note', ''];
 	const coll = pb.collection('transactions');
@@ -74,10 +80,6 @@
 		$drawerIsOpen = true;
 	}
 
-	function canEdit(created: string) {
-		return dayjs().isSame(created, 'month');
-	}
-
 	async function onDelete(item: any) {
 		if (confirm(`Do you confirm to delete the "${item.type}" transaction?`)) {
 			$loading = true;
@@ -93,6 +95,33 @@
 		await getTransactions(page);
 	}
 
+	async function onCloseMonth() {
+		if (confirm(`Do you confirm to close ${dayjs($monthRange.start).format('MMMM')} month?`)) {
+			$loading = true;
+
+			await alertOnFailure(async () => {
+				const res = await fetch(
+					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.currentBudget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
+					{
+						headers: {
+							Authorization: pb.authStore.token,
+						},
+					},
+				);
+
+				if (res.status == 200) {
+					toast.success(`${dayjs($monthRange.start).format('MMMM')} was closed`);
+				} else {
+					toast.error(`${dayjs($monthRange.start).format('MMMM')} was NOT closed`);
+				}
+
+				await getTypeClosedTransactions();
+
+				$loading = false;
+			});
+		}
+	}
+
 	onMount(async () => {
 		await getTransactions(page);
 	});
@@ -103,8 +132,16 @@
 </svelte:head>
 
 <div class="space-y-4">
-	<div class="flex gap-4">
-		<TypeToggle on:changed={(event) => changedType(event.detail)} />
+	<div class="flex justify-between gap-6">
+		<div class="flex gap-4">
+			<TypeToggle on:changed={(event) => changedType(event.detail)} />
+		</div>
+
+		{#if !$monthIsClosed && dayjs($monthRange.start).isSame($monthRange.end, 'month')}
+			<Button loading={$loading} on:click={onCloseMonth} color={'outline-green'} class="click">
+				Close {dayjs($monthRange.start).format('MMMM')}
+			</Button>
+		{/if}
 	</div>
 
 	{#if $tags.length > 0}
@@ -113,7 +150,9 @@
 			{#each $tags as tag}
 				<button
 					on:click={() => filterByTag(tag)}
-					class="{$filterTag === tag ? 'bg-amber-400' : 'bg-white'} rounded-full px-3 py-1">
+					class="{$filterTag === tag
+						? 'bg-amber-400'
+						: 'bg-white hover:bg-gray-200'} rounded-full px-3 py-1">
 					{tag?.replace('#', '')}
 				</button>
 			{/each}
@@ -126,7 +165,7 @@
 		{:else}
 			<Table head={tableHead}>
 				{#if $transactions?.items?.length > 0}
-					{#each $transactions?.items as item}
+					{#each $transactions?.items?.filter((t) => t.type !== 'closed') as item}
 						<tr class="group">
 							<td>
 								{dayjs(item?.created).format('D MMM YYYY')}
@@ -148,7 +187,7 @@
 							</td>
 							<td class="w-32">
 								<div class="hidden w-full items-center justify-end gap-2 group-hover:flex">
-									{#if canEdit(item?.created)}
+									{#if !$monthIsClosed}
 										<button on:click={() => onOpenEdit(item)} class="click hover:text-sky-500">
 											<Pencil class="h-6 w-6" />
 										</button>

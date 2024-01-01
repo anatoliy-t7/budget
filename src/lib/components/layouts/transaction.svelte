@@ -44,7 +44,7 @@
 
 	async function submit() {
 		$loading = true;
-		console.log('submit', $transaction);
+
 		if ($transaction.id) {
 			alertOnFailure(async () => {
 				await coll.update($transaction.id, $transaction);

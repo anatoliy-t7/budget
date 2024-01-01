@@ -51,7 +51,7 @@ routerAdd(
 					data.expenses = data.expenses + record.amount;
 				}
 
-				if (record.type == 'cd') {
+				if (record.type == 'opened') {
 					data.balance = data.balance + record.amount;
 				}
 			}
@@ -64,39 +64,35 @@ routerAdd(
 	$apis.requireRecordAuth('users'),
 );
 
-cronAdd('checkCDs', '0 0 1 * *', () => {
-	const today = new Date();
-	const startOf = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0, 0).toISOString();
-	const endOf = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59).toISOString();
+routerAdd(
+	'GET',
+	'/api/close-month',
+	(c) => {
+		const budgetId = c.queryParam('budgetId');
+		const startOf = c.queryParam('startOf');
+		const endOf = c.queryParam('endOf');
 
-	let accounts = $app.dao().findRecordsByExpr('accounts');
-	accounts = JSON.parse(JSON.stringify(accounts));
+		let accounts = $app.dao().findRecordsByFilter('accounts', `budget = "${budgetId}"`);
 
-	const prewMonthStart = new Date(startOf).setMonth(new Date(startOf).getMonth() - 1);
-	const prewMonthEnd = new Date(endOf).setMonth(new Date(endOf).getMonth() - 1);
-	const createdDate = new Date(startOf).setDate(2);
+		accounts = JSON.parse(JSON.stringify(accounts));
 
-	accounts.forEach((account) => {
-		let transactions = $app
-			.dao()
-			.findRecordsByFilter(
-				'transactions',
-				`account = "${account.id}" && created >= "${startOf}" && created <= "${endOf}"`,
-			);
-		transactions = JSON.parse(JSON.stringify(transactions));
+		let openedMonth = new Date(startOf);
+		openedMonth = new Date(openedMonth).setMonth(new Date(openedMonth).getMonth(openedMonth) + 1);
+		openedMonth = new Date(openedMonth).setDate(15);
+		openedMonth = new Date(openedMonth).toString();
 
-		const cd = transactions?.find((t) => t.type === 'cd');
+		let closedMonth = new Date(startOf).setDate(15);
+		closedMonth = new Date(closedMonth).toString();
 
-		if (!cd) {
-			let prewMonthTransactions = $app
+		accounts.forEach((account) => {
+			let transactions = $app
 				.dao()
 				.findRecordsByFilter(
 					'transactions',
-					`account = "${account.id}" && created >= "${new Date(
-						prewMonthStart,
-					).toISOString()}" && created <= "${new Date(prewMonthEnd).toISOString()}"`,
+					`account = "${account.id}" && created >= "${startOf}" && created <= "${endOf}"`,
 				);
-			prewMonthTransactions = JSON.parse(JSON.stringify(prewMonthTransactions));
+
+			transactions = JSON.parse(JSON.stringify(transactions));
 
 			const accountData = {
 				income: 0,
@@ -104,35 +100,47 @@ cronAdd('checkCDs', '0 0 1 * *', () => {
 				balance: 0,
 			};
 
-			prewMonthTransactions?.forEach((record) => {
+			transactions?.forEach((record) => {
 				if (record.type === 'income') {
-					accountData.income = accountData.income + record.amount;
+					accountData.income += record.amount;
 				}
 				if (record.type === 'expenses') {
-					accountData.expenses = accountData.expenses + record.amount;
+					accountData.expenses += record.amount;
 				}
-				if (record.type === 'cd') {
-					accountData.balance = accountData.balance + record.amount;
+				if (record.type === 'opened') {
+					accountData.balance += record.amount;
 				}
 			});
 
 			const total = accountData.balance + accountData.income - accountData.expenses;
 
 			const collection = $app.dao().findCollectionByNameOrId('transactions');
-			const newTransaction = new Record(collection, {
+
+			const transactionObject = {
 				amount: total,
 				account: account.id,
-				type: 'cd',
+				type: 'closed',
 				transfer: null,
 				category: null,
 				budget: account.budget,
 				user: null,
-				created: new Date(createdDate).toISOString(),
-			});
-			$app.dao().saveRecord(newTransaction);
-		}
-	});
-});
+				created: new Date(closedMonth).toISOString(),
+			};
+
+			const closedTransaction = new Record(collection, transactionObject);
+			$app.dao().saveRecord(closedTransaction);
+
+			transactionObject.type = 'opened';
+			transactionObject.created = new Date(openedMonth).toISOString();
+
+			const openedTransaction = new Record(collection, transactionObject);
+			$app.dao().saveRecord(openedTransaction);
+		});
+
+		return c.json(200, { success: true });
+	},
+	$apis.requireRecordAuth('users'),
+);
 
 onRecordAfterDeleteRequest((e) => {
 	const utils = require(`${__hooks}/utils.js`);
@@ -148,19 +156,19 @@ onRecordAfterDeleteRequest((e) => {
 			'transactions',
 			`account = "${e.record.getString('account')}" && created >= "${oldMonth}" &&
                 created <= "${new Date().toISOString()}" &&
-            type = "cd"`,
+            type = "opened"`,
 		);
 
-		transactions.forEach((cd) => {
+		transactions.forEach((opened) => {
 			if (e.record.getString('type') == 'expenses') {
-				cd.set('amount', cd.getInt('amount') + e.record.getInt('amount'));
+				opened.set('amount', opened.getInt('amount') + e.record.getInt('amount'));
 			}
 
 			if (e.record.getString('type') == 'income') {
-				cd.set('amount', cd.getInt('amount') - e.record.getInt('amount'));
+				opened.set('amount', opened.getInt('amount') - e.record.getInt('amount'));
 			}
 
-			$app.dao().saveRecord(cd);
+			$app.dao().saveRecord(opened);
 		});
 	}
 }, 'transactions');
@@ -179,19 +187,19 @@ onRecordAfterCreateRequest((e) => {
 			'transactions',
 			`account = "${e.record.getString('account')}" && created >= "${oldMonth}" &&
                 created <= "${new Date().toISOString()}" &&
-            type = "cd"`,
+            type = "opened"`,
 		);
 
-		transactions.forEach((cd) => {
+		transactions.forEach((opened) => {
 			if (e.record.getString('type') == 'expenses') {
-				cd.set('amount', cd.getInt('amount') - e.record.getInt('amount'));
+				opened.set('amount', opened.getInt('amount') - e.record.getInt('amount'));
 			}
 
 			if (e.record.getString('type') == 'income') {
-				cd.set('amount', cd.getInt('amount') + e.record.getInt('amount'));
+				opened.set('amount', opened.getInt('amount') + e.record.getInt('amount'));
 			}
 
-			$app.dao().saveRecord(cd);
+			$app.dao().saveRecord(opened);
 		});
 	}
 }, 'transactions');

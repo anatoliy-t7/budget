@@ -44,6 +44,10 @@
 			colorClass =
 				'bg-white hover:bg-gray-100 focus:bg-gray-100 border-gray-300 focus:border-gray-300 ring-gray-200 focus:ring-gray-200';
 			break;
+		case 'outline-green':
+			colorClass =
+				'bg-white hover:bg-border-800 hover:bg-green-50 text-green-700 border-green-700 focus:ring-green-600';
+			break;
 		case 'blue':
 			colorClass =
 				'bg-sky-500 hover:bg-sky-400 ring-sky-200 focus:ring-sky-200 text-gray-700 border-sky-500 hover:border-sky-400 text-white';

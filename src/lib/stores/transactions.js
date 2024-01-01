@@ -20,6 +20,7 @@ export const drawerIsOpen = writable(false);
 export const selectedCategory = writable({});
 export const tags = writable([]);
 export const filterTag = writable('');
+export const monthIsClosed = writable(false);
 export const transaction = writable({
 	id: null,
 	amount: null,
@@ -57,12 +58,14 @@ export async function getOverview() {
 export async function getTransactions(page = 1) {
 	loading.set(true);
 
+	await getTypeClosedTransactions();
+
 	const coll = pb.collection('transactions');
 
 	await alertOnFailure(async () => {
 		const res = await coll.getList(page, 12, {
 			filter: `type ?~ "${get(transactionType)}"
-			&& type != "cd"
+			&& type != "opened"
 			&& transfer ${get(transfer)} ""
 			&& budget = "${pb.authStore.model?.currentBudget}"
 			&& created >= "${range?.start}"
@@ -76,11 +79,28 @@ export async function getTransactions(page = 1) {
 
 		loading.set(false);
 
-		if (res.items?.length) {
-			transactions.set(res);
-			await getTags();
-		}
+		transactions.set(res);
+
+		await getTags();
 	});
+}
+
+export async function getTypeClosedTransactions() {
+	const coll = pb.collection('transactions');
+
+	const res = await coll.getFullList({
+		filter: `type = "closed"
+			&& budget = "${pb.authStore.model?.currentBudget}"
+			&& created >= "${range?.start}"
+			&& created <= "${range?.end}"`,
+		fields: 'id',
+	});
+
+	if (res.length > 0) {
+		monthIsClosed.set(true);
+	} else {
+		monthIsClosed.set(false);
+	}
 }
 
 export async function getTags() {
