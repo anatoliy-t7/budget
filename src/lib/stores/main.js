@@ -11,6 +11,7 @@ export const budget = writable(null);
 export async function getCategories() {
 	const coll = pb.collection('categories');
 	const res = await coll.getFullList({
+		filter: `budget = "${pb.authStore.model?.budget}" || budget = ""`,
 		sort: '+name',
 		fields: 'id,name,icon,type,popular,budget',
 	});
@@ -20,6 +21,7 @@ export async function getCategories() {
 export async function getAccounts() {
 	const coll = pb.collection('accounts');
 	const res = await coll.getFullList({
+		filter: `budget = "${pb.authStore.model?.budget}"`,
 		sort: '-name',
 		fields: 'id,name,currency',
 	});
@@ -28,7 +30,7 @@ export async function getAccounts() {
 
 export async function getBudget() {
 	const coll = pb.collection('budgets');
-	const res = await coll.getOne(pb.authStore.model?.currentBudget, {
+	const res = await coll.getOne(pb.authStore.model?.budget, {
 		sort: '-name',
 		fields: 'id,name,defaultCurrency',
 	});

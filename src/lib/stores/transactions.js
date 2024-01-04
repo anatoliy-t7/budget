@@ -20,6 +20,7 @@ export const drawerIsOpen = writable(false);
 export const selectedCategory = writable({});
 export const tags = writable([]);
 export const filterTag = writable('');
+export const filterCategory = writable('');
 export const monthIsClosed = writable(false);
 export const transaction = writable({
 	id: null,
@@ -29,17 +30,22 @@ export const transaction = writable({
 	note: null,
 	transfer: null,
 	category: null,
-	budget: pb.authStore.model?.currentBudget,
+	budget: pb.authStore.model?.budget,
 	user: pb.authStore.model?.id,
 	created: dayjs().toISOString(),
+	files: null,
 });
 
 export async function getOverview() {
 	loading.set(true);
 
+	if (!pb.authStore.model?.budget) {
+		await pb.collection('users').authRefresh();
+	}
+
 	await alertOnFailure(async () => {
 		const res = await fetch(
-			`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${pb.authStore.model?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+			`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
 			{
 				headers: {
 					Authorization: pb.authStore.token,
@@ -67,10 +73,11 @@ export async function getTransactions(page = 1) {
 			filter: `type ?~ "${get(transactionType)}"
 			&& type != "opened"
 			&& transfer ${get(transfer)} ""
-			&& budget = "${pb.authStore.model?.currentBudget}"
+			&& budget = "${pb.authStore.model?.budget}"
 			&& created >= "${range?.start}"
 			&& created <= "${range?.end}"
-			&& note ~ "${get(filterTag)}"`,
+			&& note ~ "${get(filterTag)}"
+			&& category ~ "${get(filterCategory)}"`,
 			sort: '-created',
 			expand: 'category,account,user',
 			fields:
@@ -90,7 +97,7 @@ export async function getTypeClosedTransactions() {
 
 	const res = await coll.getFullList({
 		filter: `type = "closed"
-			&& budget = "${pb.authStore.model?.currentBudget}"
+			&& budget = "${pb.authStore.model?.budget}"
 			&& created >= "${range?.start}"
 			&& created <= "${range?.end}"`,
 		fields: 'id',
@@ -105,7 +112,7 @@ export async function getTypeClosedTransactions() {
 
 export async function getTags() {
 	const res = await fetch(
-		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
 		{
 			headers: {
 				Authorization: pb.authStore.token,

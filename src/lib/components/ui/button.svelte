@@ -8,7 +8,7 @@
 	export let type: 'button' | 'submit' | 'reset' | null | undefined = 'button';
 
 	export let size = 'md';
-	let sizeClass = 'px-4 py-3 text-base';
+	let sizeClass = 'px-4 py-2 text-base';
 
 	switch (size) {
 		case 'xs':
@@ -18,7 +18,7 @@
 			sizeClass = 'px-3 py-2 text-sm';
 			break;
 		case 'md':
-			sizeClass = 'px-4 py-3 text-base';
+			sizeClass = 'px-4 py-2 text-base';
 			break;
 		case 'lg':
 			sizeClass = 'px-5 py-4 text-lg';

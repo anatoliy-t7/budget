@@ -18,7 +18,7 @@
 		offlineReady.set(false);
 		needRefresh.set(false);
 	};
-	$: toast = $offlineReady || $needRefresh;
+	$: toast = $needRefresh;
 	$: webManifest = pwaInfo ? pwaInfo.webManifest.linkTag : '';
 </script>
 
@@ -29,11 +29,7 @@
 {#if toast}
 	<div class="pwa-toast" role="alert">
 		<div class="message">
-			{#if $offlineReady}
-				<span> App ready to work offline </span>
-			{:else}
-				<span> New content available, click on reload button to update. </span>
-			{/if}
+			<span> New content available, click on reload button to update. </span>
 		</div>
 		{#if $needRefresh}
 			<button on:click={() => updateServiceWorker(true)}> Reload </button>

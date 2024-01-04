@@ -21,7 +21,6 @@
 	}
 
 	async function onClose() {
-		open = false;
 		dispatch('close');
 	}
 

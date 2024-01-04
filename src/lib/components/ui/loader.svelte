@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Loader from '~icons/solar/refresh-linear';
 
-	let className = 'w-6 h-6 text-green-500';
+	let className = 'w-6 h-6 text-sky-500';
 	export { className as class };
 </script>
 

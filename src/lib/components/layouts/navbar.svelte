@@ -23,7 +23,7 @@
 
 	<div class="flex w-full items-center justify-end gap-6">
 		<div>
-			{pb.authStore.model?.name}
+			{pb.authStore.model?.name ? pb.authStore.model?.name : pb.authStore.model?.email}
 		</div>
 		<button on:click={() => pb.authStore.clear()} title="Log out" class="hover">
 			<LogOut class="h-7 w-7" />

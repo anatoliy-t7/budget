@@ -29,7 +29,7 @@
 		name: null,
 		icon: null,
 		type: 'expenses',
-		budget: $authModel?.currentBudget,
+		budget: $authModel?.budget,
 	};
 
 	$: disabled = !category?.name;
@@ -83,7 +83,7 @@
 	}
 </script>
 
-<div class="rounded-xl gap-4 pt-6 bg-white">
+<div class="gap-4 rounded-xl bg-white pt-6">
 	<div>
 		<div class="flex items-center justify-between gap-6 px-6 pb-4">
 			<div class="text-lg font-medium">Categories</div>
@@ -98,7 +98,7 @@
 				<div class="col-span-6">Type</div>
 			</div>
 			{#if $categories?.length}
-				<div class="scrollbar max-h-96 w-full pb-6 overflow-y-auto">
+				<div class="scrollbar max-h-96 w-full overflow-y-auto pb-6">
 					{#each $categories?.filter((c) => c.type !== 'transfer') as item}
 						<div class="group grid grid-cols-12 gap-6 px-6 py-1.5 hover:bg-gray-100">
 							<div class="col-span-6 capitalize">
@@ -107,11 +107,11 @@
 							<div class="col-span-4 capitalize">
 								{item.type}
 							</div>
-							<div class="flex justify-end col-span-2">
+							<div class="col-span-2 flex justify-end">
 								<button
 									on:click={() => onOpenEdit(item)}
-									class="click hover:text-sky-500 group-hover:flex hidden">
-									<Pencil class="w-6 h-6" />
+									class="click hidden hover:text-sky-500 group-hover:flex">
+									<Pencil class="h-6 w-6" />
 								</button>
 							</div>
 						</div>
@@ -130,7 +130,7 @@
 
 				{#if category.id}
 					<button on:click={onDelete} class="click hover text-red-500">
-						<Trash class=" w-6 h-6" />
+						<Trash class=" h-6 w-6" />
 					</button>
 				{/if}
 			</div>

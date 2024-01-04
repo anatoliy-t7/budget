@@ -13,6 +13,7 @@
 		selectedCategory,
 		tags,
 		filterTag,
+		filterCategory,
 		monthRange,
 		monthIsClosed,
 		getTypeClosedTransactions,
@@ -21,6 +22,7 @@
 	import { categories } from '$lib/stores/main';
 	import dayjs from 'dayjs';
 
+	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
 	import Pencil from '~icons/tabler/pencil';
 	import Loader from '$lib/components/ui/loader.svelte';
@@ -35,6 +37,9 @@
 	const coll = pb.collection('transactions');
 
 	$: page = $transactions?.page || 1;
+
+	// stop call api for first time
+	let stopIt = false;
 
 	async function changedType(value: string) {
 		if (!value) {
@@ -95,6 +100,15 @@
 		await getTransactions(page);
 	}
 
+	async function filterByCategory(category: any) {
+		if (stopIt && $filterCategory !== category?.id) {
+			$filterCategory = category ? category?.id : '';
+			await getTransactions(page);
+		}
+
+		stopIt = true;
+	}
+
 	async function onCloseMonth() {
 		if (
 			confirm(
@@ -107,7 +121,7 @@
 
 			await alertOnFailure(async () => {
 				const res = await fetch(
-					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.currentBudget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
+					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.budget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
 					{
 						headers: {
 							Authorization: pb.authStore.token,
@@ -128,6 +142,10 @@
 		}
 	}
 
+	function categoryFilter(item: any, keywords: any) {
+		return item;
+	}
+
 	onMount(async () => {
 		await getTransactions(page);
 	});
@@ -138,16 +156,37 @@
 </svelte:head>
 
 <div class="space-y-4">
-	<div class="flex justify-between gap-6">
-		<div class="flex gap-4">
-			<TypeToggle on:changed={(event) => changedType(event.detail)} />
+	<div class=" flex items-center justify-between gap-6 rounded-lg bg-white p-4">
+		<div class="flex items-center gap-4">
+			<div class="w-[320px]">
+				<TypeToggle on:changed={(event) => changedType(event.detail)} />
+			</div>
+
+			<div>
+				{#if $categories}
+					<Autocomplete
+						items={$categories}
+						onChange={(value) => filterByCategory(value)}
+						itemFilterFunction={categoryFilter}
+						labelFieldName="name"
+						valueFieldName="id"
+						matchAllKeywords={false}
+						sortByMatchedKeywords={true}
+						keywordsFieldName="name"
+						dropdownClassName="w-full"
+						placeholder="Filter by category"
+						showClear={true} />
+				{/if}
+			</div>
 		</div>
 
-		{#if !$monthIsClosed && dayjs($monthRange.start).isSame($monthRange.end, 'month')}
-			<Button loading={$loading} on:click={onCloseMonth} color={'outline-green'} class="click">
-				Close {dayjs($monthRange.start).format('MMMM')}
-			</Button>
-		{/if}
+		<div class="flex w-48 justify-end">
+			{#if !$monthIsClosed && dayjs($monthRange.start).isSame($monthRange.end, 'month')}
+				<Button loading={$loading} on:click={onCloseMonth} color={'outline-green'} class="click">
+					Close {dayjs($monthRange.start).format('MMMM')}
+				</Button>
+			{/if}
+		</div>
 	</div>
 
 	{#if $tags.length > 0}

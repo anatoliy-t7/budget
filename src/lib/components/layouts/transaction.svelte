@@ -13,6 +13,7 @@
 	import { categories, accounts, loading } from '$lib/stores/main';
 	import { drawerIsOpen, transaction, selectedCategory } from '$lib/stores/transactions';
 	import toast from 'svelte-french-toast';
+	import FileUploader from '../ui/file-uploader.svelte';
 
 	const coll = pb.collection('transactions');
 
@@ -86,12 +87,14 @@
 				toast.success(`${$transaction.type} was added`);
 
 				$loading = false;
-				await close();
+				await close(false);
 			});
 		}
 	}
 
-	async function close() {
+	async function close(needConfirm = true) {
+		if (needConfirm && !confirm(`Do you want to close it?`)) return;
+
 		$drawerIsOpen = false;
 		transferAmount = null;
 		$selectedCategory = {};
@@ -104,9 +107,10 @@
 			note: null,
 			transfer: null,
 			category: null,
-			budget: pb.authStore.model?.currentBudget,
+			budget: pb.authStore.model?.budget,
 			user: pb.authStore.model?.id,
 			created: dayjs().toISOString(),
+			files: null,
 		};
 	}
 
@@ -136,7 +140,7 @@
 </Button>
 
 <Drawer bind:open={$drawerIsOpen} on:close={close}>
-	<div class="pb-12 text-xl font-medium">Add transaction</div>
+	<div class="pb-6 text-xl font-medium">Add transaction</div>
 
 	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
 		<TypeSwitch selected={$transaction.type} on:changed={(event) => changedType(event.detail)} />
@@ -201,7 +205,7 @@
 			{/if}
 		</div>
 
-		<div class="block space-y-1 font-medium">
+		<div class="space-y-1 font-medium">
 			<div class="text-sm">Category</div>
 
 			<Autocomplete
@@ -218,11 +222,17 @@
 				required={true} />
 		</div>
 
-		<div class="blockx w-full space-y-1 pt-2 font-medium">
+		<div class="w-full space-y-1 font-medium">
 			<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
 			<div class="">
 				<input bind:value={$transaction.note} type="text" />
 			</div>
+		</div>
+
+		<div class="w-full space-y-1 font-medium">
+			<span class="text-sm">
+				Files <span class="font-normal text-gray-400">(optional)</span> max 5</span>
+			<FileUploader bind:id={$transaction.files} />
 		</div>
 
 		<div class="pt-4">

@@ -38,6 +38,6 @@
 	});
 </script>
 
-{#await import('$lib/components/layouts/reload-prompt.svelte') then { default: ReloadPrompt }}
+<!-- {#await import('$lib/components/layouts/reload-prompt.svelte') then { default: ReloadPrompt }}
 	<ReloadPrompt />
-{/await}
+{/await} -->

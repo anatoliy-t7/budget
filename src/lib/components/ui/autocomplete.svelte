@@ -1294,7 +1294,8 @@
 		width: 100%;
 		position: relative;
 		vertical-align: top;
-		height: 2.25em;
+		height: 46px;
+		z-index: 20;
 	}
 
 	.autocomplete:not(.hide-arrow):not(.is-loading)::after {
@@ -1307,7 +1308,7 @@
 		margin-top: -0.4375em;
 		pointer-events: none;
 		position: absolute;
-		top: 65%;
+		top: 50%;
 		-webkit-transform: rotate(-45deg);
 		transform: rotate(-45deg);
 		-webkit-transform-origin: center;
@@ -1315,7 +1316,7 @@
 		width: 0.625em;
 		border-color: #a1a1aa;
 		right: 1.125em;
-		z-index: 4;
+		z-index: 20;
 	}
 
 	.autocomplete.show-clear:not(.hide-arrow)::after {
@@ -1374,10 +1375,8 @@
 		right: 0.1em;
 		padding: 0.3em 0.6em;
 		top: 50%;
-		-webkit-transform: translateY(-50%);
-		-ms-transform: translateY(-50%);
 		transform: translateY(-50%);
-		z-index: 4;
+		z-index: 20;
 	}
 
 	.autocomplete:not(.show-clear) .autocomplete-clear-button {
