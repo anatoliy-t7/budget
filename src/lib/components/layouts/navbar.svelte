@@ -4,7 +4,7 @@
 	import Logo from '$lib/components/ui/logo.svelte';
 
 	import MonthRange from '$lib/components/ui/month-range.svelte';
-	import Transaction from '$lib/components/layouts/transaction.svelte';
+	import Transaction from '$lib/components/layouts/transaction-edit.svelte';
 </script>
 
 <div

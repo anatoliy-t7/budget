@@ -47,6 +47,7 @@
   "type": "module",
   "dependencies": {
     "@iconify-json/tabler": "^1.1.102",
+    "bigpicture": "^2.6.2",
     "compressorjs": "^1.2.1",
     "svelte-headlessui": "^0.0.32"
   }

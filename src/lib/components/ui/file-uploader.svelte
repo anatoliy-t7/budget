@@ -1,22 +1,25 @@
 <script lang="ts">
-	import Compressor from 'compressorjs';
 	import AddFile from '~icons/solar/camera-add-linear';
 	import X from '~icons/solar/close-circle-linear';
-	import { pb } from '$lib/stores/pocketbase';
-	import { alertOnFailure } from '$lib/utils';
-	import toast from 'svelte-french-toast';
-	import { onMount } from 'svelte';
 	import Loader from './loader.svelte';
+
+	import Compressor from 'compressorjs';
+	import { onMount } from 'svelte';
+	import { pb } from '$lib/stores/pocketbase';
+	import { alertOnFailure, getPrivetImage } from '$lib/utils';
+	import toast from 'svelte-french-toast';
+
+	import { fileToken } from '$lib/stores/main';
 
 	export let id: string | null = null;
 
 	let files: FileList;
 	let loading = false;
 
-	$: uploadedFiles = null;
+	let recordFiles: any;
+	$: recordFiles = null;
 
 	const coll = pb.collection('files');
-	let fileToken = '';
 
 	async function compressImage(e: Event) {
 		const filesFromElement = (e.target as HTMLInputElement).files;
@@ -71,10 +74,10 @@
 
 		alertOnFailure(async () => {
 			if (id) {
-				uploadedFiles = await coll.update(id, formData);
+				recordFiles = await coll.update(id, formData);
 			} else {
-				uploadedFiles = await coll.create(formData);
-				id = uploadedFiles.id;
+				recordFiles = await coll.create(formData);
+				id = recordFiles.id;
 			}
 
 			loading = false;
@@ -94,21 +97,23 @@
 	}
 
 	async function removeItemFromArray(value: string) {
-		const fileArray = uploadedFiles?.files;
+		const fileArray = recordFiles?.files;
 		var index = fileArray?.indexOf(value);
 		if (index > -1) {
 			fileArray?.splice(index, 1);
 		}
 
-		uploadedFiles.files = fileArray;
-	}
-
-	async function getUrl(file: any) {
-		return pb.files.getUrl(uploadedFiles, file, { token: fileToken, thumb: '64x64' });
+		recordFiles.files = fileArray;
 	}
 
 	onMount(async () => {
-		fileToken = await pb.files.getToken();
+		if (!$fileToken) {
+			$fileToken = await pb.files.getToken();
+		}
+
+		if (id) {
+			recordFiles = await coll.getOne(id);
+		}
 	});
 </script>
 
@@ -137,15 +142,15 @@
 			on:change={compressImage} />
 	</div>
 
-	{#if uploadedFiles?.files?.length}
-		{#each uploadedFiles.files as file}
+	{#if recordFiles?.files?.length}
+		{#each recordFiles.files as file}
 			<div
 				class="group relative z-10 inline-flex h-16 w-16 items-center justify-center rounded-lg border border-gray-400 bg-white text-gray-400">
-				{#await getUrl(file) then src}
+				{#await getPrivetImage(recordFiles, file) then src}
 					<img src={src} class="h-16 w-16 rounded-lg object-cover" alt={file} />
 				{/await}
 
-				<div class="absolute inset-x-0 -top-6 z-10 hidden justify-center group-hover:flex">
+				<div class="absolute inset-x-0 -top-4 z-10 hidden justify-center group-hover:flex">
 					<button
 						on:click={() => onDelete(file)}
 						type="button"

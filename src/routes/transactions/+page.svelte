@@ -1,12 +1,22 @@
 <script lang="ts">
+	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
+	import Loader from '$lib/components/ui/loader.svelte';
+	import Table from '$lib/components/ui/table.svelte';
+	import TransactionType from '$lib/components/ui/transaction-type.svelte';
+	import Paginator from '$lib/components/ui/paginator.svelte';
+	import TypeToggle from '$lib/components/ui/type-toggle.svelte';
+	import Button from '$lib/components/ui/button.svelte';
+	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
+
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
+	import { alertOnFailure, moneyFormat } from '$lib/utils';
 	import {
 		getTransactions,
 		transactions,
 		transaction,
-		drawerIsOpen,
+		openForView,
 		loading,
 		transactionType,
 		transfer,
@@ -17,24 +27,12 @@
 		monthRange,
 		monthIsClosed,
 		getTypeClosedTransactions,
+		reset,
 	} from '$lib/stores/transactions';
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories } from '$lib/stores/main';
 	import dayjs from 'dayjs';
-
-	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
-	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
-	import Pencil from '~icons/tabler/pencil';
-	import Loader from '$lib/components/ui/loader.svelte';
-	import Table from '$lib/components/ui/table.svelte';
-	import TransactionType from '$lib/components/ui/transaction-type.svelte';
-	import Paginator from '$lib/components/ui/paginator.svelte';
-	import TypeToggle from '$lib/components/ui/type-toggle.svelte';
-	import Button from '$lib/components/ui/button.svelte';
-	import { alertOnFailure } from '$lib/utils';
-
-	const tableHead = ['Date', 'Type', 'Amount', 'Account', 'Category', 'User', 'Note', ''];
-	const coll = pb.collection('transactions');
+	import Drawer from '$lib/components/ui/drawer.svelte';
 
 	$: page = $transactions?.page || 1;
 
@@ -67,32 +65,12 @@
 		await getTransactions(page);
 	}
 
-	async function onOpenEdit(item: any) {
-		$transaction = {
-			id: item.id,
-			amount: item.amount,
-			account: item.account,
-			type: item.type,
-			note: item.note,
-			transfer: item.transfer,
-			category: item.category,
-			budget: item.budget,
-			user: item.user,
-			created: item.created,
-		};
+	async function onOpenView(item: any) {
+		$transaction = item;
 
 		$selectedCategory = $categories?.find((c) => c.id === $transaction.category);
-		$drawerIsOpen = true;
-	}
 
-	async function onDelete(item: any) {
-		if (confirm(`Do you confirm to delete the "${item.type}" transaction?`)) {
-			$loading = true;
-			await coll.delete(item.id);
-			toast.success(`${item.type} was deleted`);
-
-			$loading = false;
-		}
+		$openForView = true;
 	}
 
 	async function filterByTag(tag: string) {
@@ -144,6 +122,11 @@
 
 	function categoryFilter(item: any, keywords: any) {
 		return item;
+	}
+
+	async function close() {
+		$openForView = false;
+		await reset();
 	}
 
 	onMount(async () => {
@@ -208,47 +191,41 @@
 		{#if $loading}
 			<Loader />
 		{:else}
-			<Table head={tableHead}>
-				{#if $transactions?.items?.length > 0}
-					{#each $transactions?.items?.filter((t) => t.type !== 'closed') as item}
-						<tr class="group">
-							<td>
-								{dayjs(item?.created).format('D MMM YYYY')}
-							</td>
-							<td>
-								<TransactionType type={item?.type} />
-							</td>
-							<td>
-								{item?.expand?.account?.currency}
-								{item?.amount}
-							</td>
-							<td>{item?.expand?.account?.name}</td>
-							<td>{item?.expand?.category?.name}</td>
-							<td>{item?.expand?.user?.email}</td>
-							<td>
-								<div class="w-full max-w-52 truncate">
-									{item.note}
-								</div>
-							</td>
-							<td class="w-32">
-								<div class="hidden w-full items-center justify-end gap-2 group-hover:flex">
-									{#if !$monthIsClosed}
-										<button on:click={() => onOpenEdit(item)} class="click hover:text-sky-500">
-											<Pencil class="h-6 w-6" />
-										</button>
-									{/if}
-
-									<button
-										disabled={$loading}
-										on:click={() => onDelete(item)}
-										class="click hover text-red-500 disabled:cursor-not-allowed disabled:opacity-50">
-										<Trash class=" h-6 w-6" />
-									</button>
-								</div>
-							</td>
-						</tr>
-					{/each}
-				{/if}
+			<Table>
+				<svelte:fragment slot="head">
+					<th> Date </th>
+					<th> Type </th>
+					<th class="text-right"> Amount </th>
+					<th> Account </th>
+					<th> Category </th>
+					<th> Files </th>
+					<th> Note </th>
+				</svelte:fragment>
+				<svelte:fragment slot="body">
+					{#if $transactions?.items?.length > 0}
+						{#each $transactions?.items?.filter((t) => t.type !== 'closed') as item}
+							<tr on:click={() => onOpenView(item)} class="cursor-pointer">
+								<td>
+									{dayjs(item?.created).format('D MMM YYYY')}
+								</td>
+								<td>
+									<TransactionType type={item?.type} />
+								</td>
+								<td class="text-right">
+									{moneyFormat(item.amount, item.expand?.account?.currency)}
+								</td>
+								<td>{item?.expand?.account?.name}</td>
+								<td>{item?.expand?.category?.name}</td>
+								<td>{item?.expand?.files?.files?.length || ''}</td>
+								<td>
+									<div class="w-full max-w-52 truncate">
+										{item.note}
+									</div>
+								</td>
+							</tr>
+						{/each}
+					{/if}
+				</svelte:fragment>
 			</Table>
 
 			{#if $transactions?.items?.length}
@@ -256,4 +233,10 @@
 			{/if}
 		{/if}
 	</div>
+
+	<Drawer bind:open={$openForView} on:close={close}>
+		{#if $transaction.id}
+			<TransactionView />
+		{/if}
+	</Drawer>
 </div>

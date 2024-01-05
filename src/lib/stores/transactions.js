@@ -16,7 +16,8 @@ export const types = readable(['expenses', 'income', 'transfer']);
 export const overview = writable(null);
 export const list = writable(null);
 export const loading = writable(false);
-export const drawerIsOpen = writable(false);
+export const openForEdit = writable(false);
+export const openForView = writable(false);
 export const selectedCategory = writable({});
 export const tags = writable([]);
 export const filterTag = writable('');
@@ -35,6 +36,24 @@ export const transaction = writable({
 	created: dayjs().toISOString(),
 	files: null,
 });
+
+export async function reset() {
+	transaction.set({
+		id: null,
+		amount: null,
+		account: null,
+		type: 'expenses',
+		note: null,
+		transfer: null,
+		category: null,
+		budget: pb.authStore.model?.budget,
+		user: pb.authStore.model?.id,
+		created: dayjs().toISOString(),
+		files: null,
+	});
+
+	selectedCategory.set({});
+}
 
 export async function getOverview() {
 	loading.set(true);
@@ -79,9 +98,9 @@ export async function getTransactions(page = 1) {
 			&& note ~ "${get(filterTag)}"
 			&& category ~ "${get(filterCategory)}"`,
 			sort: '-created',
-			expand: 'category,account,user',
+			expand: 'category,account,user,files',
 			fields:
-				'id,created,amount,type,note,transfer,category,user,budget,account,expand.category.name,expand.category.id,expand.account.name,expand.account.currency,expand.user.email',
+				'id,created,amount,type,note,transfer,category,user,budget,account,files,expand.category.name,expand.category.id,expand.account.name,expand.account.currency,expand.user.email,expand.user.name,expand.files.id,expand.files.files',
 		});
 
 		loading.set(false);

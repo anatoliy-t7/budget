@@ -1,8 +1,17 @@
 import toast from 'svelte-french-toast';
 import { onNavigate } from '$app/navigation';
+import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
+import { pb } from '$lib/stores/pocketbase';
+import { get } from 'svelte/store';
+import { fileToken } from '$lib/stores/main';
+import type { RecordModel } from 'pocketbase';
 
-export const getImageURL = (collectionId: string, recordId: string, fileName: string, size = '24x24') => {
-    return `http://localhost:8090/api/files/${collectionId}/${recordId}/${fileName}?thumb=${size}`;
+export const getImageURL = (collectionId: string, recordId: string, fileName: string, size = '64x64') => {
+    return `${PUBLIC_POCKETBASE_URL}/api/files/${collectionId}/${recordId}/${fileName}?thumb=${size}`;
+};
+
+export const getPrivetImage = async (record: RecordModel, fileName: string, size = '64x64') => {
+    return pb.files.getUrl(record, fileName, { token: get(fileToken), thumb: size });
 };
 
 // wrapper to execute a pocketbase pb request and generate alerts on failure
