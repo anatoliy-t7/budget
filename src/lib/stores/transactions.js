@@ -9,10 +9,10 @@ export const monthRange = writable({
 });
 const range = get(monthRange);
 
+export const types = readable(['expenses', 'income', 'transfer']);
 export const transactions = writable(null);
 export const transactionType = writable('');
 export const transfer = writable('~');
-export const types = readable(['expenses', 'income', 'transfer']);
 export const overview = writable(null);
 export const list = writable(null);
 export const loading = writable(false);
@@ -23,6 +23,20 @@ export const tags = writable([]);
 export const filterTag = writable('');
 export const filterCategory = writable('');
 export const monthIsClosed = writable(false);
+
+export async function resetAll() {
+	monthIsClosed.set(false);
+	filterCategory.set('');
+	filterTag.set('');
+	tags.set([]);
+	selectedCategory.set([]);
+	openForView.set(false);
+	openForEdit.set(false);
+	list.set(null);
+	overview.set(null);
+	transactionType.set('');
+	transactions.set(null);
+}
 export const transaction = writable({
 	id: null,
 	amount: null,

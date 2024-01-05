@@ -18,7 +18,7 @@
 	<button
 		on:click={() => (isExpanded = true)}
 		type="button"
-		class="block w-full cursor-pointer appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-left shadow-sm ring-sky-300 transition placeholder:text-gray-400 hover:border-sky-300 focus:outline-none">
+		class="block w-full cursor-pointer appearance-none rounded-lg border border-gray-400 bg-white px-3 py-2.5 text-left shadow-sm ring-sky-300 transition placeholder:text-gray-400 hover:border-sky-400 focus:outline-none">
 		<span class="block truncate">{selectedAccount?.name}</span>
 		<span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
 			<Selector class="h-5 w-5 text-gray-400" />

@@ -2,7 +2,7 @@
 	import Overview from '~icons/solar/graph-broken';
 	import Transactions from '~icons/solar/square-transfer-vertical-broken';
 	import Settings from '~icons/solar/settings-broken';
-
+	import Transaction from '$lib/components/layouts/transaction-edit.svelte';
 	import { page } from '$app/stores';
 
 	$: activeUrl = $page.url;
@@ -25,16 +25,20 @@
 	];
 </script>
 
-<div class="fixed left-0 top-0 z-10 flex h-full min-h-screen w-72 flex-col justify-between p-8">
-	<div class="space-y-1 pt-16 text-gray-700">
+<div class="fixed left-0 top-0 z-30 flex h-full min-h-screen w-72 flex-col justify-between p-8">
+	<div class="mt-2 space-y-1 pt-16 text-gray-700">
+		<div class="pb-7">
+			<Transaction />
+		</div>
+
 		{#each links as link, a}
 			<a
-				href="{link.url}"
+				href={link.url}
 				class="{activeUrl.pathname === link.url
 					? 'bg-sky-500 font-medium text-white'
 					: 'hover:bg-gray-200'} inline-flex w-full items-center gap-3 rounded-xl px-4 py-3 text-base">
 				{#if link.icon}
-					<svelte:component this="{link.icon}" class="h-6 w-6" />
+					<svelte:component this={link.icon} class="h-6 w-6" />
 				{/if}
 				{link.name}
 			</a>

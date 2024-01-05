@@ -37,10 +37,17 @@ export async function getBudget() {
 	budget.set(res);
 }
 
+export async function resetAll() {
+	budget.set(null);
+	categories.set(null);
+	accounts.set(null);
+	fileToken.set('');
+}
+
 /**
  * @param {string | URL | Request} url
  */
-export default function (url) {
+export async function fetch(url) {
 	const loading = writable(false);
 	const error = writable(false);
 	const data = writable({});

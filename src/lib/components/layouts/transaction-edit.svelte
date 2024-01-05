@@ -20,7 +20,7 @@
 	let transferAmount: number | null = null;
 	let disabledCategory = false;
 
-	$: disabled = !$transaction?.amount;
+	$: disabled = !$transaction?.amount || !$transaction?.category;
 
 	$: transactionAccount = $accounts?.find((a) => a.id == $transaction?.account);
 
@@ -121,10 +121,12 @@
 	}
 </script>
 
-<Button on:click={() => onOpen()} size={'sm'} color={'green'} class="w-full max-w-[164px] text-sm">
+<button
+	on:click={() => onOpen()}
+	class=" inline-flex w-full items-center gap-3 rounded-xl bg-green-700 px-4 py-3 text-left text-base font-medium text-white hover:bg-green-800">
 	<Plus class="h-6 w-6" />
 	Add transaction
-</Button>
+</button>
 
 <Drawer bind:open={$openForEdit} on:close={close}>
 	<div class="pb-6 text-xl font-medium">Add transaction</div>

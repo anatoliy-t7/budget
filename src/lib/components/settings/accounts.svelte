@@ -110,7 +110,7 @@
 		</div>
 	</div>
 
-	<Drawer bind:open={open}>
+	<Drawer bind:open={open} on:close={() => (open = false)}>
 		<div class="max-w-sm">
 			<div class="flex items-center justify-between gap-6 pb-6">
 				<div class=" text-xl font-medium">Account</div>

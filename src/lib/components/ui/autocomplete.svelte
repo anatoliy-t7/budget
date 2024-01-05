@@ -1391,7 +1391,7 @@
 		height: auto;
 		box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
 		border-radius: 4px;
-		border: 1px solid #b5b5b5;
+		border: 1px solid #a1a1aa;
 		padding-left: 0.4em;
 		padding-right: 0.4em;
 		display: flex;

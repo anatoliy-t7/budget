@@ -60,13 +60,13 @@
 	$: isFuture = dayjs(dayjs($monthRange.end).add(1, 'M')).isAfter(dayjs(), 'month');
 </script>
 
-<div class="inline-flex items-center w-full gap-4">
+<div class="inline-flex w-full items-center gap-4">
 	<div class="flex items-center gap-2">
 		<button on:click={() => prev()} class="hover">
 			<ChevronLeft class="h-7 w-7" />
 		</button>
 
-		<div class="min-w-24 flex justify-center text-lg font-medium">
+		<div class="flex min-w-24 justify-center text-lg font-medium">
 			{#if dayjs($monthRange.start).format('MMMM') !== dayjs($monthRange.end).format('MMMM')}
 				{dayjs($monthRange.start).format('MMMM')} -
 			{/if}
@@ -89,25 +89,25 @@
 		{#if isExpanded}
 			<div
 				transition:slide
-				class="top-8 rounded-xl shadow-small absolute right-0 w-40 p-4 space-y-1 text-sm bg-white">
+				class="absolute right-0 top-8 w-40 space-y-1 rounded-xl bg-white p-4 text-sm shadow-small">
 				<button
 					on:click={() => setRange('current_month')}
-					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
+					class="w-full px-2 py-1 text-left hover:bg-gray-100">
 					Current month
 				</button>
 				<button
 					on:click={() => setRange('last_month')}
-					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
+					class="w-full px-2 py-1 text-left hover:bg-gray-100">
 					Last month
 				</button>
 				<button
 					on:click={() => setRange('last_3months')}
-					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
+					class="w-full px-2 py-1 text-left hover:bg-gray-100">
 					Last 3 months
 				</button>
 				<button
 					on:click={() => setRange('current_year')}
-					class="hover:bg-gray-100 w-full px-2 py-1 text-left">
+					class="w-full px-2 py-1 text-left hover:bg-gray-100">
 					Current year
 				</button>
 			</div>

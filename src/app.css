@@ -21,7 +21,7 @@ input:where(:not([type])),
 [type='week'],
 textarea,
 select {
-	@apply block w-full appearance-none rounded-lg border border-gray-300 bg-white px-3 py-2.5 ring-sky-300 transition placeholder:text-gray-400 hover:border-sky-300 focus:border-sky-300 focus:outline-none focus:ring-[3px] focus:ring-sky-300;
+	@apply block w-full appearance-none rounded-lg border border-gray-400 bg-white px-3 py-2.5  transition placeholder:text-gray-400 hover:border-sky-400 focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400;
 }
 
 button {

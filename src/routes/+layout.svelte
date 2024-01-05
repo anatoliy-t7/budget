@@ -23,7 +23,7 @@
 		<div class="ml-72 flex h-full w-auto gap-4">
 			<Sidebar />
 
-			<main class="page relative pr-8 pt-24">
+			<main class="page relative mt-2 pr-8 pt-24">
 				<slot />
 			</main>
 		</div>
