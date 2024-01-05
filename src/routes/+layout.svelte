@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+
 	import { Toaster } from 'svelte-french-toast';
 	import { goto } from '$app/navigation';
 	import { authModel } from '$lib/stores/pocketbase';
@@ -20,10 +21,10 @@
 	<div class="relative bg-gray-100">
 		<Navbar />
 
-		<div class="ml-72 flex h-full w-auto gap-4">
+		<div class="ml-72 flex w-auto h-full gap-4">
 			<Sidebar />
 
-			<main class="page relative mt-2 pr-8 pt-24">
+			<main class="page relative pt-24 pr-8 mt-2">
 				<slot />
 			</main>
 		</div>

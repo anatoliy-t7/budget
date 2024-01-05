@@ -1,10 +1,12 @@
 import { writable, readable } from 'svelte/store';
 import { pb } from '$lib/stores/pocketbase';
+import { getUniqueTags } from '$lib/utils';
 export const CURRENCY = readable(['USD', 'EUR', 'INR']);
 
 export const loading = writable(false);
 export const categories = writable(null);
 export const accounts = writable(null);
+
 export const budget = writable(null);
 export const fileToken = writable('');
 

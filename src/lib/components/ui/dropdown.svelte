@@ -17,12 +17,7 @@
 	</button>
 	{#if isExpanded}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div
-			on:click={() => (isExpanded = false)}
-			transition:slide
-			tabindex="0"
-			role="button"
-			class="absolute z-50 {className}">
+		<div transition:slide tabindex="0" role="button" class="absolute z-50 {className}">
 			<slot name="content" />
 		</div>
 	{/if}

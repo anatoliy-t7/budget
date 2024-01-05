@@ -34,6 +34,7 @@
 			user: $transaction.user,
 			created: $transaction.created,
 			files: $transaction.files,
+			tags: $transaction.tags,
 		};
 
 		$openForView = false;
@@ -88,7 +89,7 @@
 	});
 </script>
 
-<div class="flex h-full flex-col justify-between">
+<div class="flex flex-col justify-between h-full">
 	<div>
 		<div class="pb-6 text-xl font-medium">
 			Transaction on <span class="font-normal text-gray-800"
@@ -119,7 +120,7 @@
 			<div class="grid grid-cols-12 gap-4">
 				<div class="col-span-3">Note:</div>
 
-				<div class="col-span-9 text-lg lowercase text-gray-800">{$transaction.note}</div>
+				<div class="col-span-9 text-lg text-gray-800 lowercase">{$transaction.note}</div>
 			</div>
 
 			<div class="grid grid-cols-12 gap-4">
@@ -138,10 +139,10 @@
 						{#each $transaction?.expand?.files?.files as file}
 							{#await getPrivetImage(recordFiles, file, '1024x1024') then src}
 								<button
-									class=" h-32 w-32 overflow-hidden rounded-lg border border-transparent bg-white hover:border-sky-500">
+									class=" hover:border-sky-500 w-32 h-32 overflow-hidden bg-white border border-transparent rounded-lg">
 									<img
 										src={src}
-										class="h-32 w-32 rounded-lg object-cover"
+										class="object-cover w-32 h-32 rounded-lg"
 										alt={file}
 										data-bp={src} />
 								</button>
@@ -153,11 +154,11 @@
 		</div>
 	</div>
 
-	<div class="flex w-full items-center gap-6">
+	<div class="flex items-center w-full gap-6">
 		<button
 			disabled={$loading}
 			on:click={() => onDelete($transaction)}
-			class="click hover text-red-500 disabled:cursor-not-allowed disabled:opacity-50">
+			class="click hover disabled:cursor-not-allowed disabled:opacity-50 text-red-500">
 			<Trash class="h-7 w-7" />
 		</button>
 

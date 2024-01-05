@@ -204,10 +204,10 @@ onRecordAfterCreateRequest((e) => {
 	}
 }, 'transactions');
 
-// Get tags from notes
+// Get range tags
 routerAdd(
 	'GET',
-	'/api/tags',
+	'/api/tags/range',
 	(c) => {
 		const budgetId = c.queryParam('budgetId');
 		const startOf = c.queryParam('startOf');
@@ -226,13 +226,45 @@ routerAdd(
 
 		if (transactions?.length) {
 			transactions?.forEach((t) => {
-				const tagsTmp = t.note?.match(/#[a-z0-9_]+/g);
+				if (t.tags) {
+					const tagsTmp = t.tags.split(',');
+					tagsTmp?.forEach((tag) => {
+						if (tag) {
+							tagsArray.push(tag);
+						}
+					});
+				}
+			});
+		}
 
-				tagsTmp?.forEach((tag) => {
-					if (tag) {
-						tagsArray.push(tag);
-					}
-				});
+		return c.json(200, tagsArray);
+	},
+	$apis.requireRecordAuth('users'),
+);
+
+// Get all tags
+routerAdd(
+	'GET',
+	'/api/tags',
+	(c) => {
+		const budgetId = c.queryParam('budgetId');
+
+		let transactions = $app.dao().findRecordsByFilter('transactions', `budget = "${budgetId}"`);
+
+		transactions = JSON.parse(JSON.stringify(transactions));
+
+		let tagsArray = [];
+
+		if (transactions?.length) {
+			transactions?.forEach((t) => {
+				if (t.tags) {
+					const tagsTmp = t.tags.split(',');
+					tagsTmp?.forEach((tag) => {
+						if (tag) {
+							tagsArray.push(tag);
+						}
+					});
+				}
 			});
 		}
 

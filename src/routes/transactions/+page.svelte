@@ -21,7 +21,7 @@
 		transactionType,
 		transfer,
 		selectedCategory,
-		tags,
+		rangeTags,
 		filterTag,
 		filterCategory,
 		monthRange,
@@ -69,7 +69,6 @@
 		$transaction = item;
 
 		$selectedCategory = $categories?.find((c) => c.id === $transaction.category);
-
 		$openForView = true;
 	}
 
@@ -139,7 +138,7 @@
 </svelte:head>
 
 <div class="space-y-4">
-	<div class=" flex items-center justify-between gap-6 rounded-lg bg-white p-4">
+	<div class=" flex items-center justify-between gap-6 p-4 bg-white rounded-lg">
 		<div class="flex items-center gap-4">
 			<div class="w-[320px]">
 				<TypeToggle on:changed={(event) => changedType(event.detail)} />
@@ -163,7 +162,7 @@
 			</div>
 		</div>
 
-		<div class="flex w-48 justify-end">
+		<div class="flex justify-end w-48">
 			{#if !$monthIsClosed && dayjs($monthRange.start).isSame($monthRange.end, 'month')}
 				<Button loading={$loading} on:click={onCloseMonth} color={'outline-green'} class="click">
 					Close {dayjs($monthRange.start).format('MMMM')}
@@ -172,10 +171,10 @@
 		</div>
 	</div>
 
-	{#if $tags.length > 0}
+	{#if $rangeTags.length > 0}
 		<div class="flex items-center gap-2 text-sm font-medium">
 			<div class="text-gray-500">Tags:</div>
-			{#each $tags as tag}
+			{#each $rangeTags as tag}
 				<button
 					on:click={() => filterByTag(tag)}
 					class="{$filterTag === tag
@@ -187,7 +186,7 @@
 		</div>
 	{/if}
 
-	<div class="rounded-xl bg-white p-6">
+	<div class="rounded-xl p-6 bg-white">
 		{#if $loading}
 			<Loader />
 		{:else}
@@ -198,6 +197,7 @@
 					<th class="text-right"> Amount </th>
 					<th> Account </th>
 					<th> Category </th>
+					<th> Tags </th>
 					<th> Files </th>
 					<th> Note </th>
 				</svelte:fragment>
@@ -216,9 +216,10 @@
 								</td>
 								<td>{item?.expand?.account?.name}</td>
 								<td>{item?.expand?.category?.name}</td>
+								<td>{item?.tags}</td>
 								<td>{item?.expand?.files?.files?.length || ''}</td>
 								<td>
-									<div class="w-full max-w-52 truncate">
+									<div class="max-w-52 w-full truncate">
 										{item.note}
 									</div>
 								</td>

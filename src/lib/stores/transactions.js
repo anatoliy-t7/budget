@@ -20,23 +20,11 @@ export const openForEdit = writable(false);
 export const openForView = writable(false);
 export const selectedCategory = writable({});
 export const tags = writable([]);
+export const rangeTags = writable([]);
 export const filterTag = writable('');
 export const filterCategory = writable('');
 export const monthIsClosed = writable(false);
 
-export async function resetAll() {
-	monthIsClosed.set(false);
-	filterCategory.set('');
-	filterTag.set('');
-	tags.set([]);
-	selectedCategory.set([]);
-	openForView.set(false);
-	openForEdit.set(false);
-	list.set(null);
-	overview.set(null);
-	transactionType.set('');
-	transactions.set(null);
-}
 export const transaction = writable({
 	id: null,
 	amount: null,
@@ -49,6 +37,7 @@ export const transaction = writable({
 	user: pb.authStore.model?.id,
 	created: dayjs().toISOString(),
 	files: null,
+	tags: [],
 });
 
 export async function reset() {
@@ -64,6 +53,7 @@ export async function reset() {
 		user: pb.authStore.model?.id,
 		created: dayjs().toISOString(),
 		files: null,
+		tags: [],
 	});
 
 	selectedCategory.set({});
@@ -109,19 +99,19 @@ export async function getTransactions(page = 1) {
 			&& budget = "${pb.authStore.model?.budget}"
 			&& created >= "${range?.start}"
 			&& created <= "${range?.end}"
-			&& note ~ "${get(filterTag)}"
+			&& tags ~ "${get(filterTag)}"
 			&& category ~ "${get(filterCategory)}"`,
 			sort: '-created',
 			expand: 'category,account,user,files',
 			fields:
-				'id,created,amount,type,note,transfer,category,user,budget,account,files,expand.category.name,expand.category.id,expand.account.name,expand.account.currency,expand.user.email,expand.user.name,expand.files.id,expand.files.files',
+				'id,created,amount,type,note,tags,transfer,category,user,budget,account,files,expand.category.name,expand.category.id,expand.account.name,expand.account.currency,expand.user.email,expand.user.name,expand.files.id,expand.files.files',
 		});
 
 		loading.set(false);
 
 		transactions.set(res);
 
-		await getTags();
+		await getRangeTags();
 	});
 }
 
@@ -143,9 +133,24 @@ export async function getTypeClosedTransactions() {
 	}
 }
 
+export async function getRangeTags() {
+	const res = await fetch(
+		`${PUBLIC_POCKETBASE_URL}/api/tags/range?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
+		{
+			headers: {
+				Authorization: pb.authStore.token,
+			},
+		},
+	);
+
+	if (res.status == 200) {
+		rangeTags.set(await res.json());
+	}
+}
+
 export async function getTags() {
 	const res = await fetch(
-		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
+		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.budget}`,
 		{
 			headers: {
 				Authorization: pb.authStore.token,
@@ -156,4 +161,20 @@ export async function getTags() {
 	if (res.status == 200) {
 		tags.set(await res.json());
 	}
+}
+
+export async function resetAll() {
+	reset();
+	monthIsClosed.set(false);
+	filterCategory.set('');
+	filterTag.set('');
+	tags.set([]);
+	rangeTags.set([]);
+	selectedCategory.set([]);
+	openForView.set(false);
+	openForEdit.set(false);
+	list.set(null);
+	overview.set(null);
+	transactionType.set('');
+	transactions.set(null);
 }

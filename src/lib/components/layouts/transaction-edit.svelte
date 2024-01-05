@@ -6,14 +6,21 @@
 	import DatePicker from '$lib/components/ui/date-picker.svelte';
 	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 	import Plus from '~icons/tabler/plus';
+	import FileUploader from '$lib/components/ui/file-uploader.svelte';
+	import Tags from '$lib/components/ui/tags.svelte';
 
 	import dayjs from 'dayjs';
 	import { alertOnFailure } from '$lib/utils';
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories, accounts, loading } from '$lib/stores/main';
-	import { openForEdit, transaction, selectedCategory, reset } from '$lib/stores/transactions';
+	import {
+		openForEdit,
+		transaction,
+		selectedCategory,
+		reset,
+		getTags,
+	} from '$lib/stores/transactions';
 	import toast from 'svelte-french-toast';
-	import FileUploader from '../ui/file-uploader.svelte';
 
 	const coll = pb.collection('transactions');
 
@@ -105,6 +112,7 @@
 		$transaction.account = $accounts[0]?.id;
 		$transaction.transfer = $accounts[1]?.id;
 		$openForEdit = true;
+		await getTags();
 	}
 
 	function categoryFilter(item: any, keywords: any) {
@@ -123,12 +131,12 @@
 
 <button
 	on:click={() => onOpen()}
-	class=" inline-flex w-full items-center gap-3 rounded-xl bg-green-700 px-4 py-3 text-left text-base font-medium text-white hover:bg-green-800">
-	<Plus class="h-6 w-6" />
+	class=" rounded-xl hover:bg-green-800 inline-flex items-center w-full gap-3 px-4 py-3 text-base font-medium text-left text-white bg-green-700">
+	<Plus class="w-6 h-6" />
 	Add transaction
 </button>
 
-<Drawer bind:open={$openForEdit} on:close={close}>
+<Drawer bind:open={$openForEdit} on:close={() => close()}>
 	<div class="pb-6 text-xl font-medium">Add transaction</div>
 
 	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
@@ -147,7 +155,7 @@
 				<div class="relative">
 					<input bind:value={$transaction.amount} required type="number" placeholder="100" />
 					{#if transactionAccount}
-						<div class="absolute right-3 top-3 text-gray-400">
+						<div class="right-3 top-3 absolute text-gray-400">
 							{transactionAccount?.currency}
 						</div>
 					{/if}
@@ -159,7 +167,7 @@
 					<div class="relative">
 						<input bind:value={transferAmount} type="number" placeholder="100" />
 						{#if transferAccount}
-							<div class="absolute right-3 top-3 text-gray-400">
+							<div class="right-3 top-3 absolute text-gray-400">
 								{transferAccount?.currency}
 							</div>
 						{/if}
@@ -204,6 +212,13 @@
 				keywordsFieldName="name"
 				disabled={disabledCategory}
 				required={true} />
+		</div>
+
+		{$transaction?.tags}
+		<div class="space-y-1 font-medium">
+			<div class="text-sm">Tags</div>
+
+			<Tags bind:selected={$transaction.tags} />
 		</div>
 
 		<div class="block w-full space-y-1 font-medium">

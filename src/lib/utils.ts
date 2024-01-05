@@ -73,3 +73,10 @@ export const preparePageTransition = () => {
         });
     });
 };
+
+export const getUniqueTags = (array: any) => {
+
+    console.log('array', array);
+
+    return array.filter((currentValue: any, index: number, arr: any) => arr.indexOf(currentValue) === index);
+}
