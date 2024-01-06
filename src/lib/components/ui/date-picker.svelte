@@ -45,9 +45,12 @@
 	});
 </script>
 
-<div class="relative cursor-pointer">
-	<input bind:this={datepicker} class="text-base" />
-	<button on:click={() => picker.show()} type="button" class="absolute right-3 top-2">
+<div class="flex cursor-pointer items-center gap-4">
+	<input
+		bind:this={datepicker}
+		class="w-24 bg-transparent text-lg font-medium focus:outline-none" />
+
+	<button on:click={() => picker.show()} type="button" class="">
 		<Calendar class="h-7 w-7" />
 	</button>
 </div>

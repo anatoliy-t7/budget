@@ -26,7 +26,7 @@
 		<Dropdown>
 			<div slot="trigger">
 				<div
-					class="flex items-center gap-1 rounded-full bg-gray-100 py-2 pl-4 pr-3 hover:bg-gray-200">
+					class="flex items-center gap-1 truncate rounded-full bg-gray-100 py-2 pl-4 pr-3 hover:bg-gray-200">
 					{pb.authStore.model?.name ? pb.authStore.model?.name : pb.authStore.model?.email}
 
 					<ChevronDown />

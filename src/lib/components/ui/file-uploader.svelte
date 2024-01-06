@@ -55,7 +55,6 @@
 	}
 
 	async function upload(compressedFiles: File[]) {
-		console.log('upload', compressedFiles);
 		loading = true;
 		const formData = new FormData();
 

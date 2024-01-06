@@ -1,7 +1,7 @@
 import toast from 'svelte-french-toast';
 import { onNavigate } from '$app/navigation';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import { pb } from '$lib/stores/pocketbase';
+import { pb, loading } from '$lib/stores/pocketbase';
 import { get } from 'svelte/store';
 import { fileToken } from '$lib/stores/main';
 import type { RecordModel } from 'pocketbase';
@@ -29,6 +29,8 @@ export async function alertOnFailure(request: () => void) {
             const { message } = data[key];
             if (message) toast.error(`${key}: ${message}`);
         }
+
+        loading.set(false)
     }
 }
 
@@ -75,8 +77,5 @@ export const preparePageTransition = () => {
 };
 
 export const getUniqueTags = (array: any) => {
-
-    console.log('array', array);
-
     return array.filter((currentValue: any, index: number, arr: any) => arr.indexOf(currentValue) === index);
 }

@@ -276,38 +276,20 @@ routerAdd(
 	$apis.requireRecordAuth('users'),
 );
 
-onRecordAfterAuthWithOAuth2Request((e) => {
-	if (e.isNewRecord) {
-		const collection = $app.dao().findCollectionByNameOrId('budgets');
-
-		const newBudget = new Record(collection, {
-			defaultCurrency: 'USD',
-			users: [e.record.getString('id')],
-		});
-
-		$app.dao().saveRecord(newBudget);
-
-		const user = $app.dao().findRecordById('users', e.record.getString('id'));
-
-		user.set('budget', newBudget.id);
-		$app.dao().saveRecord(user);
-	}
-}, 'users');
-
 onRecordAuthRequest((e) => {
-	if (!e.record.getString('budget')) {
+	if (!e.record.getString('currentBudget')) {
 		const collection = $app.dao().findCollectionByNameOrId('budgets');
 
 		const newBudget = new Record(collection, {
 			defaultCurrency: 'USD',
-			users: [e.record.getString('id')],
+			name: 'Default',
 		});
 
 		$app.dao().saveRecord(newBudget);
 
-		const user = $app.dao().findRecordById('users', e.record.getString('id'));
+		e.record.set('currentBudget', newBudget.id);
+		e.record.set('budgets', [newBudget.id]);
 
-		user.set('budget', newBudget.id);
-		$app.dao().saveRecord(user);
+		$app.dao().saveRecord(e.record);
 	}
 }, 'users');

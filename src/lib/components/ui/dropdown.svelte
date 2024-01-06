@@ -1,21 +1,25 @@
 <script>
 	import { slide } from 'svelte/transition';
 	import { clickOutside } from '$lib/utils';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	let className = 'top-10 right-0';
 	export { className as class };
-	let isExpanded = false;
+	export let opened = false;
 
 	function clickHandler() {
-		isExpanded = !isExpanded;
+		opened = !opened;
+		dispatch('open');
 	}
 </script>
 
-<div use:clickOutside={() => (isExpanded = false)} class="relative inline-block w-full">
-	<button on:click={clickHandler} class="w-full">
+<div use:clickOutside={() => (opened = false)} class="relative inline-block w-full">
+	<button type="button" on:click={clickHandler} class="w-full">
 		<slot name="trigger" />
 	</button>
-	{#if isExpanded}
+	{#if opened}
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div transition:slide tabindex="0" role="button" class="absolute z-50 {className}">
 			<slot name="content" />

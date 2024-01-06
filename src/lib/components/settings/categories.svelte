@@ -4,12 +4,14 @@
 	import Radio from '$lib/components/ui/radio.svelte';
 	import Pencil from '~icons/tabler/pencil';
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
-	// import Autocomplete from '$lib/components/ui/autocomplete.svelte';
+	import Add from '~icons/solar/add-circle-linear';
+	import 'emoji-picker-element'; // https://github.com/nolanlawson/emoji-picker-element
 
 	import { alertOnFailure } from '$lib/utils';
 	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { categories, getCategories, loading } from '$lib/stores/main';
 	import toast from 'svelte-french-toast';
+	import Dropdown from '../ui/dropdown.svelte';
 
 	const radioOptions = [
 		{
@@ -24,12 +26,13 @@
 	const coll = pb.collection('categories');
 
 	let open: boolean = false;
+	let emojiPickerOpened = false;
 	let category: any = {
 		id: null,
 		name: null,
 		icon: null,
 		type: 'expenses',
-		budget: $authModel?.budget,
+		budget: $authModel?.currentBudget,
 	};
 
 	$: disabled = !category?.name;
@@ -81,6 +84,15 @@
 			await close();
 		}
 	}
+	function showEmojiPicker() {
+		setTimeout(() => {
+			document.querySelector('emoji-picker')?.addEventListener('emoji-click', (e: any) => {
+				category.icon = e.detail.unicode;
+
+				emojiPickerOpened = false;
+			});
+		}, 300);
+	}
 </script>
 
 <div class="gap-4 rounded-xl bg-white pt-6">
@@ -102,17 +114,20 @@
 					{#each $categories?.filter((c) => c.type !== 'transfer') as item}
 						<div class="group grid grid-cols-12 gap-6 px-6 py-1.5 hover:bg-gray-100">
 							<div class="col-span-6 capitalize">
+								{item.icon}
 								{item.name}
 							</div>
 							<div class="col-span-4 capitalize">
 								{item.type}
 							</div>
 							<div class="col-span-2 flex justify-end">
-								<button
-									on:click={() => onOpenEdit(item)}
-									class="click hidden hover:text-sky-500 group-hover:flex">
-									<Pencil class="h-6 w-6" />
-								</button>
+								{#if item.budget}
+									<button
+										on:click={() => onOpenEdit(item)}
+										class="click hidden hover:text-sky-500 group-hover:flex">
+										<Pencil class="h-6 w-6" />
+									</button>
+								{/if}
 							</div>
 						</div>
 					{/each}
@@ -130,7 +145,7 @@
 
 				{#if category.id}
 					<button on:click={onDelete} class="click hover text-red-500">
-						<Trash class=" h-6 w-6" />
+						<Trash class="h-6 w-6" />
 					</button>
 				{/if}
 			</div>
@@ -154,19 +169,21 @@
 
 				<div class="block space-y-1 font-medium">
 					<div class="text-sm">Icon</div>
-					<!--
-			<Autocomplete
-				items="{$categories}"
-				bind:value="{transaction.category}"
-				selectedItem="{selectedCategory}"
-				itemFilterFunction="{categoryFilter}"
-				labelFieldName="name"
-				valueFieldName="id"
-				matchAllKeywords="{false}"
-				sortByMatchedKeywords="{true}"
-				keywordsFieldName="name"
-				disabled="{disabledCategory}"
-				required /> -->
+
+					<div class="flex items-center gap-4">
+						{#if category.icon}
+							<span class="text-3xl">{category.icon}</span>
+						{/if}
+
+						<Dropdown bind:opened={emojiPickerOpened} on:open={showEmojiPicker}>
+							<div slot="trigger">
+								<Add class="h-8 w-8" />
+							</div>
+							<div slot="content" class="relative left-0 overflow-hidden rounded-lg">
+								<emoji-picker></emoji-picker>
+							</div>
+						</Dropdown>
+					</div>
 				</div>
 
 				<div class="pt-6">

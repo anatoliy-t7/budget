@@ -38,8 +38,6 @@
 			name: $authModel?.name,
 		};
 	});
-
-	$: console.log($authModel);
 </script>
 
 {#if $editProfile}

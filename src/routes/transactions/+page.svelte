@@ -97,7 +97,7 @@
 
 			await alertOnFailure(async () => {
 				const res = await fetch(
-					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.budget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
+					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.currentBudget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
 					{
 						headers: {
 							Authorization: pb.authStore.token,
@@ -211,7 +211,12 @@
 									{moneyFormat(item.amount, item.expand?.account?.currency)}
 								</td>
 								<td>{item?.expand?.account?.name}</td>
-								<td>{item?.expand?.category?.name}</td>
+								<td>
+									<div class="flex items-center gap-2">
+										<div class="text-lg">{@html item?.expand?.category?.icon || ''}</div>
+										<div>{item?.expand?.category?.name}</div>
+									</div>
+								</td>
 								<td>
 									<TagsView tags={item?.tags} />
 								</td>

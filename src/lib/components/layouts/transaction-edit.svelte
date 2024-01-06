@@ -21,6 +21,7 @@
 		getTags,
 		tags,
 	} from '$lib/stores/transactions';
+	import { onMount } from 'svelte';
 
 	const coll = pb.collection('transactions');
 
@@ -30,20 +31,20 @@
 
 	$: disabled = !$transaction?.amount || !$transaction?.category;
 
-	$: transactionAccount = $accounts?.find((a) => a.id == $transaction?.account);
+	$: transactionAccount = null;
 
-	$: transferAccount = $accounts?.find((a) => a.id == $transaction?.transfer);
+	$: transferAccount = null;
 
 	async function changedType(type: string) {
 		if ($transaction.type !== 'transfer') {
-			$transaction.transfer = $accounts[1].id;
+			$transaction.transfer = $accounts?.length > 1 ? $accounts[1]?.id : $accounts[0]?.id;
 		} else {
 			$transaction.transfer = null;
 		}
 		$transaction.type = type;
 
 		if ($transaction.type === 'transfer') {
-			$selectedCategory = $categories?.find((c) => c.id == '1o2o1fdok8m1ek9');
+			$selectedCategory = $categories?.find((c) => c.id == 'catego_transfer');
 			disabledCategory = true;
 		} else {
 			$selectedCategory = {};
@@ -124,7 +125,7 @@
 
 	export async function onOpen() {
 		$transaction.account = $accounts[0]?.id;
-		$transaction.transfer = $accounts[1]?.id;
+		$transaction.transfer = $accounts?.length > 1 ? $accounts[1]?.id : $accounts[0]?.id;
 
 		setTimeout(async () => {
 			await beforeOpen();
@@ -145,13 +146,43 @@
 			return item.type === 'transfer';
 		}
 	}
+
+	onMount(() => {
+		transactionAccount = $accounts?.find((a: any) => a.id == $transaction?.account);
+		transferAccount = $accounts?.find((a: any) => a.id == $transaction?.transfer);
+	});
 </script>
 
 <Drawer bind:open={$openForEdit} on:close={() => close()}>
-	<div class="pb-6 text-xl font-medium">Add transaction</div>
+	<div class="pb-6 text-2xl font-medium">Add transaction</div>
 
 	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
+		<div>
+			<DatePicker bind:value={$transaction.created} />
+		</div>
+
 		<TypeSwitch selected={$transaction.type} on:changed={(event) => changedType(event.detail)} />
+
+		<div class="flex gap-6">
+			<div class="block w-full space-y-1 font-medium">
+				<div class="text-sm">
+					{#if $transaction.type === 'transfer'}
+						From
+					{:else}
+						Account
+					{/if}
+				</div>
+				<ListboxAccount bind:value={$transaction.account} />
+			</div>
+
+			{#if $transaction.type === 'transfer'}
+				<div class="block w-full space-y-1 font-medium">
+					<div class="text-sm">To</div>
+
+					<ListboxAccount bind:value={$transaction.transfer} class="right-0" />
+				</div>
+			{/if}
+		</div>
 
 		<div class="flex gap-6">
 			<div class="block w-full space-y-1 font-medium">
@@ -187,27 +218,6 @@
 			{/if}
 		</div>
 
-		<div class="flex gap-6">
-			<div class="block w-full space-y-1 font-medium">
-				<div class="text-sm">
-					{#if $transaction.type === 'transfer'}
-						From
-					{:else}
-						Account
-					{/if}
-				</div>
-				<ListboxAccount bind:value={$transaction.account} />
-			</div>
-
-			{#if $transaction.type === 'transfer'}
-				<div class="block w-full space-y-1 font-medium">
-					<div class="text-sm">To</div>
-
-					<ListboxAccount bind:value={$transaction.transfer} class="right-0" />
-				</div>
-			{/if}
-		</div>
-
 		<div class="space-y-1 font-medium">
 			<div class="text-sm">Category</div>
 
@@ -233,11 +243,6 @@
 			{#if $openForEdit}
 				<Tags bind:selected={$transaction.tags} />
 			{/if}
-		</div>
-
-		<div class="block w-full space-y-1 font-medium">
-			<span class="text-sm"> Date </span>
-			<DatePicker bind:value={$transaction.created} />
 		</div>
 
 		<div class="w-full space-y-1 font-medium">

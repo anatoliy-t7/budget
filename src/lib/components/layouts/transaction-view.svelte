@@ -94,7 +94,16 @@
 				<div class="grid grid-cols-12 gap-4">
 					<div class="col-span-3">Category:</div>
 
-					<div class="col-span-9 text-lg text-gray-800">{$selectedCategory?.name}</div>
+					<div class="col-span-9 flex items-center gap-2 text-lg text-gray-800">
+						<div class="text-2xl">{$selectedCategory?.icon || ''}</div>
+						<div>{$selectedCategory?.name}</div>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-12 gap-4">
+					<div class="col-span-3">Tags:</div>
+
+					<div class="col-span-9 text-lg lowercase text-gray-800">{$transaction.tags || ''}</div>
 				</div>
 
 				<div class="grid grid-cols-12 gap-4">
