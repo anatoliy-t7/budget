@@ -47,11 +47,15 @@
 		}, 300);
 	}
 
-	async function onDelete(item: any) {
-		if (confirm(`Do you confirm to delete the "${item.type}" transaction?`)) {
+	async function onDelete() {
+		if (confirm(`Do you confirm to delete the "${$transaction.type}" transaction?`)) {
 			$loading = true;
-			await coll.delete(item.id);
-			toast.success(`${item.type} was deleted`);
+			if ($transaction.files) {
+				await pb.collection('files').delete($transaction.files);
+			}
+
+			await coll.delete($transaction.id);
+			toast.success(`${$transaction.type} was deleted`);
 
 			$loading = false;
 			await close();
@@ -116,7 +120,7 @@
 		<div class="flex w-full items-center gap-6">
 			<button
 				disabled={$loading}
-				on:click={() => onDelete($transaction)}
+				on:click={onDelete}
 				class="click hover text-red-500 disabled:cursor-not-allowed disabled:opacity-50">
 				<Trash class="h-7 w-7" />
 			</button>

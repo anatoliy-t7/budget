@@ -29,7 +29,7 @@
 	];
 </script>
 
-<div class="fixed left-0 top-16 z-30 flex h-full min-h-screen w-72 flex-col justify-between p-8">
+<div class="fixed left-0 top-16 z-40 flex h-full min-h-screen w-72 flex-col justify-between p-8">
 	<div class="space-y-1 pt-2 text-gray-700">
 		<div class="pb-7">
 			<button

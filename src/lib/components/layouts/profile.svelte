@@ -1,19 +1,26 @@
 <script lang="ts">
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
-	import IconUser from '~icons/solar/user-circle-broken';
 
 	import { alertOnFailure } from '$lib/utils';
-	import { pb } from '$lib/stores/pocketbase';
-	import { loading } from '$lib/stores/main';
+	import { pb, authModel } from '$lib/stores/pocketbase';
+	import { loading, editProfile } from '$lib/stores/main';
 	import toast from 'svelte-french-toast';
+	import { onMount } from 'svelte';
 
 	const coll = pb.collection('users');
 
-	let showProfile = false;
+	let user: any = {
+		id: null,
+		name: null,
+	};
 
 	async function submit() {
 		$loading = true;
+		alertOnFailure(async () => {
+			await coll.update(user.id, user);
+			await coll.authRefresh();
+		});
 
 		toast.success(`Updated`);
 
@@ -21,24 +28,21 @@
 	}
 
 	async function close() {
-		if (!confirm(`Do you want to close it?`)) return;
-		showProfile = false;
+		//if (!confirm(`Do you want to close it?`)) return;
+		$editProfile = false;
 	}
 
-	async function onOpen() {
-		showProfile = true;
-	}
+	onMount(async () => {
+		user = {
+			id: $authModel?.id,
+			name: $authModel?.name,
+		};
+	});
+
+	$: console.log($authModel);
 </script>
 
-<button
-	on:click={onOpen}
-	type="button"
-	class="flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
-	<IconUser class="h-7 w-7" />
-	Profile
-</button>
-
-<Drawer bind:open={showProfile} on:close={close}>
+{#if $editProfile}
 	<div class="pb-6 text-xl font-medium">Your profile</div>
 
 	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
@@ -46,7 +50,7 @@
 			<span class="text-sm"> Name </span>
 
 			<div class="relative">
-				<input type="text" />
+				<input bind:value={user.name} type="text" />
 			</div>
 		</div>
 
@@ -54,4 +58,4 @@
 			<Button loading={$loading} type="submit" class="w-full">Update</Button>
 		</div>
 	</form>
-</Drawer>
+{/if}

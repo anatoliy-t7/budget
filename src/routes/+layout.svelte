@@ -9,6 +9,9 @@
 	import Sidebar from '$lib/components/layouts/sidebar.svelte';
 	import Navbar from '$lib/components/layouts/navbar.svelte';
 	import FirstLoadData from '$lib/components/layouts/first-load-data.svelte';
+	import Profile from '$lib/components/layouts/profile.svelte';
+	import Drawer from '$lib/components/ui/drawer.svelte';
+	import { editProfile } from '$lib/stores/main';
 
 	export let destination: string | null = null;
 	$: if (destination != null && $authModel) {
@@ -28,6 +31,10 @@
 				<slot />
 			</main>
 		</div>
+
+		<Drawer bind:open={$editProfile} on:close={() => ($editProfile = false)}>
+			<Profile />
+		</Drawer>
 	</div>
 {:else}
 	<Auth />

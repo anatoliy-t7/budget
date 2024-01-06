@@ -41,7 +41,7 @@
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
 			transition:fade={{ delay: 0, duration: 300 }}
-			class="pointer-events-auto fixed bottom-0 left-0 right-0 top-0 z-40 h-screen w-screen transform-gpu cursor-pointer overflow-hidden bg-gray-700 bg-opacity-50 transition"
+			class="pointer-events-auto fixed bottom-0 left-0 right-0 top-0 z-50 h-screen w-screen transform-gpu cursor-pointer overflow-hidden bg-gray-700 bg-opacity-50 transition"
 			on:click={onClose}>
 		</div>
 		<div
