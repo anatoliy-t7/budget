@@ -5,10 +5,10 @@
 	import ListboxAccount from '$lib/components/ui/listbox-account.svelte';
 	import DatePicker from '$lib/components/ui/date-picker.svelte';
 	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
-	import Plus from '~icons/tabler/plus';
 	import FileUploader from '$lib/components/ui/file-uploader.svelte';
 	import Tags from '$lib/components/ui/tags.svelte';
 
+	import toast from 'svelte-french-toast';
 	import dayjs from 'dayjs';
 	import { alertOnFailure } from '$lib/utils';
 	import { pb } from '$lib/stores/pocketbase';
@@ -19,13 +19,14 @@
 		selectedCategory,
 		reset,
 		getTags,
+		tags,
 	} from '$lib/stores/transactions';
-	import toast from 'svelte-french-toast';
 
 	const coll = pb.collection('transactions');
 
 	let transferAmount: number | null = null;
 	let disabledCategory = false;
+	let oldTransaction: any = null;
 
 	$: disabled = !$transaction?.amount || !$transaction?.category;
 
@@ -59,7 +60,7 @@
 				toast.success(`${$transaction.type} was updated`);
 
 				$loading = false;
-				await close();
+				await close(false);
 			});
 		} else {
 			alertOnFailure(async () => {
@@ -100,19 +101,36 @@
 	}
 
 	async function close(needConfirm = true) {
-		if (needConfirm && !confirm(`Do you want to close it?`)) return;
+		if (needConfirm) {
+			if (oldTransaction !== JSON.stringify($transaction) && !confirm(`Do you want to close it?`)) {
+				return;
+			}
+		}
 
 		$openForEdit = false;
 		transferAmount = null;
+		oldTransaction = null;
 
 		await reset();
 	}
 
-	async function onOpen() {
+	export async function beforeOpen() {
+		if (!$tags.length) {
+			await getTags();
+		}
+
+		oldTransaction = JSON.stringify($transaction);
+	}
+
+	export async function onOpen() {
 		$transaction.account = $accounts[0]?.id;
 		$transaction.transfer = $accounts[1]?.id;
+
+		setTimeout(async () => {
+			await beforeOpen();
+		}, 150);
+
 		$openForEdit = true;
-		await getTags();
 	}
 
 	function categoryFilter(item: any, keywords: any) {
@@ -128,13 +146,6 @@
 		}
 	}
 </script>
-
-<button
-	on:click={() => onOpen()}
-	class=" rounded-xl hover:bg-green-800 inline-flex items-center w-full gap-3 px-4 py-3 text-base font-medium text-left text-white bg-green-700">
-	<Plus class="w-6 h-6" />
-	Add transaction
-</button>
 
 <Drawer bind:open={$openForEdit} on:close={() => close()}>
 	<div class="pb-6 text-xl font-medium">Add transaction</div>
@@ -155,7 +166,7 @@
 				<div class="relative">
 					<input bind:value={$transaction.amount} required type="number" placeholder="100" />
 					{#if transactionAccount}
-						<div class="right-3 top-3 absolute text-gray-400">
+						<div class="absolute right-3 top-3 text-gray-400">
 							{transactionAccount?.currency}
 						</div>
 					{/if}
@@ -167,7 +178,7 @@
 					<div class="relative">
 						<input bind:value={transferAmount} type="number" placeholder="100" />
 						{#if transferAccount}
-							<div class="right-3 top-3 absolute text-gray-400">
+							<div class="absolute right-3 top-3 text-gray-400">
 								{transferAccount?.currency}
 							</div>
 						{/if}
@@ -214,11 +225,14 @@
 				required={true} />
 		</div>
 
-		{$transaction?.tags}
 		<div class="space-y-1 font-medium">
-			<div class="text-sm">Tags</div>
+			<div class="text-sm">
+				Tags <span class="font-normal text-gray-400">(optional)</span>
+			</div>
 
-			<Tags bind:selected={$transaction.tags} />
+			{#if $openForEdit}
+				<Tags bind:selected={$transaction.tags} />
+			{/if}
 		</div>
 
 		<div class="block w-full space-y-1 font-medium">
@@ -235,7 +249,7 @@
 
 		<div class="w-full space-y-1 font-medium">
 			<span class="text-sm">
-				Files <span class="font-normal text-gray-400">(optional)</span> max 5</span>
+				Files <span class="font-normal text-gray-400">(optional) max 5</span></span>
 			<FileUploader bind:id={$transaction.files} />
 		</div>
 

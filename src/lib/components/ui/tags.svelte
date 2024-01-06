@@ -1,4 +1,5 @@
 <script lang="ts">
+	// https://github.com/yairEO/tagify
 	import Tagify from '@yaireo/tagify';
 	import '@yaireo/tagify/dist/tagify.css';
 	import { onDestroy, onMount } from 'svelte';
@@ -12,15 +13,17 @@
 		originalInputValueFormat: (valuesArr: any) =>
 			valuesArr.map((item: any) => item.value).join(','),
 		maxTags: 10,
+		placeholder: 'Type and press enter',
 		dropdown: {
 			maxItems: 10, // <- mixumum allowed rendered suggestions
-			classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
+			classname: 'tags-dropdown', // <- custom classname for this dropdown, so it could be targeted
 			enabled: 0, // <- show suggestions on focus
 			closeOnSelect: true, // <- do not hide the suggestions dropdown once an item has been selected
+			position: 'text',
 		},
 	};
 
-	$: if ($tags.length) {
+	$: if ($tags.length && tagify && !tagify?.whitelist?.length) {
 		tagify.whitelist = $tags;
 	}
 
@@ -31,17 +34,18 @@
 	onMount(async () => {
 		tagify = new Tagify(input, options);
 		if (selected.length) {
-			console.log('selected', selected);
 			tagify.addTags(selected);
 		}
+
 		input.addEventListener('change', onChange);
 	});
 
 	onDestroy(() => {
 		input.removeEventListener('change', onChange);
+		tagify = null;
 	});
 </script>
 
-<div>
-	<input bind:this={input} />
+<div class="flex items-center gap-2">
+	<input bind:this={input} class="tagifyTheme" />
 </div>

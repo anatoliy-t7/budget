@@ -209,6 +209,8 @@ routerAdd(
 	'GET',
 	'/api/tags/range',
 	(c) => {
+		const utils = require(`${__hooks}/utils.js`);
+
 		const budgetId = c.queryParam('budgetId');
 		const startOf = c.queryParam('startOf');
 		const endOf = c.queryParam('endOf');
@@ -237,7 +239,7 @@ routerAdd(
 			});
 		}
 
-		return c.json(200, tagsArray);
+		return c.json(200, utils.getUniqueValuesFromArray(tagsArray));
 	},
 	$apis.requireRecordAuth('users'),
 );
@@ -247,6 +249,7 @@ routerAdd(
 	'GET',
 	'/api/tags',
 	(c) => {
+		const utils = require(`${__hooks}/utils.js`);
 		const budgetId = c.queryParam('budgetId');
 
 		let transactions = $app.dao().findRecordsByFilter('transactions', `budget = "${budgetId}"`);
@@ -268,7 +271,7 @@ routerAdd(
 			});
 		}
 
-		return c.json(200, tagsArray);
+		return c.json(200, utils.getUniqueValuesFromArray(tagsArray));
 	},
 	$apis.requireRecordAuth('users'),
 );

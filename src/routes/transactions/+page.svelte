@@ -6,7 +6,6 @@
 	import Paginator from '$lib/components/ui/paginator.svelte';
 	import TypeToggle from '$lib/components/ui/type-toggle.svelte';
 	import Button from '$lib/components/ui/button.svelte';
-	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
 
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
@@ -32,7 +31,7 @@
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories } from '$lib/stores/main';
 	import dayjs from 'dayjs';
-	import Drawer from '$lib/components/ui/drawer.svelte';
+	import TagsView from '$lib/components/ui/tags-view.svelte';
 
 	$: page = $transactions?.page || 1;
 
@@ -123,13 +122,10 @@
 		return item;
 	}
 
-	async function close() {
-		$openForView = false;
-		await reset();
-	}
-
 	onMount(async () => {
-		await getTransactions(page);
+		if (!$transactions) {
+			await getTransactions(page);
+		}
 	});
 </script>
 
@@ -138,7 +134,7 @@
 </svelte:head>
 
 <div class="space-y-4">
-	<div class=" flex items-center justify-between gap-6 p-4 bg-white rounded-lg">
+	<div class=" flex items-center justify-between gap-6 rounded-lg bg-white p-4">
 		<div class="flex items-center gap-4">
 			<div class="w-[320px]">
 				<TypeToggle on:changed={(event) => changedType(event.detail)} />
@@ -162,7 +158,7 @@
 			</div>
 		</div>
 
-		<div class="flex justify-end w-48">
+		<div class="flex w-48 justify-end">
 			{#if !$monthIsClosed && dayjs($monthRange.start).isSame($monthRange.end, 'month')}
 				<Button loading={$loading} on:click={onCloseMonth} color={'outline-green'} class="click">
 					Close {dayjs($monthRange.start).format('MMMM')}
@@ -186,7 +182,7 @@
 		</div>
 	{/if}
 
-	<div class="rounded-xl p-6 bg-white">
+	<div class="rounded-xl bg-white p-6">
 		{#if $loading}
 			<Loader />
 		{:else}
@@ -216,10 +212,12 @@
 								</td>
 								<td>{item?.expand?.account?.name}</td>
 								<td>{item?.expand?.category?.name}</td>
-								<td>{item?.tags}</td>
+								<td>
+									<TagsView tags={item?.tags} />
+								</td>
 								<td>{item?.expand?.files?.files?.length || ''}</td>
 								<td>
-									<div class="max-w-52 w-full truncate">
+									<div class="w-full max-w-52 truncate">
 										{item.note}
 									</div>
 								</td>
@@ -234,10 +232,4 @@
 			{/if}
 		{/if}
 	</div>
-
-	<Drawer bind:open={$openForView} on:close={close}>
-		{#if $transaction.id}
-			<TransactionView />
-		{/if}
-	</Drawer>
 </div>

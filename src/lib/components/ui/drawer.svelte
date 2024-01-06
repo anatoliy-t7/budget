@@ -11,7 +11,9 @@
 	const dispatch = createEventDispatcher();
 
 	$: if (open) {
-		document.body.classList.toggle('overflow-y-hidden');
+		document.body.classList.add('overflow-hidden');
+	} else {
+		document.body.classList.remove('overflow-hidden');
 	}
 
 	async function eventOnEscape(e: any) {

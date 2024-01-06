@@ -11,7 +11,7 @@ export const getImageURL = (collectionId: string, recordId: string, fileName: st
 };
 
 export const getPrivetImage = async (record: RecordModel, fileName: string, size = '64x64') => {
-    return pb.files.getUrl(record, fileName, { token: get(fileToken), thumb: size });
+    return pb.files.getUrl(record, fileName, { 'token': get(fileToken), 'thumb': size });
 };
 
 // wrapper to execute a pocketbase pb request and generate alerts on failure

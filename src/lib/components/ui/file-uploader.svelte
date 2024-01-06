@@ -21,53 +21,46 @@
 
 	const coll = pb.collection('files');
 
-	async function compressImage(e: Event) {
-		const filesFromElement = (e.target as HTMLInputElement).files;
-
-		if (!filesFromElement) return;
-
-		for (let i = 0; i < filesFromElement.length; i++) {
-			new Compressor(filesFromElement[i], {
-				quality: 0.7,
+	async function compressImage(file: File): Promise<File> {
+		return new Promise<File>((resolve, reject) => {
+			new Compressor(file, {
+				quality: 0.8,
 				width: 1024,
 				height: 1024,
 				resize: 'cover',
-				success(result: File | Blob) {
-					let file: File;
-					let name = (result as File).name;
-					let type = (result as File).type;
-
-					if (result instanceof Blob) {
-						file = new File([result], 'compressed_' + name, { type });
-					} else {
-						file = result as File;
-					}
-
-					const dt = new DataTransfer();
-					dt.items.add(file);
-					if (filesFromElement) {
-						for (let i = 1; i < filesFromElement.length; i++) {
-							dt.items.add(filesFromElement[i]);
-						}
-					}
-					files = dt.files;
+				success: (result) => {
+					resolve(new File([result], file.name, { type: result.type }));
 				},
-
-				error(err: Error) {
-					console.error(err.message);
-				},
+				error: (error: Error) => reject(error),
 			});
-		}
-
-		await upload();
+		});
 	}
 
-	async function upload() {
+	async function onFileInputChange(e: Event) {
+		// collect promises from the compression function
+		const compressPromises: Promise<File>[] = [];
+		for (const file of e.target?.files) {
+			compressPromises.push(compressImage(file));
+		}
+
+		// wait until these properties are resolved and loop through the result
+		Promise.all(compressPromises)
+			.then((compressedFiles) => {
+				for (const file of compressedFiles) {
+					// do whatever you need to do with these files - upload to server or whatever
+				}
+				upload(compressedFiles);
+			})
+			.catch((error) => console.error(error));
+	}
+
+	async function upload(compressedFiles: File[]) {
+		console.log('upload', compressedFiles);
 		loading = true;
 		const formData = new FormData();
 
-		if (files?.length) {
-			for (let file of files) {
+		if (compressedFiles?.length) {
+			for (let file of compressedFiles) {
 				formData.append('files', file);
 			}
 		}
@@ -139,7 +132,7 @@
 			accept="image/*"
 			disabled={loading}
 			bind:files={files}
-			on:change={compressImage} />
+			on:change={onFileInputChange} />
 	</div>
 
 	{#if recordFiles?.files?.length}

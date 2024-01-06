@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	@apply font-sans text-gray-900 bg-gray-100;
+	@apply bg-gray-100 font-sans text-gray-900;
 }
 
 input:where(:not([type])),
@@ -28,25 +28,25 @@ button {
 	@apply cursor-pointer;
 }
 .click {
-	@apply active:scale-95 transition duration-300;
+	@apply transition duration-300 active:scale-95;
 }
 
 table {
 	@apply w-full table-auto;
 }
 table thead th {
-	@apply p-3 text-sm font-semibold text-left text-gray-600 border-b border-gray-100;
+	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
 }
 table tbody tr {
 	@apply even:bg-gray-50 hover:bg-gray-100;
 }
 table tbody td {
-	@apply first:rounded-l-lg last:rounded-r-lg p-3 text-sm;
+	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;
 }
 
 .page {
 	min-height: calc(100vh - 24px);
-	@apply w-full h-full;
+	@apply h-full w-full;
 }
 
 input::-webkit-outer-spin-button,
@@ -61,11 +61,11 @@ input[type='number'] {
 
 .hover,
 .hover svg {
-	@apply relative z-20 block outline-none cursor-pointer;
+	@apply relative z-20 block cursor-pointer outline-none;
 }
 .hover:after {
 	content: '';
-	@apply -z-0 absolute inset-0 w-10 h-10 m-auto bg-gray-100 rounded-full opacity-0;
+	@apply absolute inset-0 -z-0 m-auto h-10 w-10 rounded-full bg-gray-100 opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);
@@ -111,7 +111,7 @@ h1 {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-	@apply bg-gray-100 rounded-lg;
+	@apply rounded-lg bg-gray-100;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -119,9 +119,76 @@ h1 {
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-	@apply bg-gray-200 rounded-lg;
+	@apply rounded-lg bg-gray-200;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {
 	@apply bg-gray-300;
+}
+
+/* Tagify Theme */
+.tagify.tagifyTheme {
+	@apply inline-flex items-center gap-2 border-0;
+}
+
+.tagifyTheme .tagify__tag {
+	margin-top: 0;
+}
+
+.tagifyTheme .tagify__tag__removeBtn {
+	opacity: 0;
+	transform: translateX(-6px) scale(0.5);
+	margin-left: -3ch;
+	transition: 0.12s;
+}
+
+.tagifyTheme .tagify__tag:hover .tagify__tag__removeBtn {
+	transform: none;
+	opacity: 1;
+	margin-left: -1ch;
+}
+
+.tagify.tagifyTheme .tagify__input {
+	@apply m-0 block min-w-12 appearance-none rounded-lg border border-gray-400 bg-white px-3 py-3 transition placeholder:text-gray-400 hover:border-sky-400;
+}
+
+.tagify.tagifyTheme.tagify--focus .tagify__input {
+	@apply min-w-28;
+}
+.tagify.tagifyTheme .tagify__tag {
+	@apply m-0;
+}
+
+.tagify.tagifyTheme .tagify__tag-text {
+	@apply select-none;
+}
+.tagify.tagifyTheme .tagify__tag {
+	@apply flex items-center gap-1 rounded-lg bg-gray-200 text-base;
+}
+.tagify.tagifyTheme .tagify__tag__removeBtn {
+	@apply -ml-6;
+}
+.tagify.tagifyTheme .tagify__tag > div::before,
+.tagify.tagifyTheme .tagify__tag__removeBtn:hover + div::before {
+	box-shadow: none !important;
+}
+
+.tagify.tagifyTheme .tagify__tag__removeBtn:hover + div::before {
+	@apply m-0.5 rounded-lg bg-red-300;
+}
+
+.tagify__dropdown.tags-dropdown {
+	@apply border-0;
+}
+
+.tagify__dropdown.tags-dropdown > div {
+	@apply rounded-lg p-2;
+}
+
+.tagify__dropdown.tags-dropdown .tagify__dropdown__item {
+	@apply rounded-md;
+}
+
+.tagify__dropdown.tags-dropdown .tagify__dropdown__item.tagify__dropdown__item--active {
+	@apply bg-amber-100 text-gray-800;
 }

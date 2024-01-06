@@ -21,4 +21,6 @@ module.exports = {
 			return new Date(nextMonthWithFirstDay).toISOString();
 		}
 	},
+	getUniqueValuesFromArray: (array) =>
+		array.filter((currentValue, index, arr) => arr.indexOf(currentValue) === index),
 };

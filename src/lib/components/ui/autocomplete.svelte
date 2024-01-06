@@ -3,7 +3,7 @@
 	//https://github.com/pstanoev/simple-svelte-autocomplete
 
 	import { flip } from 'svelte/animate';
-	import { fade } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import { afterUpdate } from 'svelte';
 
 	// the list of items  the user can select from
@@ -1116,12 +1116,14 @@
 	function setScrollAwareListPosition() {
 		const { height: viewPortHeight } = window.visualViewport;
 		const { bottom: inputBottom, height: inputHeight } = inputContainer.getBoundingClientRect();
-		const { height: listHeight } = list.getBoundingClientRect();
+		if (list) {
+			const { height: listHeight } = list.getBoundingClientRect();
 
-		if (inputBottom + listHeight > viewPortHeight) {
-			list.style.top = `-${inputHeight + listHeight}px`;
-		} else {
-			list.style.top = '0px';
+			if (inputBottom + listHeight > viewPortHeight) {
+				list.style.top = `-${inputHeight + listHeight}px`;
+			} else {
+				list.style.top = '0px';
+			}
 		}
 	}
 </script>
@@ -1213,79 +1215,85 @@
 				class="autocomplete-clear-button">{@html clearText}</span>
 		{/if}
 	</div>
-	<div
-		class="{dropdownClassName ? dropdownClassName : 'min-w-[320px]'} autocomplete-list {showList
-			? ''
-			: 'hidden'} is-full width z-50 mt-1 max-h-96 w-full select-none overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm
+
+	{#if showList}
+		<!-- content here -->
+
+		<div
+			transition:slide
+			class="{dropdownClassName
+				? dropdownClassName
+				: 'min-w-[320px]'} autocomplete-list is-full width z-50 mt-1 max-h-96 w-full select-none overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm
     shadow-small focus:outline-none"
-		bind:this={list}>
-		{#if filteredListItems && filteredListItems.length > 0}
-			<slot
-				name="dropdown-header"
-				nbItems={filteredListItems.length}
-				maxItemsToShowInList={maxItemsToShowInList} />
+			bind:this={list}>
+			{#if filteredListItems && filteredListItems.length > 0}
+				<slot
+					name="dropdown-header"
+					nbItems={filteredListItems.length}
+					maxItemsToShowInList={maxItemsToShowInList} />
 
-			{#each filteredListItems as listItem, i}
-				{#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
-					<!-- svelte-ignore a11y-no-static-element-interactions -->
-					<div
-						class="autocomplete-list-item w-full cursor-pointer gap-4 px-4 py-2"
-						class:selected={i === highlightIndex}
-						class:confirmed={isConfirmed(listItem.item)}
-						on:click={() => onListItemClick(listItem)}
-						on:keypress={(e) => {
-							e.key == 'Enter' && onListItemClick(listItem);
-						}}
-						on:pointerenter={() => {
-							highlightIndex = i;
-						}}>
-						<slot
-							name="item"
-							item={listItem.item}
-							label={listItem.highlighted ? listItem.highlighted : listItem.label}>
-							{#if listItem.highlighted}
-								{@html listItem.highlighted}
-							{:else}
-								{@html listItem.label}
-							{/if}
-						</slot>
-					</div>
-				{/if}
-			{/each}
-
-			<slot
-				name="dropdown-footer"
-				nbItems={filteredListItems.length}
-				maxItemsToShowInList={maxItemsToShowInList}>
-				{#if maxItemsToShowInList > 0 && filteredListItems.length > maxItemsToShowInList}
-					{#if moreItemsText}
-						<div class="autocomplete-list-item-no-results">
-							...{filteredListItems.length - maxItemsToShowInList}
-							{moreItemsText}
+				{#each filteredListItems as listItem, i}
+					{#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
+						<!-- svelte-ignore a11y-no-static-element-interactions -->
+						<div
+							class="autocomplete-list-item w-full cursor-pointer gap-4 px-4 py-2"
+							class:selected={i === highlightIndex}
+							class:confirmed={isConfirmed(listItem.item)}
+							on:click={() => onListItemClick(listItem)}
+							on:keypress={(e) => {
+								e.key == 'Enter' && onListItemClick(listItem);
+							}}
+							on:pointerenter={() => {
+								highlightIndex = i;
+							}}>
+							<slot
+								name="item"
+								item={listItem.item}
+								label={listItem.highlighted ? listItem.highlighted : listItem.label}>
+								{#if listItem.highlighted}
+									{@html listItem.highlighted}
+								{:else}
+									{@html listItem.label}
+								{/if}
+							</slot>
 						</div>
 					{/if}
-				{/if}
-			</slot>
-		{:else if loading && loadingText}
-			<div class="autocomplete-list-item-loading">
-				<slot name="loading" loadingText={loadingText}>{loadingText}</slot>
-			</div>
-		{:else if create}
-			<!-- svelte-ignore a11y-no-static-element-interactions -->
-			<div
-				class="autocomplete-list-item-create"
-				on:click={selectItem}
-				on:keypress={(e) => {
-					e.key == 'Enter' && selectItem();
-				}}>
-				<slot name="create" createText={createText}>{createText}</slot>
-			</div>
-		{:else if noResultsText}
-			<div class="autocomplete-list-item-no-results">
-				<slot name="no-results" noResultsText={noResultsText}>{noResultsText}</slot>
-			</div>
-		{/if}
-	</div>
+				{/each}
+
+				<slot
+					name="dropdown-footer"
+					nbItems={filteredListItems.length}
+					maxItemsToShowInList={maxItemsToShowInList}>
+					{#if maxItemsToShowInList > 0 && filteredListItems.length > maxItemsToShowInList}
+						{#if moreItemsText}
+							<div class="autocomplete-list-item-no-results">
+								...{filteredListItems.length - maxItemsToShowInList}
+								{moreItemsText}
+							</div>
+						{/if}
+					{/if}
+				</slot>
+			{:else if loading && loadingText}
+				<div class="autocomplete-list-item-loading">
+					<slot name="loading" loadingText={loadingText}>{loadingText}</slot>
+				</div>
+			{:else if create}
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				<div
+					class="autocomplete-list-item-create"
+					on:click={selectItem}
+					on:keypress={(e) => {
+						e.key == 'Enter' && selectItem();
+					}}>
+					<slot name="create" createText={createText}>{createText}</slot>
+				</div>
+			{:else if noResultsText}
+				<div class="autocomplete-list-item-no-results">
+					<slot name="no-results" noResultsText={noResultsText}>{noResultsText}</slot>
+				</div>
+			{/if}
+		</div>
+	{/if}
 </div>
 
 <style>

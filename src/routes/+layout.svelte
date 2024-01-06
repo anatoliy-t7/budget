@@ -18,13 +18,13 @@
 
 {#if $authModel}
 	<FirstLoadData />
-	<div class="relative bg-gray-100">
+	<div class="relative bg-brand">
 		<Navbar />
 
-		<div class="ml-72 flex w-auto h-full gap-4">
+		<div class="ml-72 flex h-full w-auto gap-4">
 			<Sidebar />
 
-			<main class="page relative pt-24 pr-8 mt-2">
+			<main class="page relative mt-2 pr-8 pt-24">
 				<slot />
 			</main>
 		</div>
