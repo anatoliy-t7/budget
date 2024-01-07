@@ -8,7 +8,7 @@
 			classes = 'bg-red-200 text-red-900';
 			break;
 		case 'income':
-			classes = 'bg-green-200 text-green-900';
+			classes = 'bg-green-100 text-green-950';
 			break;
 		default:
 			break;

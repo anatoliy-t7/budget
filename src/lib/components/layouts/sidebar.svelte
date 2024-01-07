@@ -34,7 +34,7 @@
 		<div class="pb-7">
 			<button
 				on:click={() => transactionComponent.onOpen()}
-				class=" inline-flex w-full items-center gap-3 rounded-xl bg-green-700 px-4 py-3 text-left text-base font-medium text-white hover:bg-green-800">
+				class="click inline-flex w-full items-center gap-3 rounded-xl border border-green-300 bg-green-300 px-4 py-3 text-left text-base font-medium text-green-950 hover:border-green-400 hover:bg-green-400">
 				<Plus class="h-6 w-6" />
 				Add transaction
 			</button>
@@ -48,8 +48,8 @@
 			<a
 				href={link.url}
 				class="{activeUrl.pathname === link.url
-					? 'bg-sky-500 font-medium text-white'
-					: 'hover:bg-gray-200'} inline-flex w-full items-center gap-3 rounded-xl px-4 py-3 text-base">
+					? 'border-gray-500 font-medium '
+					: 'border-transparent hover:border-gray-400'} click inline-flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-base">
 				{#if link.icon}
 					<svelte:component this={link.icon} class="h-6 w-6" />
 				{/if}

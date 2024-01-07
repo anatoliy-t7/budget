@@ -175,7 +175,7 @@
 					on:click={() => filterByTag(tag)}
 					class="{$filterTag === tag
 						? 'bg-amber-400'
-						: 'bg-white hover:bg-gray-200'} rounded-full px-3 py-1">
+						: 'bg-white hover:bg-gray-200'} click rounded-full px-3 py-1">
 					{tag?.replace('#', '')}
 				</button>
 			{/each}

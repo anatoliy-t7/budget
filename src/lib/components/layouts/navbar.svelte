@@ -13,7 +13,7 @@
 <div
 	class="fixed inset-x-0 top-0 z-30 flex w-full justify-between gap-4 border-b border-gray-200 bg-white px-4 py-4 md:px-8">
 	<div class="flex w-full items-center gap-7">
-		<div class="w-[332px]">
+		<div class="w-[280px]">
 			<a href="/" class="block p-1">
 				<Logo />
 			</a>
@@ -22,11 +22,11 @@
 		<MonthRange />
 	</div>
 
-	<div class="flex justify-end">
+	<div class="flex items-center justify-end">
 		<Dropdown>
 			<div slot="trigger">
 				<div
-					class="flex items-center gap-1 truncate rounded-full bg-gray-100 py-2 pl-4 pr-3 hover:bg-gray-200">
+					class="flex items-center gap-1 truncate rounded-full bg-gray-100 py-2 pl-4 pr-3 text-sm hover:bg-gray-200">
 					{pb.authStore.model?.name ? pb.authStore.model?.name : pb.authStore.model?.email}
 
 					<ChevronDown />
@@ -38,7 +38,7 @@
 				<button
 					on:click={() => ($editProfile = true)}
 					type="button"
-					class="flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
+					class="click flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
 					<IconUser class="h-7 w-7" />
 					Profile
 				</button>

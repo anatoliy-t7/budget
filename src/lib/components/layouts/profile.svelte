@@ -25,6 +25,8 @@
 		toast.success(`Updated`);
 
 		$loading = false;
+
+		await close();
 	}
 
 	async function close() {

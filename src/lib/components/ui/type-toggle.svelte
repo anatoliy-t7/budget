@@ -20,12 +20,12 @@
 			on:click={() => changedType(item)}
 			type="button"
 			class="{selected === item
-				? 'border-amber-400 bg-amber-400'
+				? 'border-amber-300 bg-amber-300'
 				: 'border-gray-400 bg-white text-gray-500 hover:bg-gray-100'}
 				{index === 0 && 'rounded-l-lg border border-r-0'}
 				{$types.length === index + 1 && 'rounded-r-lg border border-l-0'}
 				{index !== 0 && $types.length !== index + 1 && 'border'}
-				   px-2 py-2.5 text-base font-medium capitalize transition duration-300">
+				   click px-2 py-2.5 text-base font-medium capitalize transition duration-300">
 			{item}
 		</button>
 	{/each}

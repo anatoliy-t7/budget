@@ -16,7 +16,7 @@
 				<div class="mt-2 h-6 w-20 animate-pulse rounded-md bg-gray-300"></div>
 			{/if}
 		</div>
-		<CourseUp class="h-12 w-12 text-green-600" />
+		<CourseUp class="h-12 w-12 text-green-500" />
 	</div>
 
 	<div class="flex min-w-[225px] items-center justify-between gap-4 rounded-xl bg-white p-6">

@@ -13,6 +13,6 @@
 
 <button
 	on:click={logOut}
-	class="flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
+	class="click flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
 	<LogOut class="h-7 w-7" /> Log out
 </button>

@@ -50,7 +50,7 @@
 		bind:this={datepicker}
 		class="w-24 bg-transparent text-lg font-medium focus:outline-none" />
 
-	<button on:click={() => picker.show()} type="button" class="">
+	<button on:click={() => picker.show()} type="button" class="click">
 		<Calendar class="h-7 w-7" />
 	</button>
 </div>

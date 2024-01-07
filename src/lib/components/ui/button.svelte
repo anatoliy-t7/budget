@@ -29,7 +29,7 @@
 
 	export let color = 'green';
 	let colorClass =
-		'text-white bg-green-700 border-green-700 hover:bg-green-800 ring-green-200 focus:ring-green-200';
+		'text-green-950 bg-green-300 border-green-300 hover:bg-green-800 ring-green-200 focus:ring-green-200';
 
 	switch (color) {
 		case 'amber':
@@ -38,7 +38,7 @@
 			break;
 		case 'green':
 			colorClass =
-				'text-white bg-green-700 border-green-700 hover:bg-green-800 ring-green-200 focus:ring-green-200';
+				'text-green-950 bg-green-300 border-green-300 hover:bg-green-800 ring-green-200 focus:ring-green-200';
 			break;
 		case 'outline':
 			colorClass =
@@ -69,6 +69,7 @@
 		{sizeClass}
 		{colorClass}
         {className}
+		{!disabled && !loading && 'click'}
         {disabled && !loading && 'cursor-not-allowed'}
         {loading && 'cursor-wait'}
         inline-flex select-none items-center justify-center gap-2 rounded-lg border font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-300 disabled:bg-gray-300">

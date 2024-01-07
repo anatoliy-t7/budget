@@ -146,7 +146,7 @@
 					<button
 						on:click={() => onDelete(file)}
 						type="button"
-						class="rounded-full bg-white p-1 text-red-500 shadow hover:bg-red-500 hover:text-white">
+						class="click rounded-full bg-white p-1 text-red-500 shadow hover:bg-red-500 hover:text-white">
 						<X class="h-6 w-6" />
 					</button>
 				</div>

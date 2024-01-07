@@ -12,8 +12,8 @@
 			on:click={() => ((selected = item), dispatch('changed', item))}
 			type="button"
 			class="{selected === item
-				? 'bg-amber-400 text-gray-800'
-				: 'bg-gray-100 text-gray-500'} rounded-lg p-3 text-base font-medium capitalize transition duration-300">
+				? 'bg-amber-300 text-amber-950'
+				: 'bg-gray-100 text-gray-500'} click rounded-lg p-3 text-base font-medium capitalize transition duration-300">
 			{item}
 		</button>
 	{/each}

@@ -3,7 +3,7 @@
 	export { extraClass as class };
 </script>
 
-<div class="flex items-center gap-2 text-green-700">
+<div class="flex items-center gap-2 text-green-600">
 	<svg class={extraClass} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 		<g fill="none">
 			<path

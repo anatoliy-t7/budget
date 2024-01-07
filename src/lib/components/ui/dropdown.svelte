@@ -16,7 +16,7 @@
 </script>
 
 <div use:clickOutside={() => (opened = false)} class="relative inline-block w-full">
-	<button type="button" on:click={clickHandler} class="w-full">
+	<button type="button" on:click={clickHandler} class="click w-full">
 		<slot name="trigger" />
 	</button>
 	{#if opened}
