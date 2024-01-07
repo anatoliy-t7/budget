@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { getOverview, monthRange, getTransactions } from '$lib/stores/transactions';
-	import { clickOutside } from '$lib/utils';
-	import { authModel } from '$lib/stores/pocketbase';
+	import { clickOutside } from '$lib/utils/utils';
 	import dayjs from 'dayjs';
 	import { slide } from 'svelte/transition';
 	import Calendar from '~icons/solar/calendar-linear';
@@ -62,7 +61,7 @@
 
 <div class="inline-flex w-full items-center gap-4">
 	<div class="flex items-center gap-2">
-		<button on:click={() => prev()} class="hover click">
+		<button on:click={() => prev()} class="hovered click">
 			<ChevronLeft class="h-7 w-7" />
 		</button>
 
@@ -76,14 +75,14 @@
 
 		<button
 			on:click={() => next()}
-			class="{isFuture ? 'cursor-not-allowed text-gray-400' : 'hover click'} "
+			class="{isFuture ? 'cursor-not-allowed text-gray-400' : 'hovered click'} "
 			disabled={isFuture}>
 			<ChevronRight class="h-7 w-7" />
 		</button>
 	</div>
 
 	<div use:clickOutside={() => (isExpanded = false)} class="relative">
-		<button on:click={clickHandler} class="hover click flex items-center p-1">
+		<button on:click={clickHandler} class="hovered click flex items-center p-1">
 			<Calendar class="h-7 w-7" />
 		</button>
 		{#if isExpanded}

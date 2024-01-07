@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from '$env/static/public';
 	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 	import Loader from '$lib/components/ui/loader.svelte';
 	import Table from '$lib/components/ui/table.svelte';
@@ -10,7 +11,7 @@
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
-	import { alertOnFailure, moneyFormat } from '$lib/utils';
+	import { alertOnFailure, moneyFormat } from '$lib/utils/utils';
 	import {
 		getTransactions,
 		transactions,
@@ -130,7 +131,7 @@
 </script>
 
 <svelte:head>
-	<title>Transactions</title>
+	<title>Transactions | {PUBLIC_APP_NAME}</title>
 </svelte:head>
 
 <div class="space-y-4">

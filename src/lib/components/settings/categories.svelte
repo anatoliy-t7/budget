@@ -7,7 +7,7 @@
 	import Add from '~icons/solar/add-circle-linear';
 	import 'emoji-picker-element'; // https://github.com/nolanlawson/emoji-picker-element
 
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { categories, getCategories, loading } from '$lib/stores/main';
 	import toast from 'svelte-french-toast';

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from '$env/static/public';
 	let extraClass: string = 'h-8 w-8';
 	export { extraClass as class };
 </script>
@@ -25,5 +26,5 @@
 				d="M10 22h3c3.771 0 5.657 0 6.828-1.172c.809-.808 1.06-1.956 1.137-3.828m0-6c-.078-1.872-.328-3.02-1.137-3.828C18.657 6 16.771 6 13 6h-3C6.229 6 4.343 6 3.172 7.172C2 8.343 2 10.229 2 14c0 3.771 0 5.657 1.172 6.828c.653.654 1.528.943 2.828 1.07M6 6l3.735-2.477a3.237 3.237 0 0 1 3.53 0L17 6" />
 		</g>
 	</svg>
-	<div class="text-2xl font-semibold">budget</div>
+	<div class="text-2xl font-semibold">{PUBLIC_APP_NAME}</div>
 </div>

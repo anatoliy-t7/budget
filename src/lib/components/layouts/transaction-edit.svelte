@@ -10,7 +10,7 @@
 
 	import toast from 'svelte-french-toast';
 	import dayjs from 'dayjs';
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories, accounts, loading } from '$lib/stores/main';
 	import {

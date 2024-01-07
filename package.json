@@ -50,6 +50,7 @@
     "@yaireo/tagify": "^4.18.0",
     "bigpicture": "^2.6.2",
     "compressorjs": "^1.2.1",
-    "emoji-picker-element": "^1.21.0"
+    "emoji-picker-element": "^1.21.0",
+    "svelte-select": "^5.8.3"
   }
 }

@@ -1,6 +1,6 @@
 <script>
 	import { slide } from 'svelte/transition';
-	import { clickOutside } from '$lib/utils';
+	import { clickOutside } from '$lib/utils/utils';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();

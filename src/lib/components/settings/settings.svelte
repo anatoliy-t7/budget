@@ -1,20 +1,23 @@
 <script lang="ts">
 	import toast from 'svelte-french-toast';
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb } from '$lib/stores/pocketbase';
 	import { loading, getBudget, budget } from '$lib/stores/main';
 	import { onMount } from 'svelte';
-	import { CURRENCY } from '$lib/stores/main';
+	import { CURRENCY_LIST } from '$lib/utils/currency-code';
 	import Button from '../ui/button.svelte';
-	import Autocomplete from '../ui/autocomplete.svelte';
+	import Select from 'svelte-select';
 
 	const coll = pb.collection('budgets');
 
-	let defaultCurrency = 'USD';
+	let defaultCurrency: any = {
+		name: 'United States Dollar',
+		code: 'USD',
+	};
 
 	async function submit() {
 		$loading = true;
-		$budget.defaultCurrency = defaultCurrency;
+		$budget.defaultCurrency = defaultCurrency.code;
 
 		alertOnFailure(async () => {
 			await coll.update($budget?.id, $budget);
@@ -25,29 +28,30 @@
 		});
 	}
 
-	function currencyFilter(item: any, keywords: any) {
-		return item;
-	}
-
 	onMount(async () => {
 		await getBudget();
-		defaultCurrency = $budget?.defaultCurrency;
+		defaultCurrency = CURRENCY_LIST.find((c) => c.code == $budget?.defaultCurrency);
 	});
 </script>
 
 <div class="gap-4 rounded-xl bg-white p-6">
 	<form on:submit|preventDefault={submit} class="grid gap-6">
-		<div class="block max-w-32 space-y-1 font-medium">
+		<div class="block max-w-60 space-y-1 font-medium">
 			<div class="text-sm">Default Currency</div>
 
-			<Autocomplete
-				items={$CURRENCY}
-				bind:selectedItem={defaultCurrency}
-				itemFilterFunction={currencyFilter}
-				matchAllKeywords={false}
-				sortByMatchedKeywords={true}
-				dropdownClassName="max-w-32"
-				minCharactersToSearch={0} />
+			<Select
+				items={CURRENCY_LIST}
+				bind:value={defaultCurrency}
+				required
+				itemId={'code'}
+				label={'code'}>
+				<div slot="selection" let:selection>
+					{selection.code} - {selection.name}
+				</div>
+				<div slot="item" let:item>
+					{item.code} - {item.name}
+				</div>
+			</Select>
 		</div>
 
 		<div>

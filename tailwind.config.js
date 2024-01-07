@@ -12,6 +12,7 @@ module.exports = {
 			gray: colors.neutral,
 			red: colors.red,
 			sky: colors.sky,
+
 			cyan: colors.cyan,
 			brand: '#FAF7F0',
 			green: {

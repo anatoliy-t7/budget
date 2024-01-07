@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { pb, providerLogin, loading } from '$lib/stores/pocketbase';
 	import Button from '$lib/components/ui/button.svelte';
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import GoogleIcon from '$lib/components/ui/google-icon.svelte';
 	import Logo from '$lib/components/ui/logo.svelte';
 

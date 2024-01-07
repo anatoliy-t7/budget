@@ -6,7 +6,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let open: boolean = false;
-	export let maxWidth: string = 'max-w-xl';
+	export let maxWidth: string = 'max-w-2xl';
 
 	const dispatch = createEventDispatcher();
 
@@ -48,7 +48,7 @@
 			transition:slide={{ delay: 0, duration: 400, easing: cubicOut, axis: 'x' }}
 			class="{maxWidth} z-60 fixed inset-y-0 right-0 z-50 h-screen w-full overflow-y-auto bg-gray-50 px-8 py-6 text-gray-600">
 			<div class="absolute right-6 top-6">
-				<button on:click={onClose} class="hover click">
+				<button on:click={onClose} class="hovered click">
 					<X class="h-6 w-6" />
 				</button>
 			</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { clickOutside } from '$lib/utils';
+	import { clickOutside } from '$lib/utils/utils';
 	import { accounts } from '$lib/stores/main';
 	import { slide } from 'svelte/transition';
 	import Selector from '~icons/solar/alt-arrow-down-linear';

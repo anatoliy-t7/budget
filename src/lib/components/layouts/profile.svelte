@@ -2,7 +2,7 @@
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
 
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { loading, editProfile } from '$lib/stores/main';
 	import toast from 'svelte-french-toast';

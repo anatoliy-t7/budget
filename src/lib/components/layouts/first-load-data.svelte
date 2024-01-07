@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { preparePageTransition } from '$lib/utils';
+	import { preparePageTransition } from '$lib/utils/utils';
 	import { accounts, categories, getAccounts, getCategories } from '$lib/stores/main';
 	import { getOverview, overview, getTransactions } from '$lib/stores/transactions';
 	import { pb, authModel } from '$lib/stores/pocketbase';

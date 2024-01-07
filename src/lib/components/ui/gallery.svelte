@@ -2,7 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import BigPicture from 'bigpicture';
 	import { transaction } from '$lib/stores/transactions';
-	import { getPrivetImage } from '$lib/utils';
+	import { getPrivetImage } from '$lib/utils/utils';
 	import { onMount } from 'svelte';
 	import { fileToken } from '$lib/stores/main';
 	import { pb } from '$lib/stores/pocketbase';

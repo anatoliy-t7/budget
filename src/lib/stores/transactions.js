@@ -1,6 +1,6 @@
 import { writable, readable, get } from 'svelte/store';
 import { pb } from '$lib/stores/pocketbase';
-import { alertOnFailure } from '$lib/utils';
+import { alertOnFailure } from '$lib/utils/utils';
 import dayjs from 'dayjs';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 export const monthRange = writable({

@@ -5,7 +5,7 @@
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
 	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { accounts, loading, getAccounts } from '$lib/stores/main';
 
@@ -116,7 +116,7 @@
 				<div class=" text-xl font-medium">Account</div>
 
 				{#if account.id}
-					<button on:click={onDelete} class="click hover text-red-500">
+					<button on:click={onDelete} class="click hovered text-red-500">
 						<Trash class=" h-6 w-6" />
 					</button>
 				{/if}

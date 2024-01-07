@@ -3,14 +3,14 @@
 	import Button from '$lib/components/ui/button.svelte';
 	import Pencil from '~icons/tabler/pencil';
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
-	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
+	import Select from 'svelte-select';
 
-	import { alertOnFailure } from '$lib/utils';
+	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb, authModel } from '$lib/stores/pocketbase';
 	import { accounts, loading, getAccounts } from '$lib/stores/main';
 
 	import toast from 'svelte-french-toast';
-	import { CURRENCY } from '$lib/stores/main';
+	import { CURRENCY_LIST } from '$lib/utils/currency-code';
 	const coll = pb.collection('accounts');
 
 	let open: boolean = false;
@@ -20,6 +20,14 @@
 		currency: 'USD',
 		budget: $authModel?.currentBudget,
 	};
+	let selectedCurrency: any = {
+		name: 'United States Dollar',
+		code: 'USD',
+	};
+
+	$: if (selectedCurrency) {
+		account.currency = selectedCurrency.code;
+	}
 
 	$: disabled = !account?.name;
 
@@ -69,6 +77,10 @@
 			await close();
 		}
 	}
+
+	function currencyFilter(item: any, keywords: any) {
+		return item;
+	}
 </script>
 
 <div class="gap-4 rounded-xl bg-white pt-6">
@@ -116,7 +128,7 @@
 				<div class=" text-xl font-medium">Account</div>
 
 				{#if account.id}
-					<button on:click={onDelete} class="click hover text-red-500">
+					<button on:click={onDelete} class="click hovered text-red-500">
 						<Trash class=" h-6 w-6" />
 					</button>
 				{/if}
@@ -134,13 +146,19 @@
 				<div class="block space-y-1 font-medium">
 					<div class="text-sm">Currency</div>
 
-					<Autocomplete
-						items={$CURRENCY}
-						bind:selectedItem={account.currency}
-						matchAllKeywords={false}
-						sortByMatchedKeywords={true}
-						keywordsFieldName="name"
-						required />
+					<Select
+						items={CURRENCY_LIST}
+						bind:value={selectedCurrency}
+						required
+						itemId={'code'}
+						label={'code'}>
+						<div slot="selection" let:selection>
+							{selection.code} - {selection.name}
+						</div>
+						<div slot="item" let:item>
+							{item.code} - {item.name}
+						</div>
+					</Select>
 				</div>
 
 				<div class="pt-6">

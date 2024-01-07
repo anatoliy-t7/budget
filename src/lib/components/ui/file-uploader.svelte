@@ -6,7 +6,7 @@
 	import Compressor from 'compressorjs';
 	import { onMount } from 'svelte';
 	import { pb } from '$lib/stores/pocketbase';
-	import { alertOnFailure, getPrivetImage } from '$lib/utils';
+	import { alertOnFailure, getPrivetImage } from '$lib/utils/utils';
 	import toast from 'svelte-french-toast';
 
 	import { fileToken } from '$lib/stores/main';

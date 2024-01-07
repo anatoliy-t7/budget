@@ -7,7 +7,7 @@ import { readable, writable } from "svelte/store";
 import { browser } from "$app/environment";
 import { invalidateAll } from "$app/navigation";
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import { alertOnFailure } from '$lib/utils';
+import { alertOnFailure } from '$lib/utils/utils';
 
 export const loading = writable(false);
 

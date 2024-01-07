@@ -3,7 +3,7 @@
 	import CourseUp from '~icons/solar/course-up-linear';
 	import CourseDown from '~icons/solar/course-down-linear';
 	import { overview } from '$lib/stores/transactions';
-	import { moneyFormat } from '$lib/utils';
+	import { moneyFormat } from '$lib/utils/utils';
 </script>
 
 <div class="flex flex-wrap gap-4">
