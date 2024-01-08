@@ -1,0 +1,129 @@
+@import url('./svelte-select.css');
+@import url('./tagify.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	@apply bg-gray-100 font-sans text-gray-900;
+}
+
+[type='text'],
+[type='email'],
+[type='url'],
+[type='password'],
+[type='number'],
+[type='date'],
+[type='datetime-local'],
+[type='month'],
+[type='search'],
+[type='tel'],
+[type='time'],
+[type='week'],
+textarea,
+select {
+	@apply block w-full appearance-none rounded-lg border border-gray-400 bg-white px-3 py-2.5  transition placeholder:text-gray-400 hover:border-sky-400 focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400;
+}
+
+button {
+	@apply cursor-pointer;
+}
+.click {
+	@apply transition duration-300 active:scale-95;
+}
+
+table {
+	@apply w-full table-auto;
+}
+table thead th {
+	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
+}
+table tbody tr {
+	@apply even:bg-gray-50 hover:bg-gray-100;
+}
+table tbody td {
+	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;
+}
+
+.page {
+	min-height: calc(100vh - 24px);
+	@apply h-full w-full;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	appearance: textfield;
+}
+
+.hovered,
+.hovered svg {
+	@apply relative z-20 block cursor-pointer outline-none;
+}
+.hovered:after {
+	content: '';
+	@apply absolute inset-0 -z-0 m-auto h-10 w-10 rounded-full bg-gray-100 opacity-0;
+	left: -11px;
+	right: -11px;
+	-webkit-transform: scale(0.3);
+	transform: scale(0.3);
+	-webkit-transition: 0.3s ease;
+	transition: 0.3s ease;
+}
+
+.hovered:hover:after {
+	@apply z-0 scale-100 opacity-100;
+}
+
+h1 {
+	@apply text-2xl font-semibold capitalize;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	100% {
+		opacity: 1;
+	}
+	0% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:root::view-transition-old(root) {
+		animation: 300ms cubic-bezier(0.4, 0, 1, 1) both fade-out;
+	}
+
+	:root::view-transition-new(root) {
+		animation: 300ms cubic-bezier(0, 0, 0.2, 1) 90ms both fadeIn;
+	}
+}
+
+.scrollbar::-webkit-scrollbar-track {
+	@apply rounded-lg bg-gray-100;
+}
+
+.scrollbar::-webkit-scrollbar {
+	@apply w-1 bg-gray-100;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+	@apply rounded-lg bg-gray-200;
+}
+
+.scrollbar:hover::-webkit-scrollbar-thumb {
+	@apply bg-gray-300;
+}

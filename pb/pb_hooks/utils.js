@@ -1,3 +1,4 @@
+// @ts-nocheck
 module.exports = {
 	isNotCurrentMonth: (/** @type {string} */ dateTime) => {
 		const dateString = JSON.stringify(dateTime);
@@ -21,6 +22,53 @@ module.exports = {
 			return new Date(nextMonthWithFirstDay).toISOString();
 		}
 	},
-	getUniqueValuesFromArray: (array) =>
-		array.filter((currentValue, index, arr) => arr.indexOf(currentValue) === index),
+
+	getUniqueTags: (transactions) => {
+		let tagsArray = [];
+
+		if (transactions?.length) {
+			transactions?.forEach((t) => {
+				if (t.tags) {
+					const tagsTmp = t.tags.split(',');
+					tagsTmp?.forEach((tag) => {
+						if (tag) {
+							tagsArray.push(tag);
+						}
+					});
+				}
+			});
+		}
+
+		return tagsArray;
+	},
+
+	getUniqueCategories: (transactions) => {
+		let categoriesArray = [];
+
+		if (transactions?.length) {
+			transactions?.forEach((t) => {
+				if (t?.expand?.category) {
+					categoriesArray.push(t?.expand?.category);
+				}
+			});
+		}
+
+		return categoriesArray;
+	},
+
+	getUniqueValuesFromArrayOfObject: (array) => {
+		var resArr = [];
+		array.filter(function (item) {
+			var i = resArr.findIndex((x) => x.id == item.id);
+			if (i <= -1) {
+				resArr.push(item);
+			}
+			return null;
+		});
+		return resArr;
+	},
+
+	getUniqueValuesFromArray: (array) => {
+		return array?.filter((currentValue, index, arr) => arr.indexOf(currentValue) === index);
+	},
 };

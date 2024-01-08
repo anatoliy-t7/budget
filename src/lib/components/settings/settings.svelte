@@ -4,9 +4,9 @@
 	import { pb } from '$lib/stores/pocketbase';
 	import { loading, getBudget, budget } from '$lib/stores/main';
 	import { onMount } from 'svelte';
-	import { CURRENCY_LIST } from '$lib/utils/currency-code';
+	import { CURRENCY_LIST } from '$lib/utils/constants';
 	import Button from '../ui/button.svelte';
-	import Select from 'svelte-select';
+	import Select from 'svelte-select/no-styles/Select.svelte';
 
 	const coll = pb.collection('budgets');
 
@@ -36,7 +36,7 @@
 
 <div class="gap-4 rounded-xl bg-white p-6">
 	<form on:submit|preventDefault={submit} class="grid gap-6">
-		<div class="block max-w-60 space-y-1 font-medium">
+		<div class="block max-w-64 space-y-1 font-medium">
 			<div class="text-sm">Default Currency</div>
 
 			<Select

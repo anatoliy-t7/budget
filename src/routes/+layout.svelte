@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../app.css';
+	import '$lib/css/app.css';
 
 	import { Toaster } from 'svelte-french-toast';
 	import { goto } from '$app/navigation';

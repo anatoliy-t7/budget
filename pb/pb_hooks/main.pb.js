@@ -23,12 +23,7 @@ routerAdd(
 
 		const budget = $app.dao().findRecordById('budgets', budgetId);
 
-		const data = {
-			income: 0,
-			expenses: 0,
-			currency: budget.getString('defaultCurrency'),
-			balance: 0,
-		};
+		const data = {};
 
 		let transactions = $app
 			.dao()
@@ -42,28 +37,40 @@ routerAdd(
 		transactions = JSON.parse(JSON.stringify(transactions));
 
 		transactions?.forEach((record) => {
-			if (record.expand.account.currency === budget.getString('defaultCurrency')) {
-				if (record.type === 'income') {
-					data.income = data.income + record.amount;
-				}
+			const currency = record.expand.account.currency.toLowerCase();
 
-				if (record.type === 'expenses') {
-					data.expenses = data.expenses + record.amount;
-				}
+			if (!data[currency]) {
+				data[currency] = {
+					income: 0,
+					expenses: 0,
+					currency: currency,
+					balance: 0,
+				};
+			}
 
-				if (record.type == 'opened') {
-					data.balance = data.balance + record.amount;
-				}
+			if (record.type === 'income') {
+				data[currency].income += record.amount;
+				data[currency].balance += record.amount;
+			}
+
+			if (record.type === 'expenses') {
+				data[currency].expenses += record.amount;
+				data[currency].balance -= record.amount;
+			}
+
+			if (record.type == 'opened') {
+				data[currency].balance += record.amount;
 			}
 		});
 
-		data.balance = data.balance + data.income - data.expenses;
+		const defaultCurrency = budget.getString('defaultCurrency');
 
-		return c.json(200, data);
+		return c.json(200, { data, defaultCurrency: defaultCurrency.toLowerCase() });
 	},
 	$apis.requireRecordAuth('users'),
 );
 
+// check if is month closed
 routerAdd(
 	'GET',
 	'/api/close-month',
@@ -224,22 +231,53 @@ routerAdd(
 
 		transactions = JSON.parse(JSON.stringify(transactions));
 
-		let tagsArray = [];
+		let tags = utils.getUniqueTags(transactions);
+		tags = utils.getUniqueValuesFromArray(tags);
 
-		if (transactions?.length) {
-			transactions?.forEach((t) => {
-				if (t.tags) {
-					const tagsTmp = t.tags.split(',');
-					tagsTmp?.forEach((tag) => {
-						if (tag) {
-							tagsArray.push(tag);
-						}
-					});
-				}
-			});
-		}
+		return c.json(200, tags);
+	},
+	$apis.requireRecordAuth('users'),
+);
 
-		return c.json(200, utils.getUniqueValuesFromArray(tagsArray));
+// Get range categories
+routerAdd(
+	'GET',
+	'/api/categories/range',
+	(c) => {
+		const utils = require(`${__hooks}/utils.js`);
+
+		const budgetId = c.queryParam('budgetId');
+		const startOf = c.queryParam('startOf');
+		const endOf = c.queryParam('endOf');
+
+		let transactions = $app
+			.dao()
+			.findRecordsByFilter(
+				'transactions',
+				`budget = "${budgetId}" && created >= "${startOf}" && created <= "${endOf}"`,
+			);
+
+		$app.dao().expandRecords(transactions, ['category'], null);
+
+		transactions = JSON.parse(JSON.stringify(transactions));
+
+		let categories = utils.getUniqueCategories(transactions);
+		categories = utils.getUniqueValuesFromArrayOfObject(categories);
+
+		let data = [];
+		categories.forEach((c) => {
+			const filtredTransactions = transactions.filter((t) => t.category === c.id);
+
+			if (filtredTransactions) {
+				const amount = filtredTransactions
+					.map((obj) => obj.amount)
+					.reduce((accumulator, current) => accumulator + current, 0);
+
+				data.push({ amount, category: c });
+			}
+		});
+
+		return c.json(200, data);
 	},
 	$apis.requireRecordAuth('users'),
 );

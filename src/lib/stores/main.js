@@ -1,4 +1,4 @@
-import { writable, readable } from 'svelte/store';
+import { writable, readable, get } from 'svelte/store';
 import { pb } from '$lib/stores/pocketbase';
 export const CURRENCY = readable(['USD', 'EUR', 'INR']);
 
@@ -47,27 +47,24 @@ export async function resetAll() {
 	fileToken.set('');
 }
 
-/**
- * @param {string | URL | Request} url
- */
-export async function fetch(url) {
-	const loading = writable(false);
-	const error = writable(false);
-	const data = writable({});
+// export async function fetchData(url) {
+// 	const loading = writable(false);
+// 	const error = writable(false);
+// 	const data = writable({});
 
-	async function get() {
-		loading.set(true);
-		error.set(false);
-		try {
-			const response = await fetch(url);
-			data.set(await response.json());
-		} catch (e) {
-			error.set(e);
-		}
-		loading.set(false);
-	}
+// 	async function get() {
+// 		loading.set(true);
+// 		error.set(false);
+// 		try {
+// 			const response = await fetch(url);
+// 			data.set(await response.json());
+// 		} catch (e) {
+// 			error.set(e);
+// 		}
+// 		loading.set(false);
+// 	}
 
-	get();
+// 	get();
 
-	return [data, loading, error, get];
-}
+// 	return [data, loading, error, get];
+// }

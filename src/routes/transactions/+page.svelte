@@ -27,7 +27,6 @@
 		monthRange,
 		monthIsClosed,
 		getTypeClosedTransactions,
-		reset,
 	} from '$lib/stores/transactions';
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories } from '$lib/stores/main';

@@ -12,10 +12,10 @@
 
 	switch (size) {
 		case 'xs':
-			sizeClass = 'px-2 py-1 text-xs';
+			sizeClass = 'px-3 py-1 text-xs';
 			break;
 		case 'sm':
-			sizeClass = 'px-3 py-2 text-sm';
+			sizeClass = 'px-4 py-2 text-sm';
 			break;
 		case 'md':
 			sizeClass = 'px-4 py-2.5 text-base';

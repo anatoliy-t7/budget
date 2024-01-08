@@ -10,7 +10,7 @@
 	import { accounts, loading, getAccounts } from '$lib/stores/main';
 
 	import toast from 'svelte-french-toast';
-	import { CURRENCY_LIST } from '$lib/utils/currency-code';
+	import { CURRENCY_LIST } from '$lib/utils/constants';
 	const coll = pb.collection('accounts');
 
 	let open: boolean = false;
