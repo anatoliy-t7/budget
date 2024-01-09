@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import IconDownload from '~icons/solar/file-download-linear';
 	import BigPicture from 'bigpicture';
 	import { transaction } from '$lib/stores/transactions';
 	import { getPrivetImage } from '$lib/utils/utils';
@@ -50,15 +51,25 @@
 
 <div transition:fade class="grid gap-2">
 	{#if files.length && recordFiles}
-		<div class="">Files:</div>
+		<div>Files:</div>
 
 		<div id="lightbox" class="flex flex-wrap items-center gap-2">
 			{#each files as file}
 				{#await getPrivetImage(recordFiles, file, '1024x1024') then src}
-					<button
-						class="h-32 w-32 overflow-hidden rounded-lg border border-transparent bg-white hover:border-sky-500">
-						<img src={src} class="h-32 w-32 rounded-lg object-cover" alt={file} data-bp={src} />
-					</button>
+					<div class="group relative">
+						<button
+							class="hover:border-sky-500 w-32 h-32 overflow-hidden bg-white border border-transparent rounded-lg">
+							<img src={src} class="object-cover w-32 h-32 rounded-lg" alt={file} data-bp={src} />
+						</button>
+						<div class="right-2 top-2 group-hover:flex absolute hidden">
+							<a
+								target="_blank"
+								href={`${src}?download=1`}
+								class="click inline-flex rounded-lg bg-white p-1.5 text-green-500 shadow hover:bg-green-500 hover:text-white">
+								<IconDownload class="w-6 h-6" />
+							</a>
+						</div>
+					</div>
 				{/await}
 			{/each}
 		</div>

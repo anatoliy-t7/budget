@@ -3,6 +3,7 @@
 	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb } from '$lib/stores/pocketbase';
 	import { loading, getBudget, budget } from '$lib/stores/main';
+	import { getOverview } from '$lib/stores/transactions';
 	import { onMount } from 'svelte';
 	import { CURRENCY_LIST } from '$lib/utils/constants';
 	import Button from '../ui/button.svelte';
@@ -25,6 +26,7 @@
 
 			$loading = false;
 			await getBudget();
+			await getOverview();
 		});
 	}
 
@@ -34,9 +36,9 @@
 	});
 </script>
 
-<div class="gap-4 rounded-xl bg-white p-6">
+<div class="rounded-xl gap-4 p-6 bg-white">
 	<form on:submit|preventDefault={submit} class="grid gap-6">
-		<div class="block max-w-64 space-y-1 font-medium">
+		<div class="max-w-64 block space-y-1 font-medium">
 			<div class="text-sm">Default Currency</div>
 
 			<Select

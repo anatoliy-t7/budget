@@ -37,29 +37,30 @@ routerAdd(
 		transactions = JSON.parse(JSON.stringify(transactions));
 
 		transactions?.forEach((record) => {
-			const currency = record.expand.account.currency.toLowerCase();
+			const accountId = record.expand.account.id;
 
-			if (!data[currency]) {
-				data[currency] = {
+			if (!data[accountId]) {
+				data[accountId] = {
 					income: 0,
 					expenses: 0,
-					currency: currency,
+					currency: record.expand.account.currency.toLowerCase(),
 					balance: 0,
+					account: record.expand.account.name,
 				};
 			}
 
 			if (record.type === 'income') {
-				data[currency].income += record.amount;
-				data[currency].balance += record.amount;
+				data[accountId].income += record.amount;
+				data[accountId].balance += record.amount;
 			}
 
 			if (record.type === 'expenses') {
-				data[currency].expenses += record.amount;
-				data[currency].balance -= record.amount;
+				data[accountId].expenses += record.amount;
+				data[accountId].balance -= record.amount;
 			}
 
 			if (record.type == 'opened') {
-				data[currency].balance += record.amount;
+				data[accountId].balance += record.amount;
 			}
 		});
 

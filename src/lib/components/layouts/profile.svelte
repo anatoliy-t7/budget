@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
 
 	import { alertOnFailure } from '$lib/utils/utils';
@@ -13,6 +12,7 @@
 	let user: any = {
 		id: null,
 		name: null,
+		email: null,
 	};
 
 	async function submit() {
@@ -38,6 +38,7 @@
 		user = {
 			id: $authModel?.id,
 			name: $authModel?.name,
+			email: $authModel?.email,
 		};
 	});
 </script>
@@ -51,6 +52,14 @@
 
 			<div class="relative">
 				<input bind:value={user.name} type="text" />
+			</div>
+		</div>
+
+		<div class="block w-full space-y-1 font-medium">
+			<span class="text-sm"> Email </span>
+
+			<div class="relative">
+				<input bind:value={user.email} type="email" />
 			</div>
 		</div>
 
