@@ -14,12 +14,13 @@
 	import { pb } from '$lib/stores/pocketbase';
 	import { categories, accounts, loading } from '$lib/stores/main';
 	import {
-		openForEdit,
+		isEditOpen,
 		transaction,
 		selectedCategory,
 		reset,
 		getTags,
 		tags,
+		onOpenEdit,
 	} from '$lib/stores/transactions';
 	import { onMount } from 'svelte';
 
@@ -96,19 +97,21 @@
 				toast.success(`${$transaction.type} was added`);
 
 				$loading = false;
-				await close(false);
+				await close();
 			});
 		}
 	}
 
-	async function close(needConfirm = true) {
-		if (needConfirm) {
-			if (oldTransaction !== JSON.stringify($transaction) && !confirm(`Do you want to close it?`)) {
-				return;
-			}
+	async function onClose() {
+		if (oldTransaction !== JSON.stringify($transaction) && !confirm(`Do you want to close it?`)) {
+			return;
+		} else {
+			await close();
 		}
+	}
 
-		$openForEdit = false;
+	async function close() {
+		$isEditOpen = false;
 		transferAmount = null;
 		oldTransaction = null;
 
@@ -116,22 +119,9 @@
 	}
 
 	export async function beforeOpen() {
-		if (!$tags.length) {
-			await getTags();
-		}
-
 		oldTransaction = JSON.stringify($transaction);
-	}
-
-	export async function onOpen() {
-		$transaction.account = $accounts[0]?.id;
-		$transaction.transfer = $accounts?.length > 1 ? $accounts[1]?.id : $accounts[0]?.id;
-
-		setTimeout(async () => {
-			await beforeOpen();
-		}, 150);
-
-		$openForEdit = true;
+		// TODO close it with out asking
+		await onOpenEdit();
 	}
 
 	function categoryFilter(item: any, keywords: any) {
@@ -153,7 +143,7 @@
 	});
 </script>
 
-<Drawer bind:open={$openForEdit} on:close={() => close()}>
+<Drawer bind:open={$isEditOpen} on:close={() => onClose()}>
 	<div class="pb-6 text-2xl font-medium">Add transaction</div>
 
 	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
@@ -240,7 +230,7 @@
 				Tags <span class="font-normal text-gray-400">(optional)</span>
 			</div>
 
-			{#if $openForEdit}
+			{#if $isEditOpen}
 				<Tags bind:selected={$transaction.tags} />
 			{/if}
 		</div>

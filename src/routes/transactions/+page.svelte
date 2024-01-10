@@ -16,7 +16,7 @@
 		getTransactions,
 		transactions,
 		transaction,
-		openForView,
+		isViewOpen,
 		loading,
 		transactionType,
 		transfer,
@@ -68,7 +68,7 @@
 		$transaction = item;
 
 		$selectedCategory = $categories?.find((c) => c.id === $transaction.category);
-		$openForView = true;
+		$isViewOpen = true;
 	}
 
 	async function filterByTag(tag: string) {

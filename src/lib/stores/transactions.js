@@ -1,4 +1,5 @@
-import { writable, readable, get } from 'svelte/store';
+import { writable, readable, get, readonly } from 'svelte/store';
+import { accounts } from '$lib/stores/main';
 import { pb } from '$lib/stores/pocketbase';
 import { alertOnFailure } from '$lib/utils/utils';
 import dayjs from 'dayjs';
@@ -17,8 +18,9 @@ export const overview = writable(null);
 export const totalOverview = writable(null);
 export const list = writable(null);
 export const loading = writable(false);
-export const openForEdit = writable(false);
-export const openForView = writable(false);
+export const isEditOpen = writable(false);
+
+export const isViewOpen = writable(false);
 export const selectedCategory = writable({});
 export const tags = writable([]);
 export const totalAmountsByCategories = writable([]);
@@ -28,7 +30,6 @@ export const filterCategory = writable('');
 export const monthIsClosed = writable(false);
 export const defaultCurrency = writable('');
 export const exchangeRate = writable(null);
-
 export const transaction = writable({
 	id: null,
 	amount: null,
@@ -43,6 +44,19 @@ export const transaction = writable({
 	files: null,
 	tags: [],
 });
+
+export async function onOpenEdit() {
+	if (!get(tags).length) {
+		await getTags();
+	}
+
+	isEditOpen.set(true);
+	transaction.subscribe((value) => {
+		const acs = get(accounts);
+		value.account = acs[0]?.id;
+		value.transfer = acs.length > 1 ? acs[1]?.id : acs[0]?.id;
+	});
+}
 
 export async function getOverview() {
 	loading.set(true);
@@ -257,8 +271,8 @@ export async function resetAll() {
 	tags.set([]);
 	rangeTags.set([]);
 	selectedCategory.set([]);
-	openForView.set(false);
-	openForEdit.set(false);
+	isViewOpen.set(false);
+	isEditOpen.set(false);
 	list.set(null);
 	overview.set(null);
 	transactionType.set('');

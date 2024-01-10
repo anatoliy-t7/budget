@@ -2,12 +2,10 @@
 	import Overview from '~icons/solar/graph-broken';
 	import Transactions from '~icons/solar/square-transfer-vertical-broken';
 	import Settings from '~icons/solar/settings-broken';
-	import Transaction from '$lib/components/layouts/transaction-edit.svelte';
-	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
+
 	import Plus from '~icons/tabler/plus';
 	import { page } from '$app/stores';
-
-	let transactionComponent: Transaction;
+	import { isEditOpen, onOpenEdit } from '$lib/stores/transactions';
 
 	$: activeUrl = $page.url;
 	export let links = [
@@ -33,15 +31,11 @@
 	<div class="space-y-1 pt-2 text-gray-700">
 		<div class="pb-7">
 			<button
-				on:click={() => transactionComponent.onOpen()}
+				on:click={() => onOpenEdit()}
 				class="click inline-flex w-full items-center gap-3 rounded-xl border border-green-300 bg-green-300 px-4 py-3 text-left text-base font-medium text-green-950 hover:border-green-400 hover:bg-green-400">
 				<Plus class="h-6 w-6" />
 				Add transaction
 			</button>
-
-			<Transaction bind:this={transactionComponent} />
-
-			<TransactionView on:open={() => transactionComponent.beforeOpen()} />
 		</div>
 
 		{#each links as link, a}
