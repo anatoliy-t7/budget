@@ -40,7 +40,7 @@ table thead th {
 	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
 }
 table tbody tr {
-	@apply even:bg-gray-50 hover:bg-gray-100;
+	@apply whitespace-nowrap even:bg-gray-50 hover:bg-gray-100;
 }
 table tbody td {
 	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;

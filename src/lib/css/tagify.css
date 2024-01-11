@@ -3,10 +3,6 @@
 	@apply inline-flex items-center gap-2 border-0;
 }
 
-.tagifyTheme .tagify__tag {
-	margin-top: 0;
-}
-
 .tagifyTheme .tagify__tag__removeBtn {
 	opacity: 0;
 	transform: translateX(-6px) scale(0.5);
@@ -27,16 +23,14 @@
 .tagify.tagifyTheme.tagify--focus .tagify__input {
 	@apply min-w-28;
 }
-.tagify.tagifyTheme .tagify__tag {
-	@apply m-0;
-}
 
 .tagify.tagifyTheme .tagify__tag-text {
 	@apply select-none;
 }
 .tagify.tagifyTheme .tagify__tag {
-	@apply flex items-center gap-1 rounded-lg bg-gray-200 text-base;
+	@apply m-0 flex items-center gap-1 rounded-lg bg-gray-200 text-base;
 }
+
 .tagify.tagifyTheme .tagify__tag__removeBtn {
 	@apply -ml-6;
 }
@@ -53,8 +47,8 @@
 	@apply border-0;
 }
 
-.tagify__dropdown.tags-dropdown > div {
-	@apply rounded-lg p-2;
+.tagify.tagifyTheme .tagify__tag-text {
+	@apply w-full overflow-visible rounded-lg;
 }
 
 .tagify__dropdown.tags-dropdown .tagify__dropdown__item {

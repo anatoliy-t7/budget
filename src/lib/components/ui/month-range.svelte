@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getOverview, monthRange, getTransactions } from '$lib/stores/transactions';
-	import { clickOutside } from '$lib/utils/utils';
+	import { clickOutside, isMobile } from '$lib/utils/utils';
 	import dayjs from 'dayjs';
 	import { slide } from 'svelte/transition';
 	import Calendar from '~icons/solar/calendar-linear';
@@ -57,6 +57,8 @@
 	}
 
 	$: isFuture = dayjs(dayjs($monthRange.end).add(1, 'M')).isAfter(dayjs(), 'month');
+	$: isPast = dayjs().isAfter(dayjs($monthRange.start), 'year');
+	$: monthFormat = isMobile() ? 'MMM' : 'MMMM';
 </script>
 
 <div class="inline-flex w-full items-center gap-4">
@@ -65,12 +67,18 @@
 			<ChevronLeft class="h-7 w-7" />
 		</button>
 
-		<div class="flex min-w-24 justify-center text-lg font-medium">
-			{#if dayjs($monthRange.start).format('MMMM') !== dayjs($monthRange.end).format('MMMM')}
-				{dayjs($monthRange.start).format('MMMM')} -
+		<div class="relative flex min-w-24 justify-center text-lg font-medium">
+			{#if dayjs($monthRange.start).format(monthFormat) !== dayjs($monthRange.end).format(monthFormat)}
+				{dayjs($monthRange.start).format(monthFormat)} -
 			{/if}
 
-			{dayjs($monthRange.end).format('MMMM')}
+			{dayjs($monthRange.end).format(monthFormat)}
+
+			{#if isPast}
+				<div class="absolute -bottom-3 text-xs text-gray-400">
+					{dayjs($monthRange.start).format('YYYY')}
+				</div>
+			{/if}
 		</div>
 
 		<button

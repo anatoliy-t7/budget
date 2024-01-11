@@ -18,9 +18,7 @@
 		transaction,
 		selectedCategory,
 		reset,
-		getTags,
-		tags,
-		onOpenEdit,
+		historyTransaction,
 	} from '$lib/stores/transactions';
 	import { onMount } from 'svelte';
 
@@ -28,7 +26,6 @@
 
 	let transferAmount: number | null = null;
 	let disabledCategory = false;
-	let oldTransaction: any = null;
 
 	$: disabled = !$transaction?.amount || !$transaction?.category;
 
@@ -48,7 +45,7 @@
 			$selectedCategory = $categories?.find((c) => c.id == 'catego_transfer');
 			disabledCategory = true;
 		} else {
-			$selectedCategory = {};
+			$selectedCategory = null;
 			disabledCategory = false;
 		}
 	}
@@ -103,7 +100,10 @@
 	}
 
 	async function onClose() {
-		if (oldTransaction !== JSON.stringify($transaction) && !confirm(`Do you want to close it?`)) {
+		if (
+			$historyTransaction !== JSON.stringify($transaction) &&
+			!confirm(`Do you want to close it?`)
+		) {
 			return;
 		} else {
 			await close();
@@ -113,15 +113,8 @@
 	async function close() {
 		$isEditOpen = false;
 		transferAmount = null;
-		oldTransaction = null;
 
 		await reset();
-	}
-
-	export async function beforeOpen() {
-		oldTransaction = JSON.stringify($transaction);
-		// TODO close it with out asking
-		await onOpenEdit();
 	}
 
 	function categoryFilter(item: any, keywords: any) {

@@ -21,7 +21,7 @@ export const loading = writable(false);
 export const isEditOpen = writable(false);
 
 export const isViewOpen = writable(false);
-export const selectedCategory = writable({});
+export const selectedCategory = writable(null);
 export const tags = writable([]);
 export const totalAmountsByCategories = writable([]);
 export const rangeTags = writable([]);
@@ -44,8 +44,9 @@ export const transaction = writable({
 	files: null,
 	tags: [],
 });
+export const historyTransaction = writable(null);
 
-export async function onOpenEdit() {
+export async function openEdit() {
 	if (!get(tags).length) {
 		await getTags();
 	}
@@ -56,6 +57,8 @@ export async function onOpenEdit() {
 		value.account = acs[0]?.id;
 		value.transfer = acs.length > 1 ? acs[1]?.id : acs[0]?.id;
 	});
+
+	historyTransaction.set(JSON.stringify(get(transaction)));
 }
 
 export async function getOverview() {
@@ -260,7 +263,7 @@ export async function reset() {
 		tags: [],
 	});
 
-	selectedCategory.set({});
+	selectedCategory.set(null);
 }
 
 export async function resetAll() {
@@ -277,4 +280,5 @@ export async function resetAll() {
 	overview.set(null);
 	transactionType.set('');
 	transactions.set(null);
+	historyTransaction.set(null);
 }

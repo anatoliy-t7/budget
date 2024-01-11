@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="w-full overflow-hidden">
+<div class="w-full overflow-x-auto">
 	<table>
 		<thead>
 			<tr class="border-b border-white/5">

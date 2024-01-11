@@ -3,7 +3,6 @@
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
 	import toast from 'svelte-french-toast';
 	import { pb } from '$lib/stores/pocketbase';
-	import { createEventDispatcher } from 'svelte';
 	import {
 		transaction,
 		reset,
@@ -11,6 +10,7 @@
 		loading,
 		selectedCategory,
 		monthIsClosed,
+		openEdit,
 	} from '$lib/stores/transactions';
 
 	import dayjs from 'dayjs';
@@ -19,7 +19,6 @@
 	import Drawer from '../ui/drawer.svelte';
 	import Gallery from '../ui/gallery.svelte';
 
-	const dispatch = createEventDispatcher();
 	const coll = pb.collection('transactions');
 
 	async function onOpenEdit() {
@@ -40,8 +39,8 @@
 
 		$isViewOpen = false;
 
-		setTimeout(() => {
-			dispatch('open');
+		setTimeout(async () => {
+			await openEdit();
 		}, 300);
 	}
 

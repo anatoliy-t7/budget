@@ -11,7 +11,7 @@
 	import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import toast from 'svelte-french-toast';
-	import { alertOnFailure, moneyFormat } from '$lib/utils/utils';
+	import { alertOnFailure, isMobile, moneyFormat } from '$lib/utils/utils';
 	import {
 		getTransactions,
 		transactions,
@@ -134,8 +134,8 @@
 </svelte:head>
 
 <div class="space-y-4">
-	<div class=" flex items-center justify-between gap-6 rounded-lg bg-white p-4">
-		<div class="flex items-center gap-4">
+	<div class="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-white p-4">
+		<div class="flex flex-wrap items-center gap-4">
 			<div class="w-[320px]">
 				<TypeToggle on:changed={(event) => changedType(event.detail)} />
 			</div>
@@ -158,9 +158,14 @@
 			</div>
 		</div>
 
-		<div class="flex w-48 justify-end">
+		<div class="flex w-full justify-end sm:w-48">
 			{#if !$monthIsClosed && dayjs($monthRange.start).isSame($monthRange.end, 'month')}
-				<Button loading={$loading} on:click={onCloseMonth} color={'outline-green'} class="click">
+				<Button
+					loading={$loading}
+					on:click={onCloseMonth}
+					size={isMobile() ? 'xs' : 'md'}
+					color={'outline-green'}
+					class="click">
 					Close {dayjs($monthRange.start).format('MMMM')}
 				</Button>
 			{/if}

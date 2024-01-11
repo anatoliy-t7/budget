@@ -79,3 +79,7 @@ export const preparePageTransition = () => {
 export const getUniqueTags = (array: any) => {
     return array.filter((currentValue: any, index: number, arr: any) => arr.indexOf(currentValue) === index);
 }
+
+export function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ? true : false
+}

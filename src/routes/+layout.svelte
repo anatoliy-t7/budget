@@ -14,8 +14,7 @@
 	import { editProfile } from '$lib/stores/main';
 	import TransactionEdit from '$lib/components/layouts/transaction-edit.svelte';
 	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
-
-	let transactionComponent: TransactionEdit;
+	import { isMobile } from '$lib/utils/utils';
 
 	export let destination: string | null = null;
 	$: if (destination != null && $authModel) {
@@ -25,24 +24,23 @@
 
 {#if $authModel}
 	<FirstLoadData />
-	<div class="relative bg-brand">
-		<Navbar />
 
-		<div class="ml-72 flex h-full w-auto gap-4">
-			<Sidebar />
+	<Navbar />
 
-			<main class="page relative mt-2 pr-8 pt-24">
-				<slot />
-			</main>
-		</div>
+	<div class="{isMobile() ? '' : 'ml-72'} flex h-full w-auto gap-4">
+		<Sidebar />
 
-		<Drawer bind:open={$editProfile} on:close={() => ($editProfile = false)}>
-			<Profile />
-		</Drawer>
-
-		<TransactionEdit bind:this={transactionComponent} />
-		<TransactionView on:open={() => transactionComponent.beforeOpen()} />
+		<main class="{isMobile() ? 'px-4 pb-24 pt-20' : 'mt-2 pr-8 pt-24'} page relative">
+			<slot />
+		</main>
 	</div>
+
+	<Drawer bind:open={$editProfile} on:close={() => ($editProfile = false)}>
+		<Profile />
+	</Drawer>
+
+	<TransactionEdit />
+	<TransactionView />
 {:else}
 	<Auth />
 {/if}
