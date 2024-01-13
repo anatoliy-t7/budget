@@ -1,5 +1,10 @@
 // @ts-nocheck
+
 module.exports = {
+	stripe: () => {
+		const init = require('stripe')(process.env.SECRET_STRIPE_KEY);
+		return init;
+	},
 	isNotCurrentMonth: (/** @type {string} */ dateTime) => {
 		const dateString = JSON.stringify(dateTime);
 		const dateTimeParts = dateString.replace('"', '').split(' ');

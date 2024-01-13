@@ -1,17 +1,5 @@
 // @ts-nocheck
 
-onRecordBeforeCreateRequest((e) => {
-	const info = $apis.requestInfo(e.httpContext);
-
-	e.record.set('created', info.data.created);
-}, 'transactions');
-
-onRecordBeforeUpdateRequest((e) => {
-	const info = $apis.requestInfo(e.httpContext);
-
-	e.record.set('created', info.data.created);
-}, 'transactions');
-
 // Get overview
 routerAdd(
 	'GET',
@@ -150,68 +138,6 @@ routerAdd(
 	$apis.requireRecordAuth('users'),
 );
 
-onRecordAfterDeleteRequest((e) => {
-	const utils = require(`${__hooks}/utils.js`);
-
-	const oldMonth = utils.isNotCurrentMonth(e.record.created);
-
-	if (oldMonth) {
-		updateCdTransaction();
-	}
-
-	function updateCdTransaction() {
-		let transactions = $app.dao().findRecordsByFilter(
-			'transactions',
-			`account = "${e.record.getString('account')}" && created >= "${oldMonth}" &&
-                created <= "${new Date().toISOString()}" &&
-            type = "opened"`,
-		);
-
-		transactions.forEach((opened) => {
-			if (e.record.getString('type') == 'expenses') {
-				opened.set('amount', opened.getInt('amount') + e.record.getInt('amount'));
-			}
-
-			if (e.record.getString('type') == 'income') {
-				opened.set('amount', opened.getInt('amount') - e.record.getInt('amount'));
-			}
-
-			$app.dao().saveRecord(opened);
-		});
-	}
-}, 'transactions');
-
-onRecordAfterCreateRequest((e) => {
-	const utils = require(`${__hooks}/utils.js`);
-
-	const oldMonth = utils.isNotCurrentMonth(e.record.created);
-
-	if (oldMonth) {
-		updateCdTransaction();
-	}
-
-	function updateCdTransaction() {
-		let transactions = $app.dao().findRecordsByFilter(
-			'transactions',
-			`account = "${e.record.getString('account')}" && created >= "${oldMonth}" &&
-                created <= "${new Date().toISOString()}" &&
-            type = "opened"`,
-		);
-
-		transactions.forEach((opened) => {
-			if (e.record.getString('type') == 'expenses') {
-				opened.set('amount', opened.getInt('amount') - e.record.getInt('amount'));
-			}
-
-			if (e.record.getString('type') == 'income') {
-				opened.set('amount', opened.getInt('amount') + e.record.getInt('amount'));
-			}
-
-			$app.dao().saveRecord(opened);
-		});
-	}
-}, 'transactions');
-
 // Get range tags
 routerAdd(
 	'GET',
@@ -315,6 +241,196 @@ routerAdd(
 	$apis.requireRecordAuth('users'),
 );
 
+// stripe webhooks
+// routerAdd('POST', '/api/webhooks/stripe', (c) => {
+// 	//const utils = require(`${__hooks}/utils.js`);
+// 	const stripe = require('../../node_modules/stripe')(process.env.SECRET_STRIPE_KEY);
+
+// 	// extract body
+// 	const body = $apis.requestInfo(c).data;
+
+// 	// get the signature from the header
+// 	const signature = c.request().header.get('stripe-signature');
+
+// 	// var to hold event data
+// 	let event;
+
+// 	// verify it
+// 	try {
+// 		console.log(stripe);
+// 		event = stripe.webhooks.constructEvent(body, signature, process.env.SECRET_STRIPE_WEBHOOK_KEY);
+// 	} catch (err) {
+// 		// signature is invalid!
+// 		console.warn('⚠️  Webhook signature verification failed.', err.message);
+
+// 		// return, because it's a bad request
+// 		return c.json(400, { error: `Webhook Error: ${err.message}` });
+// 	}
+
+// 	// Extract the object from the event.
+// 	const dataObject = event.data.object;
+
+// 	if (dataObject['billing_reason'] == 'subscription_create') {
+// 		const subscription_id = dataObject['subscription'];
+// 		const payment_intent_id = dataObject['payment_intent'];
+
+// 		// Retrieve the payment intent used to pay the subscription
+// 		const payment_intent = stripe.paymentIntents.retrieve(payment_intent_id);
+
+// 		stripe.subscriptions.update(subscription_id, {
+// 			default_payment_method: payment_intent.payment_method,
+// 		});
+
+// 		stripe.customers.update(payment_intent.customer, {
+// 			invoice_settings: {
+// 				default_payment_method: payment_intent.payment_method,
+// 			},
+// 		});
+// 	}
+
+// 	/* Signature has been verified, so we can process events
+// 	 *
+// 	 * Review important events for Billing webhooks:
+// 	 * https://stripe.com/docs/billing/webhooks
+// 	 */
+// 	// Handle the event
+// 	switch (event.type) {
+// 		case 'invoice.paid':
+// 			/*
+//               Used to provision services after the trial has ended.
+//               The status of the invoice will show up as paid.
+//               Store the status in your database to reference
+//               when a user accesses your service to avoid hitting
+//               rate limits.
+//             */
+// 			console.log(`Invoice.paid: ${dataObject.status}`);
+// 			break;
+// 		case 'invoice.payment_succeeded':
+// 			/*
+//               Insert payment succeeded into the database
+//               Allowed access to your service.
+//             */
+// 			console.log(`payment_succeeded: ${dataObject.status}`);
+// 			break;
+// 		case 'invoice.payment_failed':
+// 			/*
+//               If the payment fails or the customer does not have a
+//               valid payment method, an invoice.payment_failed event is sent,
+//               the subscription becomes past_due.
+//               Use this webhook to notify your user that their payment has
+//               failed and to retrieve new card details.
+//             */
+// 			console.log(`invoice.payment_failed: ${dataObject.status}`);
+// 			break;
+// 		case 'customer.subscription.created':
+// 			// Insert active into database and grant access to service
+// 			console.log(`customer.subscription.created: ${dataObject.status}`);
+// 			break;
+// 		case 'customer.subscription.updated':
+// 			// Insert active into database and grant access to service
+// 			console.log(`customer.subscription.updated: ${dataObject.status}`);
+// 			break;
+// 		case 'customer.subscription.deleted':
+// 			if (event.request != null) {
+// 				/*
+//                 handle a subscription cancelled by request
+//                 from above.
+//               */
+// 				console.log(`customer.subscription.deleted: ${dataObject.status}`);
+// 			} else {
+// 				/*
+//                 handle subscription cancelled automatically based
+//                 upon subscription settings.
+//               */
+// 				console.log(`customer.subscription.deleted: ${dataObject.status}`);
+// 			}
+// 			break;
+// 		default:
+// 			console.log(`Unhandled event type ${event.type}`);
+// 	}
+
+// 	// return a 200 with an empty JSON response
+// 	return c.json(200, {});
+// });
+
+// Update balance on next month
+onRecordAfterDeleteRequest((e) => {
+	const utils = require(`${__hooks}/utils.js`);
+
+	const oldMonth = utils.isNotCurrentMonth(e.record.created);
+
+	if (oldMonth) {
+		updateCdTransaction();
+	}
+
+	function updateCdTransaction() {
+		let transactions = $app.dao().findRecordsByFilter(
+			'transactions',
+			`account = "${e.record.getString('account')}" && created >= "${oldMonth}" &&
+                created <= "${new Date().toISOString()}" &&
+            type = "opened"`,
+		);
+
+		transactions.forEach((opened) => {
+			if (e.record.getString('type') == 'expenses') {
+				opened.set('amount', opened.getInt('amount') + e.record.getInt('amount'));
+			}
+
+			if (e.record.getString('type') == 'income') {
+				opened.set('amount', opened.getInt('amount') - e.record.getInt('amount'));
+			}
+
+			$app.dao().saveRecord(opened);
+		});
+	}
+}, 'transactions');
+// Update balance on next month
+onRecordAfterCreateRequest((e) => {
+	const utils = require(`${__hooks}/utils.js`);
+
+	const oldMonth = utils.isNotCurrentMonth(e.record.created);
+
+	if (oldMonth) {
+		updateCdTransaction();
+	}
+
+	function updateCdTransaction() {
+		let transactions = $app.dao().findRecordsByFilter(
+			'transactions',
+			`account = "${e.record.getString('account')}" && created >= "${oldMonth}" &&
+                created <= "${new Date().toISOString()}" &&
+            type = "opened"`,
+		);
+
+		transactions.forEach((opened) => {
+			if (e.record.getString('type') == 'expenses') {
+				opened.set('amount', opened.getInt('amount') - e.record.getInt('amount'));
+			}
+
+			if (e.record.getString('type') == 'income') {
+				opened.set('amount', opened.getInt('amount') + e.record.getInt('amount'));
+			}
+
+			$app.dao().saveRecord(opened);
+		});
+	}
+}, 'transactions');
+
+// Update 'created'
+onRecordBeforeCreateRequest((e) => {
+	const info = $apis.requestInfo(e.httpContext);
+
+	e.record.set('created', info.data.created);
+}, 'transactions');
+
+// Update 'created'
+onRecordBeforeUpdateRequest((e) => {
+	const info = $apis.requestInfo(e.httpContext);
+
+	e.record.set('created', info.data.created);
+}, 'transactions');
+
+// Create first budget if doesn't exist
 onRecordAuthRequest((e) => {
 	if (!e.record.getString('currentBudget')) {
 		const collection = $app.dao().findCollectionByNameOrId('budgets');
