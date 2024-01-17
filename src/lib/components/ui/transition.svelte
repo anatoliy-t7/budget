@@ -1,6 +1,9 @@
-<script lang="ts">
+<script>
 	import { fade } from 'svelte/transition';
-	export let url: URL;
+	/**
+	 * @type {URL}
+	 */
+	export let url;
 </script>
 
 {#key url}

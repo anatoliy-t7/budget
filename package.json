@@ -52,6 +52,7 @@
     "bigpicture": "^2.6.2",
     "compressorjs": "^1.2.1",
     "emoji-picker-element": "^1.21.0",
+    "rollup-plugin-visualizer": "^5.12.0",
     "svelte-frappe-charts": "^1.10.0",
     "svelte-select": "^5.8.3"
   }

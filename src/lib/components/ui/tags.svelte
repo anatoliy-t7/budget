@@ -1,17 +1,26 @@
-<script lang="ts">
+<script>
 	// https://github.com/yairEO/tagify
 	import Tagify from '@yaireo/tagify';
 	import '@yaireo/tagify/dist/tagify.css';
 	import { onDestroy, onMount } from 'svelte';
 	import { tags } from '$lib/stores/transactions';
 
-	export let selected: any = [];
-	let tagify: any = null;
-	let input: any;
+	/**
+	 * @type {string | any[]}
+	 */
+	export let selected = [];
+	/**
+	 * @type {{ whitelist: string | any[]; addTags: (arg0: string | any[]) => void; } | null}
+	 */
+	let tagify = null;
+	/**
+	 * @type {HTMLInputElement}
+	 */
+	let input;
 	let options = {
 		whitelist: [],
-		originalInputValueFormat: (valuesArr: any) =>
-			valuesArr.map((item: any) => item.value).join(','),
+		originalInputValueFormat: (/** @type {any[]} */ valuesArr) =>
+			valuesArr.map((item) => item.value).join(','),
 		maxTags: 10,
 		placeholder: 'Type and press enter',
 		dropdown: {
@@ -27,7 +36,10 @@
 		tagify.whitelist = $tags;
 	}
 
-	function onChange(e: any) {
+	/**
+	 * @param {{ target: { value: string | any[]; }; }} e
+	 */
+	function onChange(e) {
 		selected = e.target.value;
 	}
 

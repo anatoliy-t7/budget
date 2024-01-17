@@ -1,9 +1,12 @@
-<script lang="ts">
+<script>
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
 	import { types } from '$lib/stores/transactions';
-	export let selected: any = null;
+	/**
+	 * @type {string | null}
+	 */
+	export let selected = null;
 </script>
 
 <div class="grid w-full max-w-sm grid-cols-3 rounded-lg bg-gray-100 p-1">

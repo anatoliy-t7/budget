@@ -38,7 +38,7 @@ export const transaction = writable({
 	note: null,
 	transfer: null,
 	category: null,
-	budget: pb.authStore.model?.currentBudget,
+	budget: pb.authStore.model?.budget,
 	user: pb.authStore.model?.id,
 	created: dayjs().toISOString(),
 	files: null,
@@ -64,13 +64,13 @@ export async function openEdit() {
 export async function getOverview() {
 	loading.set(true);
 
-	if (!pb.authStore.model?.currentBudget) {
+	if (!pb.authStore.model?.budget) {
 		await pb.collection('users').authRefresh();
 	}
 
 	// await alertOnFailure(async () => {
 	const res = await fetch(
-		`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${pb.authStore.model?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+		`${PUBLIC_POCKETBASE_URL}/api/overview?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
 		{
 			headers: {
 				Authorization: pb.authStore.token,
@@ -145,7 +145,7 @@ export async function getTransactions(page = 1) {
 			filter: `type ?~ "${get(transactionType)}"
 			&& type != "opened"
 			&& transfer ${get(transfer)} ""
-			&& budget = "${pb.authStore.model?.currentBudget}"
+			&& budget = "${pb.authStore.model?.budget}"
 			&& created >= "${range?.start}"
 			&& created <= "${range?.end}"
 			&& tags ~ "${get(filterTag)}"
@@ -169,7 +169,7 @@ export async function getTypeClosedTransactions() {
 
 	const res = await coll.getFullList({
 		filter: `type = "closed"
-			&& budget = "${pb.authStore.model?.currentBudget}"
+			&& budget = "${pb.authStore.model?.budget}"
 			&& created >= "${range?.start}"
 			&& created <= "${range?.end}"`,
 		fields: 'id',
@@ -184,7 +184,7 @@ export async function getTypeClosedTransactions() {
 
 export async function getTagsRange() {
 	const res = await fetch(
-		`${PUBLIC_POCKETBASE_URL}/api/tags/range?budgetId=${pb.authStore.model?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+		`${PUBLIC_POCKETBASE_URL}/api/tags/range?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
 		{
 			headers: {
 				Authorization: pb.authStore.token,
@@ -200,7 +200,7 @@ export async function getTagsRange() {
 
 export async function getTotalAmountsByCategories() {
 	const res = await fetch(
-		`${PUBLIC_POCKETBASE_URL}/api/categories/range?budgetId=${pb.authStore.model?.currentBudget}&startOf=${range?.start}&endOf=${range?.end}`,
+		`${PUBLIC_POCKETBASE_URL}/api/categories/range?budgetId=${pb.authStore.model?.budget}&startOf=${range?.start}&endOf=${range?.end}`,
 		{
 			headers: {
 				Authorization: pb.authStore.token,
@@ -216,7 +216,7 @@ export async function getTotalAmountsByCategories() {
 
 export async function getTags() {
 	const res = await fetch(
-		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.currentBudget}`,
+		`${PUBLIC_POCKETBASE_URL}/api/tags?budgetId=${pb.authStore.model?.budget}`,
 		{
 			headers: {
 				Authorization: pb.authStore.token,
@@ -256,7 +256,7 @@ export async function reset() {
 		note: null,
 		transfer: null,
 		category: null,
-		budget: pb.authStore.model?.currentBudget,
+		budget: pb.authStore.model?.budget,
 		user: pb.authStore.model?.id,
 		created: dayjs().toISOString(),
 		files: null,

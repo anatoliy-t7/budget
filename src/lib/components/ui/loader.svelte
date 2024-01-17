@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Loader from '~icons/solar/refresh-linear';
 
 	let className = 'w-6 h-6 text-sky-500';

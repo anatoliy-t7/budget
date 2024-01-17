@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Graph from '~icons/solar/graph-broken';
 	import GraphBold from '~icons/solar/graph-bold';
 	import IconReports from '~icons/solar/chat-square-2-broken';

@@ -1,13 +1,14 @@
 <script>
-	import { pb } from '$lib/stores/pocketbase';
+	import IconBilling from '~icons/solar/bill-broken';
+	import IconChevronDown from '~icons/solar/alt-arrow-down-linear';
+	import IconUser from '~icons/solar/user-circle-broken';
+	import Dropdown from '../ui/dropdown.svelte';
 	import LogOut from '$lib/components/layouts/log-out.svelte';
 	import Logo from '$lib/components/ui/logo.svelte';
-	import IconUser from '~icons/solar/user-circle-broken';
 	import MonthRange from '$lib/components/ui/month-range.svelte';
 
-	import ChevronDown from '~icons/solar/alt-arrow-down-linear';
-	import Dropdown from '../ui/dropdown.svelte';
-	import { editProfile } from '$lib/stores/main';
+	import { pb } from '$lib/stores/pocketbase';
+	import { billingPortalUrl, editProfile } from '$lib/stores/main';
 	import { isMobile } from '$lib/utils/utils';
 </script>
 
@@ -37,7 +38,7 @@
 							{pb.authStore.model?.name ? pb.authStore.model?.name : pb.authStore.model?.email}
 						{/if}
 
-						<ChevronDown />
+						<IconChevronDown />
 					</div>
 				</div>
 				<div
@@ -50,6 +51,14 @@
 						<IconUser class="h-7 w-7" />
 						Profile
 					</button>
+					{#if $billingPortalUrl}
+						<a
+							href={$billingPortalUrl}
+							class="click flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
+							<IconBilling class="h-7 w-7" />
+							Billings
+						</a>
+					{/if}
 
 					<LogOut />
 				</div>

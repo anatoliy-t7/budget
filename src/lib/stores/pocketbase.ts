@@ -4,16 +4,13 @@ import PocketBase, {
 } from "pocketbase";
 import type Record from "pocketbase"
 import { readable, writable } from "svelte/store";
-import { browser } from "$app/environment";
 import { invalidateAll } from "$app/navigation";
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 import { alertOnFailure } from '$lib/utils/utils';
 
 export const loading = writable(false);
 
-export const pb = new PocketBase(
-  browser ? PUBLIC_POCKETBASE_URL : undefined
-);
+export const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
 
 export const authModel = readable<Record | null>(
   null,
@@ -84,7 +81,8 @@ export async function providerLogin(
     const authResponse = await authCollection.authWithOAuth2({
       provider: provider.name,
       createData: {
-        // emailVisibility: true,
+        emailVisibility: true,
+        verified: true
       },
     });
 

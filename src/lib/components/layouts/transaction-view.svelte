@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Pencil from '~icons/tabler/pencil';
 	import Trash from '~icons/solar/trash-bin-minimalistic-linear';
 	import toast from 'svelte-french-toast';

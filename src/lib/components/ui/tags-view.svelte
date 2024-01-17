@@ -1,5 +1,5 @@
-<script lang="ts">
-	export let tags: string = '';
+<script>
+	export let tags = '';
 </script>
 
 {#if tags.length}

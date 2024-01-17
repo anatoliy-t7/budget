@@ -1,6 +1,6 @@
-<script lang="ts">
+<script>
 	import { PUBLIC_APP_NAME } from '$env/static/public';
-	let extraClass: string = 'h-8 w-8 -mt-1';
+	let extraClass = 'h-8 w-8 -mt-1';
 	export { extraClass as class };
 </script>
 

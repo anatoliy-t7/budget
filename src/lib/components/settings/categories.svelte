@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
 	import Radio from '$lib/components/ui/radio.svelte';
@@ -25,14 +25,14 @@
 	];
 	const coll = pb.collection('categories');
 
-	let open: boolean = false;
+	let open = false;
 	let emojiPickerOpened = false;
-	let category: any = {
+	let category = {
 		id: null,
 		name: null,
 		icon: null,
 		type: 'expenses',
-		budget: $authModel?.currentBudget,
+		budget: $authModel?.budget,
 	};
 
 	$: disabled = !category?.name;
@@ -69,7 +69,10 @@
 		open = true;
 	}
 
-	async function onOpenEdit(item: any) {
+	/**
+	 * @param {{ id: null; name: null; icon: null; type: string; budget: any; }} item
+	 */
+	async function onOpenEdit(item) {
 		category = item;
 		open = true;
 	}
@@ -86,7 +89,7 @@
 	}
 	function showEmojiPicker() {
 		setTimeout(() => {
-			document.querySelector('emoji-picker')?.addEventListener('emoji-click', (e: any) => {
+			document.querySelector('emoji-picker')?.addEventListener('emoji-click', (e) => {
 				category.icon = e.detail.unicode;
 
 				emojiPickerOpened = false;

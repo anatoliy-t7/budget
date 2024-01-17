@@ -1,11 +1,10 @@
-<script lang="ts">
+<script>
 	import Money from '~icons/solar/money-bag-linear';
 	import CourseUp from '~icons/solar/course-up-linear';
 	import CourseDown from '~icons/solar/course-down-linear';
 	import { overview, totalOverview, defaultCurrency } from '$lib/stores/transactions';
 	import { moneyFormat } from '$lib/utils/utils';
 	import Drawer from '../ui/drawer.svelte';
-	import Table from '../ui/table.svelte';
 
 	let openOverview = false;
 </script>
@@ -21,10 +20,10 @@
 					{moneyFormat($totalOverview?.income, $defaultCurrency)}
 				</div>
 			{:else}
-				<div class="animate-pulse w-20 h-6 mt-2 bg-gray-300 rounded-md"></div>
+				<div class="mt-2 h-6 w-20 animate-pulse rounded-md bg-gray-300"></div>
 			{/if}
 		</div>
-		<CourseUp class="w-12 h-12 text-green-500" />
+		<CourseUp class="h-12 w-12 text-green-500" />
 	</button>
 
 	<button
@@ -37,10 +36,10 @@
 					{moneyFormat($totalOverview?.expenses, $defaultCurrency)}
 				</div>
 			{:else}
-				<div class="animate-pulse w-20 h-6 mt-2 bg-gray-300 rounded-md"></div>
+				<div class="mt-2 h-6 w-20 animate-pulse rounded-md bg-gray-300"></div>
 			{/if}
 		</div>
-		<CourseDown class="w-12 h-12 text-red-400" />
+		<CourseDown class="h-12 w-12 text-red-400" />
 	</button>
 
 	<button
@@ -53,10 +52,10 @@
 					{moneyFormat($totalOverview?.balance, $defaultCurrency)}
 				</div>
 			{:else}
-				<div class="animate-pulse w-20 h-6 mt-2 bg-gray-300 rounded-md"></div>
+				<div class="mt-2 h-6 w-20 animate-pulse rounded-md bg-gray-300"></div>
 			{/if}
 		</div>
-		<Money class="text-sky-500 w-12 h-12" />
+		<Money class="h-12 w-12 text-sky-500" />
 	</button>
 </div>
 
@@ -73,7 +72,7 @@
 					<div class="col-span-3 text-right">Balance</div>
 				</div>
 
-				<div class="border-y py-2 space-y-4 border-gray-200">
+				<div class="space-y-4 border-y border-gray-200 py-2">
 					{#each Object.values($overview) as item}
 						<div class="grid grid-cols-12 gap-4">
 							<div class="col-span-3">

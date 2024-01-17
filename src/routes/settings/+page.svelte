@@ -9,12 +9,16 @@
 	<title>Settings | {PUBLIC_APP_NAME}</title>
 </svelte:head>
 
-<div class="flex flex-wrap gap-4">
-	<div class="w-full">
+<div class="grid grid-cols-12 gap-4">
+	<div class="col-span-6">
 		<Settings />
 	</div>
 
-	<Accounts />
+	<div class="col-span-3">
+		<Accounts />
+	</div>
 
-	<Categories />
+	<div class="col-span-3">
+		<Categories />
+	</div>
 </div>

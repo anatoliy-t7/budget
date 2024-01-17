@@ -1,12 +1,12 @@
-<script lang="ts">
+<script>
 	import { slide, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
 	import X from '~icons/tabler/x';
 	import { createEventDispatcher } from 'svelte';
 
-	export let open: boolean = false;
-	export let maxWidth: string = 'max-w-2xl';
+	export let open = false;
+	export let maxWidth = 'max-w-2xl';
 
 	const dispatch = createEventDispatcher();
 
@@ -16,7 +16,10 @@
 		document.body.classList.remove('overflow-hidden');
 	}
 
-	async function eventOnEscape(e: any) {
+	/**
+	 * @param {{ key: string; }} e
+	 */
+	async function eventOnEscape(e) {
 		if (e.key === 'Escape') {
 			await onClose();
 		}

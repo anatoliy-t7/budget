@@ -1,39 +1,49 @@
-<script lang="ts">
+<script>
 	import { onMount } from 'svelte';
 
 	import { preparePageTransition } from '$lib/utils/utils';
-	import { accounts, categories, getAccounts, getCategories } from '$lib/stores/main';
+	import {
+		accounts,
+		categories,
+		getAccounts,
+		getCategories,
+		billingPortalUrl,
+		getBillingPortalUrl,
+	} from '$lib/stores/main';
 	import { getOverview, overview, getTransactions } from '$lib/stores/transactions';
 	import { pb, authModel } from '$lib/stores/pocketbase';
 
 	preparePageTransition();
 
-	const coll = pb.collection('transactions');
+	const collTransactions = pb.collection('transactions');
 
 	$: if ($authModel) {
-		coll.subscribe(
+		collTransactions.subscribe(
 			'*',
 			async function (e) {
 				await getOverview();
 				await getTransactions();
 			},
 			{
-				filter: "type != 'closed' && type != 'opened'",
+				filter: `budget = "${$authModel?.budget}" && type != "closed" && type != "opened"`,
 			},
 		);
 	} else {
-		coll.unsubscribe();
+		collTransactions.unsubscribe();
 	}
 
 	onMount(async () => {
 		if (!$overview) {
-			getOverview();
+			await getOverview();
 		}
 		if (!$accounts) {
-			getAccounts();
+			await getAccounts();
 		}
 		if (!$categories) {
-			getCategories();
+			await getCategories();
+		}
+		if (!$billingPortalUrl) {
+			await getBillingPortalUrl();
 		}
 	});
 </script>

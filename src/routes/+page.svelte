@@ -1,7 +1,8 @@
-<script lang="ts">
+<script>
 	import Stat from '$lib/components/overview/stat.svelte';
 	import { PUBLIC_APP_NAME } from '$env/static/public';
 	import Categories from '$lib/components/overview/categories.svelte';
+	import { hasAccess } from '$lib/utils/utils';
 </script>
 
 <svelte:head>

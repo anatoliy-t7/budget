@@ -1,6 +1,3 @@
-<script lang="ts">
-</script>
-
 <div class="w-full overflow-x-auto">
 	<table>
 		<thead>

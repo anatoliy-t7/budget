@@ -1,27 +1,40 @@
-<script lang="ts">
+<script>
+	// @ts-nocheck
+
 	import toast from 'svelte-french-toast';
 	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb } from '$lib/stores/pocketbase';
 	import { loading, getBudget, budget } from '$lib/stores/main';
 	import { getOverview } from '$lib/stores/transactions';
 	import { onMount } from 'svelte';
-	import { CURRENCY_LIST } from '$lib/utils/constants';
+	import { CURRENCY_LIST, MONTHS } from '$lib/utils/constants';
 	import Button from '../ui/button.svelte';
 	import Select from 'svelte-select/no-styles/Select.svelte';
 
 	const coll = pb.collection('budgets');
 
-	let defaultCurrency: any = {
+	let defaultCurrency = {
 		name: 'United States Dollar',
 		code: 'USD',
 	};
+	let financeYearStartFrom = {
+		value: 0,
+		label: 'January',
+	};
 
-	async function submit() {
+	async function save() {
 		$loading = true;
 		$budget.defaultCurrency = defaultCurrency.code;
 
+		if (!$budget.settings) {
+			$budget.settings = {};
+		}
+		$budget.settings.financeYearStartFrom = financeYearStartFrom.value;
+
 		alertOnFailure(async () => {
 			await coll.update($budget?.id, $budget);
+			await pb.collection('users').authRefresh();
+
 			toast.success(`Saved`);
 
 			$loading = false;
@@ -33,12 +46,16 @@
 	onMount(async () => {
 		await getBudget();
 		defaultCurrency = CURRENCY_LIST.find((c) => c.code == $budget?.defaultCurrency);
+
+		if ($budget?.settings?.financeYearStartFrom) {
+			financeYearStartFrom = MONTHS.find((c) => c.value == $budget?.settings?.financeYearStartFrom);
+		}
 	});
 </script>
 
-<div class="rounded-xl gap-4 p-6 bg-white">
-	<form on:submit|preventDefault={submit} class="grid gap-6">
-		<div class="max-w-64 block space-y-1 font-medium">
+<div class="grid gap-6 rounded-xl bg-white p-6">
+	<div class="flex w-full flex-wrap gap-6">
+		<div class="block w-full max-w-64 space-y-1 font-medium">
 			<div class="text-sm">Default Currency</div>
 
 			<Select
@@ -56,8 +73,15 @@
 			</Select>
 		</div>
 
-		<div>
-			<Button loading={$loading} size={'sm'} color={'amber'} type="submit">Save</Button>
+		<div class="block w-full max-w-64 space-y-1 font-medium">
+			<div class="text-sm">Finance year start from</div>
+
+			<Select items={MONTHS} bind:value={financeYearStartFrom} required></Select>
 		</div>
-	</form>
+	</div>
+	<div>
+		<Button on:click={save} loading={$loading} size={'sm'} color={'amber'} type="button">
+			Save
+		</Button>
+	</div>
 </div>

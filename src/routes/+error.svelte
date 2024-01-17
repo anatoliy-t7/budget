@@ -1,22 +1,21 @@
-<script lang="ts">
+<script>
 	import { page } from '$app/stores';
 	const img = '/img/error.webp';
 </script>
 
-<main class="isolate relative h-full min-h-screen">
+<main class="relative isolate h-full min-h-screen">
 	<img
 		src={img}
 		alt="error"
-		class="-z-10 absolute inset-0 object-cover object-bottom w-full h-full"
-	/>
-	<div class="max-w-7xl sm:py-40 lg:px-8 px-6 py-32 mx-auto text-center">
+		class="absolute inset-0 -z-10 h-full w-full object-cover object-bottom" />
+	<div class="mx-auto max-w-7xl px-6 py-32 text-center sm:py-40 lg:px-8">
 		<p class="text-3xl font-semibold leading-8 text-white">{$page.status}</p>
-		<h1 class="sm:text-5xl mt-4 text-3xl font-bold tracking-tight text-white">Page not found</h1>
-		<p class="sm:mt-6 mt-4 text-lg text-white">
+		<h1 class="mt-4 text-3xl font-bold tracking-tight text-white sm:text-5xl">Page not found</h1>
+		<p class="mt-4 text-lg text-white sm:mt-6">
 			Sorry, we couldn’t find the page you’re looking for.
 		</p>
-		<div class="flex justify-center mt-10">
-			<a href="/" class="hover:underline unstyled text-xl leading-7 text-white"
+		<div class="mt-10 flex justify-center">
+			<a href="/" class="unstyled text-xl leading-7 text-white hover:underline"
 				><span aria-hidden="true" class="pr-1">&larr;</span>Go back
 			</a>
 		</div>

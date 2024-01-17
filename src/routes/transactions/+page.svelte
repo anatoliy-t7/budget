@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { PUBLIC_APP_NAME } from '$env/static/public';
 	import Autocomplete from '$lib/components/ui/autocomplete.svelte';
 	import Loader from '$lib/components/ui/loader.svelte';
@@ -38,7 +38,10 @@
 	// stop call api for first time
 	let stopIt = false;
 
-	async function changedType(value: string) {
+	/**
+	 * @param {string} value
+	 */
+	async function changedType(value) {
 		if (!value) {
 			$transfer = '~';
 		}
@@ -59,24 +62,38 @@
 		await getTransactions(page);
 	}
 
-	async function changePage(nextPage: any) {
+	/**
+	 * @param {any} nextPage
+	 */
+	async function changePage(nextPage) {
 		page = nextPage;
 		await getTransactions(page);
 	}
 
-	async function onOpenView(item: any) {
+	/**
+	 * @param {{ id: null; amount: null; account: null; type: string; note: null; transfer: null; category: null; budget: any; user: any; created: string; files: null; tags: never[]; }} item
+	 */
+	async function onOpenView(item) {
 		$transaction = item;
 
-		$selectedCategory = $categories?.find((c) => c.id === $transaction.category);
+		$selectedCategory = $categories?.find(
+			(/** @type {{ id: null; }} */ c) => c.id === $transaction.category,
+		);
 		$isViewOpen = true;
 	}
 
-	async function filterByTag(tag: string) {
+	/**
+	 * @param {string} tag
+	 */
+	async function filterByTag(tag) {
 		$filterTag = $filterTag === tag ? '' : tag;
 		await getTransactions(page);
 	}
 
-	async function filterByCategory(category: any) {
+	/**
+	 * @param {{ id: string; }} category
+	 */
+	async function filterByCategory(category) {
 		if (stopIt && $filterCategory !== category?.id) {
 			$filterCategory = category ? category?.id : '';
 			await getTransactions(page);
@@ -97,7 +114,7 @@
 
 			await alertOnFailure(async () => {
 				const res = await fetch(
-					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.currentBudget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
+					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.budget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
 					{
 						headers: {
 							Authorization: pb.authStore.token,
@@ -118,7 +135,11 @@
 		}
 	}
 
-	function categoryFilter(item: any, keywords: any) {
+	/**
+	 * @param {any} item
+	 * @param {any} keywords
+	 */
+	function categoryFilter(item, keywords) {
 		return item;
 	}
 

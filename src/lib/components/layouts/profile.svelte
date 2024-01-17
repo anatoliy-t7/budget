@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Button from '$lib/components/ui/button.svelte';
 
 	import { alertOnFailure } from '$lib/utils/utils';
@@ -9,10 +9,10 @@
 
 	const coll = pb.collection('users');
 
-	let user: any = {
-		id: null,
-		name: null,
-		email: null,
+	let user = {
+		id: '',
+		name: '',
+		email: '',
 	};
 
 	async function submit() {

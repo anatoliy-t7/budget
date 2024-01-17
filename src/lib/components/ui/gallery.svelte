@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { fade } from 'svelte/transition';
 	import IconDownload from '~icons/solar/file-download-linear';
 	import BigPicture from 'bigpicture';
@@ -8,8 +8,14 @@
 	import { fileToken } from '$lib/stores/main';
 	import { pb } from '$lib/stores/pocketbase';
 
-	export let files: any = [];
-	let recordFiles: any = null;
+	/**
+	 * @type {string | any[]}
+	 */
+	export let files = [];
+	/**
+	 * @type {import("pocketbase").RecordModel | null}
+	 */
+	let recordFiles = null;
 
 	async function initGallery() {
 		if (document.getElementById('lightbox')) {
@@ -58,15 +64,15 @@
 				{#await getPrivetImage(recordFiles, file, '1024x1024') then src}
 					<div class="group relative">
 						<button
-							class="hover:border-sky-500 w-32 h-32 overflow-hidden bg-white border border-transparent rounded-lg">
-							<img src={src} class="object-cover w-32 h-32 rounded-lg" alt={file} data-bp={src} />
+							class="h-32 w-32 overflow-hidden rounded-lg border border-transparent bg-white hover:border-sky-500">
+							<img src={src} class="h-32 w-32 rounded-lg object-cover" alt={file} data-bp={src} />
 						</button>
-						<div class="right-2 top-2 group-hover:flex absolute hidden">
+						<div class="absolute right-2 top-2 hidden group-hover:flex">
 							<a
 								target="_blank"
 								href={`${src}?download=1`}
 								class="click inline-flex rounded-lg bg-white p-1.5 text-green-500 shadow hover:bg-green-500 hover:text-white">
-								<IconDownload class="w-6 h-6" />
+								<IconDownload class="h-6 w-6" />
 							</a>
 						</div>
 					</div>

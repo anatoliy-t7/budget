@@ -2,10 +2,15 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { SvelteKitPWA } from '@vite-pwa/sveltekit'
 import { defineConfig } from 'vite';
 import Icons from 'unplugin-icons/vite'
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
 	plugins: [
 		sveltekit(),
+		visualizer({
+			emitFile: true,
+			filename: "stats.html",
+		}),
 		SvelteKitPWA({
 			srcDir: './src',
 			mode: 'production',

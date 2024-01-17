@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
 	import Pencil from '~icons/tabler/pencil';
@@ -13,14 +13,14 @@
 	import { CURRENCY_LIST } from '$lib/utils/constants';
 	const coll = pb.collection('accounts');
 
-	let open: boolean = false;
-	let account: any = {
+	let open = false;
+	let account = {
 		id: null,
 		name: null,
 		currency: 'USD',
-		budget: $authModel?.currentBudget,
+		budget: $authModel?.budget,
 	};
-	let selectedCurrency: any = {
+	let selectedCurrency = {
 		name: 'United States Dollar',
 		code: 'USD',
 	};
@@ -62,7 +62,10 @@
 		open = true;
 	}
 
-	async function onOpenEdit(item: any) {
+	/**
+	 * @param {{ id: null; name: null; currency: string; budget: any; }} item
+	 */
+	async function onOpenEdit(item) {
 		account = item;
 		open = true;
 	}
@@ -78,9 +81,7 @@
 		}
 	}
 
-	function currencyFilter(item: any, keywords: any) {
-		return item;
-	}
+	//console.log('hasAccess', await hasAccess(1));
 </script>
 
 <div class="gap-4 rounded-xl bg-white pt-6">

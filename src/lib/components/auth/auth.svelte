@@ -1,24 +1,31 @@
-<script lang="ts">
+<script>
 	import { pb, providerLogin, loading } from '$lib/stores/pocketbase';
 	import Button from '$lib/components/ui/button.svelte';
 	import { alertOnFailure } from '$lib/utils/utils';
 	import GoogleIcon from '$lib/components/ui/google-icon.svelte';
 	import Logo from '$lib/components/ui/logo.svelte';
 
-	export let authCollection = 'users';
 	export let authType = 'signin';
 
-	const coll = pb.collection(authCollection);
+	const coll = pb.collection('users');
 
-	let email: string;
-	let password: string;
+	/**
+	 * @type {string}
+	 */
+	let email;
+	/**
+	 * @type {string}
+	 */
+	let password;
 	$: disabled = !email?.length && !password?.length;
 
 	async function submit() {
 		alertOnFailure(async () => {
 			if (authType === 'signup') {
-				await coll.create({ email, password, passwordConfirm: password });
+				await coll.create({ email, password, passwordConfirm: password, emailVisibility: true });
+				await coll.requestVerification(email);
 			}
+
 			await coll.authWithPassword(email, password);
 		});
 	}

@@ -1,11 +1,17 @@
-<script lang="ts">
+<script>
 	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
 	import { types } from '$lib/stores/transactions';
-	export let selected: any = null;
+	/**
+	 * @type {string | null}
+	 */
+	export let selected = null;
 
-	async function changedType(value: string | null) {
+	/**
+	 * @param {string | null} value
+	 */
+	async function changedType(value) {
 		if (selected === value) {
 			value = '';
 		}

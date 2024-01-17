@@ -1,6 +1,12 @@
-<script lang="ts">
-	export let options: any = [];
-	export let selected: any;
+<script>
+	/**
+	 * @type {any[]}
+	 */
+	export let options = [];
+	/**
+	 * @type {any}
+	 */
+	export let selected;
 	export let disabled = false;
 	export let required = false;
 

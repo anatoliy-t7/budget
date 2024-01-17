@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { clickOutside } from '$lib/utils/utils';
 	import { accounts } from '$lib/stores/main';
 	import { slide } from 'svelte/transition';
@@ -7,11 +7,11 @@
 	let className = 'left-0';
 	export { className as class };
 
-	export let value: string | null = $accounts[0]?.id;
+	export let value = $accounts[0]?.id;
 
 	let isExpanded = false;
 
-	$: selectedAccount = $accounts?.find((a) => a.id == value);
+	$: selectedAccount = $accounts?.find((/** @type {{ id: any; }} */ a) => a.id == value);
 </script>
 
 <div use:clickOutside={() => (isExpanded = false)} class="relative">

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import '$lib/css/app.css';
 
 	import { Toaster } from 'svelte-french-toast';
@@ -15,33 +15,43 @@
 	import TransactionEdit from '$lib/components/layouts/transaction-edit.svelte';
 	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
 	import { isMobile } from '$lib/utils/utils';
+	import NeedVerification from '$lib/components/layouts/need-verification.svelte';
 
-	export let destination: string | null = null;
+	/**
+	 * @type {string | URL | null}
+	 */
+	export let destination = null;
 	$: if (destination != null && $authModel) {
 		goto(destination);
 	}
 </script>
 
 {#if $authModel}
-	<FirstLoadData />
+	{#if !$authModel.verified}
+		<NeedVerification />
+	{:else}
+		<FirstLoadData />
 
-	<Navbar />
+		<Navbar />
 
-	<div class="{isMobile() ? '' : 'ml-72'} flex h-full w-auto gap-4">
-		<Sidebar />
+		<div class="{isMobile() ? '' : 'ml-72'} flex h-full w-auto gap-4">
+			<Sidebar />
 
-		<main class="{isMobile() ? 'px-4 pb-24 pt-20' : 'mt-2 pr-8 pt-24'} page relative">
-			<slot />
-		</main>
-	</div>
+			<main class="{isMobile() ? 'px-4 pb-24 pt-20' : 'mt-2 pr-8 pt-24'} page relative">
+				<slot />
+			</main>
+		</div>
 
-	<Drawer bind:open={$editProfile} on:close={() => ($editProfile = false)}>
-		<Profile />
-	</Drawer>
+		<Drawer bind:open={$editProfile} on:close={() => ($editProfile = false)}>
+			<Profile />
+		</Drawer>
 
-	<TransactionEdit />
-	<TransactionView />
-{:else}
+		<TransactionEdit />
+		<TransactionView />
+	{/if}
+{/if}
+
+{#if !$authModel}
 	<Auth />
 {/if}
 

@@ -1,11 +1,13 @@
-<script lang="ts">
+<script>
+	// @ts-nocheck
+
 	import Loader from '~icons/solar/refresh-linear';
 
 	let className = '';
 	export { className as class };
 	export let loading = false;
 	export let disabled = false;
-	export let type: 'button' | 'submit' | 'reset' | null | undefined = 'button';
+	export let type = 'button';
 
 	export let size = 'md';
 	let sizeClass = 'px-4 py-2.5 text-base';

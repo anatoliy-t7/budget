@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Drawer from '$lib/components/ui/drawer.svelte';
 	import Button from '$lib/components/ui/button.svelte';
 	import TypeSwitch from '$lib/components/ui/type-switch.svelte';
@@ -24,7 +24,10 @@
 
 	const coll = pb.collection('transactions');
 
-	let transferAmount: number | null = null;
+	/**
+	 * @type {null | number}
+	 */
+	let transferAmount = null;
 	let disabledCategory = false;
 
 	$: disabled = !$transaction?.amount || !$transaction?.category;
@@ -33,7 +36,10 @@
 
 	$: transferAccount = null;
 
-	async function changedType(type: string) {
+	/**
+	 * @param {string} type
+	 */
+	async function changedType(type) {
 		if ($transaction.type !== 'transfer') {
 			$transaction.transfer = $accounts?.length > 1 ? $accounts[1]?.id : $accounts[0]?.id;
 		} else {
@@ -42,7 +48,9 @@
 		$transaction.type = type;
 
 		if ($transaction.type === 'transfer') {
-			$selectedCategory = $categories?.find((c) => c.id == 'catego_transfer');
+			$selectedCategory = $categories?.find(
+				(/** @type {{ id: string; }} */ c) => c.id == 'catego_transfer',
+			);
 			disabledCategory = true;
 		} else {
 			$selectedCategory = null;
@@ -59,7 +67,7 @@
 				toast.success(`${$transaction.type} was updated`);
 
 				$loading = false;
-				await close(false);
+				await close();
 			});
 		} else {
 			alertOnFailure(async () => {
@@ -117,7 +125,11 @@
 		await reset();
 	}
 
-	function categoryFilter(item: any, keywords: any) {
+	/**
+	 * @param {{ type: string; }} item
+	 * @param {any} keywords
+	 */
+	function categoryFilter(item, keywords) {
 		if ($transaction.type === 'expenses') {
 			return item.type === 'expenses';
 		}
@@ -131,8 +143,8 @@
 	}
 
 	onMount(() => {
-		transactionAccount = $accounts?.find((a: any) => a.id == $transaction?.account);
-		transferAccount = $accounts?.find((a: any) => a.id == $transaction?.transfer);
+		transactionAccount = $accounts?.find((a) => a.id == $transaction?.account);
+		transferAccount = $accounts?.find((a) => a.id == $transaction?.transfer);
 	});
 </script>
 
