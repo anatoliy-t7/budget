@@ -40,7 +40,7 @@
 			break;
 		case 'green':
 			colorClass =
-				'text-green-950 bg-green-300 border-green-300 hover:bg-green-800 ring-green-200 focus:ring-green-200';
+				'text-green-950 bg-green-300 border-green-300 hover:bg-green-400 ring-green-200 focus:ring-green-200';
 			break;
 		case 'outline':
 			colorClass =

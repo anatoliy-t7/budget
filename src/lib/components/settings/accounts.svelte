@@ -18,7 +18,7 @@
 		id: null,
 		name: null,
 		currency: 'USD',
-		budget: $authModel?.budget,
+		ledger: $authModel?.ledger,
 	};
 	let selectedCurrency = {
 		name: 'United States Dollar',
@@ -63,7 +63,7 @@
 	}
 
 	/**
-	 * @param {{ id: null; name: null; currency: string; budget: any; }} item
+	 * @param {{ id: null; name: null; currency: string; ledger: any; }} item
 	 */
 	async function onOpenEdit(item) {
 		account = item;

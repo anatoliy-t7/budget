@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import { clickOutside } from '$lib/utils/utils';
 	import { accounts } from '$lib/stores/main';
 	import { slide } from 'svelte/transition';
@@ -7,11 +9,16 @@
 	let className = 'left-0';
 	export { className as class };
 
-	export let value = $accounts[0]?.id;
-
+	export let value;
 	let isExpanded = false;
 
 	$: selectedAccount = $accounts?.find((/** @type {{ id: any; }} */ a) => a.id == value);
+
+	function onSelect(account) {
+		value = account.id;
+		selectedAccount = account;
+		isExpanded = false;
+	}
 </script>
 
 <div use:clickOutside={() => (isExpanded = false)} class="relative">
@@ -31,7 +38,7 @@
 			class="{className} absolute z-30 mt-1 max-h-60 w-full min-w-[320px] overflow-y-auto rounded-md border border-gray-200 bg-white py-1 text-sm shadow-small focus:outline-none">
 			{#each $accounts as account}
 				<button
-					on:click={() => ((value = account.id), (isExpanded = false))}
+					on:click={() => onSelect(account)}
 					type="button"
 					class="relative flex w-full cursor-pointer select-none items-center justify-between gap-4 px-4 py-2 text-left {account.id ===
 					selectedAccount?.id

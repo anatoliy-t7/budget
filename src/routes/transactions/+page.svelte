@@ -71,7 +71,7 @@
 	}
 
 	/**
-	 * @param {{ id: null; amount: null; account: null; type: string; note: null; transfer: null; category: null; budget: any; user: any; created: string; files: null; tags: never[]; }} item
+	 * @param {{ id: null; amount: null; account: null; type: string; note: null; transfer: null; category: null; ledger: any; user: any; created: string; files: null; tags: never[]; }} item
 	 */
 	async function onOpenView(item) {
 		$transaction = item;
@@ -114,7 +114,7 @@
 
 			await alertOnFailure(async () => {
 				const res = await fetch(
-					`${PUBLIC_POCKETBASE_URL}/api/close-month?budgetId=${pb.authStore.model?.budget}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
+					`${PUBLIC_POCKETBASE_URL}/api/close-month?ledgerId=${pb.authStore.model?.ledger}&startOf=${$monthRange?.start}&endOf=${$monthRange?.end}`,
 					{
 						headers: {
 							Authorization: pb.authStore.token,
@@ -200,7 +200,7 @@
 				<button
 					on:click={() => filterByTag(tag)}
 					class="{$filterTag === tag
-						? 'bg-amber-400'
+						? 'bg-amber-200'
 						: 'bg-white hover:bg-gray-200'} click rounded-full px-3 py-1">
 					{tag?.replace('#', '')}
 				</button>

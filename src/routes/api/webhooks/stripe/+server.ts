@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { pb } from '$lib/stores/pocketbase';
 
 import { SECRET_STRIPE_WEBHOOK_KEY } from '$env/static/private';
-import { stripe } from '$lib/utils/stripe';
+import { stripe } from '$lib/server/stripe';
 
 function toBuffer(ab: ArrayBuffer): Buffer {
 	const buf = Buffer.alloc(ab.byteLength);
@@ -59,7 +59,7 @@ export async function POST({ request }) {
 					unlimited: 0,
 				}
 
-				await pb.collection('budgets').update(userRecord.budget, { stripe: stripeData });
+				await pb.collection('ledgers').update(userRecord.ledger, { stripe: stripeData });
 			} else {
 				return json({ status: 404, message: `User not found: ${customer?.email}` })
 			}
@@ -88,7 +88,7 @@ export async function POST({ request }) {
 					unlimited: 0,
 				}
 
-				await pb.collection('budgets').update(userRecord.budget, { stripe: stripeData });
+				await pb.collection('ledgers').update(userRecord.ledger, { stripe: stripeData });
 			} else {
 				return json({ status: 404, message: `User not found: ${customer?.email}` })
 			}
@@ -114,7 +114,7 @@ export async function POST({ request }) {
 					unlimited: 0,
 				}
 
-				await pb.collection('budgets').update(userRecord.budget, { stripe: stripeData });
+				await pb.collection('ledgers').update(userRecord.ledger, { stripe: stripeData });
 			} else {
 				return json({ status: 404, message: `User not found: ${customer?.email}` })
 			}

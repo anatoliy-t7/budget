@@ -25,7 +25,7 @@
 				await getTransactions();
 			},
 			{
-				filter: `budget = "${$authModel?.budget}" && type != "closed" && type != "opened"`,
+				filter: `ledger = "${$authModel?.ledger}" && type != "closed" && type != "opened"`,
 			},
 		);
 	} else {

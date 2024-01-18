@@ -6,16 +6,12 @@
 	import { authModel } from '$lib/stores/pocketbase';
 
 	import Auth from '$lib/components/auth/auth.svelte';
-	import Sidebar from '$lib/components/layouts/sidebar.svelte';
-	import Navbar from '$lib/components/layouts/navbar.svelte';
-	import FirstLoadData from '$lib/components/layouts/first-load-data.svelte';
-	import Profile from '$lib/components/layouts/profile.svelte';
-	import Drawer from '$lib/components/ui/drawer.svelte';
-	import { editProfile } from '$lib/stores/main';
-	import TransactionEdit from '$lib/components/layouts/transaction-edit.svelte';
-	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
-	import { isMobile } from '$lib/utils/utils';
+
+	import { hasAccess } from '$lib/utils/utils';
 	import NeedVerification from '$lib/components/layouts/need-verification.svelte';
+	import PriceList from '$lib/components/layouts/select-price.svelte';
+
+	import Body from '$lib/components/layouts/body.svelte';
 
 	/**
 	 * @type {string | URL | null}
@@ -29,29 +25,14 @@
 {#if $authModel}
 	{#if !$authModel.verified}
 		<NeedVerification />
+	{:else if !hasAccess(1)}
+		<PriceList />
 	{:else}
-		<FirstLoadData />
-
-		<Navbar />
-
-		<div class="{isMobile() ? '' : 'ml-72'} flex h-full w-auto gap-4">
-			<Sidebar />
-
-			<main class="{isMobile() ? 'px-4 pb-24 pt-20' : 'mt-2 pr-8 pt-24'} page relative">
-				<slot />
-			</main>
-		</div>
-
-		<Drawer bind:open={$editProfile} on:close={() => ($editProfile = false)}>
-			<Profile />
-		</Drawer>
-
-		<TransactionEdit />
-		<TransactionView />
+		<Body>
+			<slot />
+		</Body>
 	{/if}
-{/if}
-
-{#if !$authModel}
+{:else}
 	<Auth />
 {/if}
 

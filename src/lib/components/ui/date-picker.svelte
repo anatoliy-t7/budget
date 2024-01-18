@@ -45,10 +45,10 @@
 	});
 </script>
 
-<div class="flex cursor-pointer items-center gap-4">
+<div class="flex items-center gap-4 cursor-pointer">
 	<input
 		bind:this={datepicker}
-		class="w-24 bg-transparent text-lg font-medium focus:outline-none" />
+		class="w-28 focus:outline-none text-lg font-medium bg-transparent" />
 
 	<button on:click={() => picker.show()} type="button" class="click">
 		<Calendar class="h-7 w-7" />

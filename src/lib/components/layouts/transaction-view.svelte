@@ -30,7 +30,7 @@
 			note: $transaction.note,
 			transfer: $transaction.transfer,
 			category: $transaction.category,
-			budget: $transaction.budget,
+			ledger: $transaction.ledger,
 			user: $transaction.user,
 			created: $transaction.created,
 			files: $transaction.files,

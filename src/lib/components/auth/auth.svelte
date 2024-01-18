@@ -4,6 +4,7 @@
 	import { alertOnFailure } from '$lib/utils/utils';
 	import GoogleIcon from '$lib/components/ui/google-icon.svelte';
 	import Logo from '$lib/components/ui/logo.svelte';
+	import { fade } from 'svelte/transition';
 
 	export let authType = 'signin';
 
@@ -20,6 +21,7 @@
 	$: disabled = !email?.length && !password?.length;
 
 	async function submit() {
+		$loading = true;
 		alertOnFailure(async () => {
 			if (authType === 'signup') {
 				await coll.create({ email, password, passwordConfirm: password, emailVisibility: true });
@@ -27,6 +29,7 @@
 			}
 
 			await coll.authWithPassword(email, password);
+			$loading = false;
 		});
 	}
 
@@ -45,7 +48,9 @@
 	}
 </script>
 
-<div class="flex max-h-screen min-h-screen w-full items-center justify-center bg-gray-100">
+<div
+	transition:fade
+	class="flex max-h-screen min-h-screen w-full items-center justify-center bg-gray-100">
 	<div>
 		<div class="flex justify-center pb-6">
 			<Logo />

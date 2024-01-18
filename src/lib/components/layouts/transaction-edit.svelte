@@ -33,6 +33,10 @@
 	$: disabled = !$transaction?.amount || !$transaction?.category;
 
 	$: transactionAccount = null;
+	/**
+	 * @type {null | string}
+	 */
+	let transactionAccountId = null;
 
 	$: transferAccount = null;
 
@@ -61,45 +65,48 @@
 	async function submit() {
 		$loading = true;
 
-		if ($transaction.id) {
+		let tran = JSON.parse(JSON.stringify($transaction));
+		tran.account = transactionAccountId;
+
+		if (tran.id) {
 			alertOnFailure(async () => {
-				await coll.update($transaction.id, $transaction);
-				toast.success(`${$transaction.type} was updated`);
+				await coll.update(tran.id, tran);
+				toast.success(`${tran.type} was updated`);
 
 				$loading = false;
 				await close();
 			});
 		} else {
 			alertOnFailure(async () => {
-				$transaction.created = dayjs($transaction.created)
+				tran.created = dayjs(tran.created)
 					.set('hour', dayjs().get('hour'))
 					.set('minute', dayjs().get('minute'))
 					.set('second', dayjs().get('second'))
 					.toISOString();
 
-				if ($transaction.type !== 'transfer') {
-					$transaction.transfer = null;
+				if (tran.type !== 'transfer') {
+					tran.transfer = null;
 				}
 
-				if ($transaction.type === 'transfer') {
-					$transaction.type = 'expenses';
+				if (tran.type === 'transfer') {
+					tran.type = 'expenses';
 
-					await coll.create($transaction);
-					toast.success(`${$transaction.type} was added`);
+					await coll.create(tran);
+					toast.success(`${tran.type} was added`);
 
-					$transaction.type = 'income';
-					const fromAccount = $transaction.transfer;
-					$transaction.transfer = $transaction.account;
-					$transaction.account = fromAccount;
+					tran.type = 'income';
+					const fromAccount = tran.transfer;
+					tran.transfer = tran.account;
+					tran.account = fromAccount;
 
 					if (transactionAccount?.currency != transferAccount?.currency) {
-						$transaction.amount = transferAmount;
+						tran.amount = transferAmount;
 					}
 				}
 
-				await coll.create($transaction);
+				await coll.create(tran);
 
-				toast.success(`${$transaction.type} was added`);
+				toast.success(`${tran.type} was added`);
 
 				$loading = false;
 				await close();
@@ -107,7 +114,7 @@
 		}
 	}
 
-	async function onClose() {
+	export async function onClose() {
 		if (
 			$historyTransaction !== JSON.stringify($transaction) &&
 			!confirm(`Do you want to close it?`)
@@ -143,120 +150,120 @@
 	}
 
 	onMount(() => {
+		transactionAccountId = $transaction?.account;
 		transactionAccount = $accounts?.find((a) => a.id == $transaction?.account);
 		transferAccount = $accounts?.find((a) => a.id == $transaction?.transfer);
 	});
 </script>
 
-<Drawer bind:open={$isEditOpen} on:close={() => onClose()}>
-	<div class="pb-6 text-2xl font-medium">Add transaction</div>
+<div class="pb-6 text-2xl font-medium">Add transaction</div>
 
-	<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
-		<div>
-			<DatePicker bind:value={$transaction.created} />
-		</div>
+<form on:submit|preventDefault={submit} class="grid max-w-sm gap-4">
+	<div>
+		<DatePicker bind:value={$transaction.created} />
+	</div>
 
-		<TypeSwitch selected={$transaction.type} on:changed={(event) => changedType(event.detail)} />
+	<TypeSwitch selected={$transaction.type} on:changed={(event) => changedType(event.detail)} />
 
-		<div class="flex gap-6">
-			<div class="block w-full space-y-1 font-medium">
-				<div class="text-sm">
-					{#if $transaction.type === 'transfer'}
-						From
-					{:else}
-						Account
-					{/if}
-				</div>
-				<ListboxAccount bind:value={$transaction.account} />
+	<div class="flex gap-6">
+		<div class="block w-full space-y-1 font-medium">
+			<div class="text-sm">
+				{#if $transaction.type === 'transfer'}
+					From
+				{:else}
+					Account
+				{/if}
 			</div>
 
-			{#if $transaction.type === 'transfer'}
-				<div class="block w-full space-y-1 font-medium">
-					<div class="text-sm">To</div>
-
-					<ListboxAccount bind:value={$transaction.transfer} class="right-0" />
-				</div>
-			{/if}
+			<ListboxAccount bind:value={transactionAccountId} />
 		</div>
 
-		<div class="flex gap-6">
+		{#if $transaction.type === 'transfer'}
 			<div class="block w-full space-y-1 font-medium">
-				<span class="text-sm">
-					{#if $transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
-						Sent amount
-					{:else}
-						Amount
-					{/if}
-				</span>
+				<div class="text-sm">To</div>
 
+				<ListboxAccount bind:value={$transaction.transfer} class="right-0" />
+			</div>
+		{/if}
+	</div>
+
+	<div class="flex gap-6">
+		<div class="block w-full space-y-1 font-medium">
+			<span class="text-sm">
+				{#if $transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
+					Sent amount
+				{:else}
+					Amount
+				{/if}
+			</span>
+
+			<div class="relative">
+				<input bind:value={$transaction.amount} required type="number" placeholder="100" />
+				{#if transactionAccount}
+					<div class="absolute right-3 top-3 text-gray-400">
+						{transactionAccount?.currency}
+					</div>
+				{/if}
+			</div>
+		</div>
+		{#if $transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
+			<div class="block w-full space-y-1 font-medium">
+				<span class="text-sm"> Got amount </span>
 				<div class="relative">
-					<input bind:value={$transaction.amount} required type="number" placeholder="100" />
-					{#if transactionAccount}
+					<input bind:value={transferAmount} type="number" placeholder="100" />
+					{#if transferAccount}
 						<div class="absolute right-3 top-3 text-gray-400">
-							{transactionAccount?.currency}
+							{transferAccount?.currency}
 						</div>
 					{/if}
 				</div>
 			</div>
-			{#if $transaction.type === 'transfer' && transactionAccount?.currency !== transferAccount?.currency}
-				<div class="block w-full space-y-1 font-medium">
-					<span class="text-sm"> Got amount </span>
-					<div class="relative">
-						<input bind:value={transferAmount} type="number" placeholder="100" />
-						{#if transferAccount}
-							<div class="absolute right-3 top-3 text-gray-400">
-								{transferAccount?.currency}
-							</div>
-						{/if}
-					</div>
-				</div>
-			{/if}
+		{/if}
+	</div>
+
+	<div class="space-y-1 font-medium">
+		<div class="text-sm">Category</div>
+
+		<Autocomplete
+			items={$categories}
+			bind:value={$transaction.category}
+			selectedItem={$selectedCategory}
+			itemFilterFunction={categoryFilter}
+			labelFieldName="name"
+			valueFieldName="id"
+			matchAllKeywords={false}
+			sortByMatchedKeywords={true}
+			keywordsFieldName="name"
+			disabled={disabledCategory}
+			required={true} />
+	</div>
+
+	<div class="space-y-1 font-medium">
+		<div class="text-sm">
+			Tags <span class="font-normal text-gray-400">(optional)</span>
 		</div>
 
-		<div class="space-y-1 font-medium">
-			<div class="text-sm">Category</div>
+		{#if $isEditOpen}
+			<Tags bind:selected={$transaction.tags} />
+		{/if}
+	</div>
 
-			<Autocomplete
-				items={$categories}
-				bind:value={$transaction.category}
-				selectedItem={$selectedCategory}
-				itemFilterFunction={categoryFilter}
-				labelFieldName="name"
-				valueFieldName="id"
-				matchAllKeywords={false}
-				sortByMatchedKeywords={true}
-				keywordsFieldName="name"
-				disabled={disabledCategory}
-				required={true} />
+	<div class="w-full space-y-1 font-medium">
+		<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
+		<div class="">
+			<input bind:value={$transaction.note} type="text" />
 		</div>
+	</div>
 
-		<div class="space-y-1 font-medium">
-			<div class="text-sm">
-				Tags <span class="font-normal text-gray-400">(optional)</span>
-			</div>
+	<div class="w-full space-y-1 font-medium">
+		<span class="text-sm">
+			Files <span class="font-normal text-gray-400">(optional) max 5</span></span>
+		<FileUploader bind:id={$transaction.files} />
+	</div>
 
-			{#if $isEditOpen}
-				<Tags bind:selected={$transaction.tags} />
-			{/if}
-		</div>
-
-		<div class="w-full space-y-1 font-medium">
-			<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
-			<div class="">
-				<input bind:value={$transaction.note} type="text" />
-			</div>
-		</div>
-
-		<div class="w-full space-y-1 font-medium">
-			<span class="text-sm">
-				Files <span class="font-normal text-gray-400">(optional) max 5</span></span>
-			<FileUploader bind:id={$transaction.files} />
-		</div>
-
-		<div class="pt-4">
-			<Button loading={$loading} disabled={disabled} type="submit" class="w-full">
-				{$transaction.id ? 'Update' : 'Add'}
-			</Button>
-		</div>
-	</form>
-</Drawer>
+	<div class="pt-4">
+		<Button loading={$loading} disabled={disabled} type="submit" class="w-full">
+			{$transaction.id ? 'Update' : 'Add'}
+		</Button>
+	</div>
+</form>

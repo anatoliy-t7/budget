@@ -9,7 +9,7 @@
 
 	import { pb } from '$lib/stores/pocketbase';
 	import { billingPortalUrl, editProfile } from '$lib/stores/main';
-	import { isMobile } from '$lib/utils/utils';
+	import { trialGone, isMobile } from '$lib/utils/utils';
 </script>
 
 <div
@@ -26,7 +26,8 @@
 		<MonthRange />
 	</div>
 
-	<div class="col-span-3 flex items-center justify-end">
+	<div class="col-span-3 flex items-center justify-end gap-4">
+		<div>trial gone: {trialGone()}</div>
 		<div>
 			<Dropdown>
 				<div slot="trigger">

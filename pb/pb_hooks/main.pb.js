@@ -5,11 +5,11 @@ routerAdd(
 	'GET',
 	'/api/overview',
 	(c) => {
-		const budgetId = c.queryParam('budgetId');
+		const ledgerId = c.queryParam('ledgerId');
 		const startOf = c.queryParam('startOf');
 		const endOf = c.queryParam('endOf');
 
-		const budget = $app.dao().findRecordById('budgets', budgetId);
+		const ledger = $app.dao().findRecordById('ledgers', ledgerId);
 
 		const data = {};
 
@@ -17,7 +17,7 @@ routerAdd(
 			.dao()
 			.findRecordsByFilter(
 				'transactions',
-				`budget = "${budgetId}" && created >= "${startOf}" && created <= "${endOf}"`,
+				`ledger = "${ledgerId}" && created >= "${startOf}" && created <= "${endOf}"`,
 			);
 
 		$app.dao().expandRecords(transactions, ['account'], null);
@@ -52,7 +52,7 @@ routerAdd(
 			}
 		});
 
-		const defaultCurrency = budget.getString('defaultCurrency');
+		const defaultCurrency = ledger.getString('defaultCurrency');
 
 		return c.json(200, { data, defaultCurrency: defaultCurrency.toLowerCase() });
 	},
@@ -64,11 +64,11 @@ routerAdd(
 	'GET',
 	'/api/close-month',
 	(c) => {
-		const budgetId = c.queryParam('budgetId');
+		const ledgerId = c.queryParam('ledgerId');
 		const startOf = c.queryParam('startOf');
 		const endOf = c.queryParam('endOf');
 
-		let accounts = $app.dao().findRecordsByFilter('accounts', `budget = "${budgetId}"`);
+		let accounts = $app.dao().findRecordsByFilter('accounts', `ledger = "${ledgerId}"`);
 
 		accounts = JSON.parse(JSON.stringify(accounts));
 
@@ -118,7 +118,7 @@ routerAdd(
 				type: 'closed',
 				transfer: null,
 				category: null,
-				budget: account.budget,
+				ledger: account.ledger,
 				user: null,
 				created: new Date(closedMonth).toISOString(),
 			};
@@ -145,7 +145,7 @@ routerAdd(
 	(c) => {
 		const utils = require(`${__hooks}/utils.js`);
 
-		const budgetId = c.queryParam('budgetId');
+		const ledgerId = c.queryParam('ledgerId');
 		const startOf = c.queryParam('startOf');
 		const endOf = c.queryParam('endOf');
 
@@ -153,7 +153,7 @@ routerAdd(
 			.dao()
 			.findRecordsByFilter(
 				'transactions',
-				`budget = "${budgetId}" && created >= "${startOf}" && created <= "${endOf}"`,
+				`ledger = "${ledgerId}" && created >= "${startOf}" && created <= "${endOf}"`,
 			);
 
 		transactions = JSON.parse(JSON.stringify(transactions));
@@ -173,7 +173,7 @@ routerAdd(
 	(c) => {
 		const utils = require(`${__hooks}/utils.js`);
 
-		const budgetId = c.queryParam('budgetId');
+		const ledgerId = c.queryParam('ledgerId');
 		const startOf = c.queryParam('startOf');
 		const endOf = c.queryParam('endOf');
 
@@ -181,7 +181,7 @@ routerAdd(
 			.dao()
 			.findRecordsByFilter(
 				'transactions',
-				`budget = "${budgetId}" && created >= "${startOf}" && created <= "${endOf}"`,
+				`ledger = "${ledgerId}" && created >= "${startOf}" && created <= "${endOf}"`,
 			);
 
 		$app.dao().expandRecords(transactions, ['category'], null);
@@ -193,10 +193,10 @@ routerAdd(
 
 		let data = [];
 		categories.forEach((c) => {
-			const filtredTransactions = transactions.filter((t) => t.category === c.id);
+			const filteredTransactions = transactions.filter((t) => t.category === c.id);
 
-			if (filtredTransactions) {
-				const amount = filtredTransactions
+			if (filteredTransactions) {
+				const amount = filteredTransactions
 					.map((obj) => obj.amount)
 					.reduce((accumulator, current) => accumulator + current, 0);
 
@@ -215,9 +215,9 @@ routerAdd(
 	'/api/tags',
 	(c) => {
 		const utils = require(`${__hooks}/utils.js`);
-		const budgetId = c.queryParam('budgetId');
+		const ledgerId = c.queryParam('ledgerId');
 
-		let transactions = $app.dao().findRecordsByFilter('transactions', `budget = "${budgetId}"`);
+		let transactions = $app.dao().findRecordsByFilter('transactions', `ledger = "${ledgerId}"`);
 
 		transactions = JSON.parse(JSON.stringify(transactions));
 
@@ -319,27 +319,36 @@ onRecordBeforeUpdateRequest((e) => {
 	e.record.set('created', info.data.created);
 }, 'transactions');
 
-// Create first budget if doesn't exist
+// Create first ledger if doesn't exist
 onRecordAuthRequest((e) => {
-	if (!e.record.getString('budget')) {
-		const collection = $app.dao().findCollectionByNameOrId('budgets');
+	if (!e.record.getString('ledger')) {
+		const collection = $app.dao().findCollectionByNameOrId('ledgers');
 
 		const newBudget = new Record(collection, {
 			defaultCurrency: 'USD',
 			name: 'Default',
+			settings: {
+				financeYearStartFrom: 0,
+			},
+			stripe: {
+				userId: e.record.id,
+				subscriptionId: '',
+				customerId: '',
+				productId: '',
+				currentPeriodEnd: '',
+				trial_end: '',
+				unlimited: 0,
+			},
 		});
 		$app.dao().saveRecord(newBudget);
 
-		e.record.set('budget', newBudget.id);
-		e.record.set('settings', {
-			financeYearStartFrom: 0,
-		});
+		e.record.set('ledger', newBudget.id);
 		$app.dao().saveRecord(e.record);
 	}
 
-	$app.dao().expandRecord(e.record, ['budget'], null);
+	$app.dao().expandRecord(e.record, ['ledger'], null);
 }, 'users');
 
 onRecordAfterUpdateRequest((e) => {
-	$app.dao().expandRecord(e.record, ['budget'], null);
+	$app.dao().expandRecord(e.record, ['ledger'], null);
 }, 'users');

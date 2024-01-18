@@ -7,7 +7,7 @@
 			await getTotalAmountsByCategories();
 		}
 	});
-	//$: console.log($totalAmountsByCategories);
+	$: console.log($totalAmountsByCategories);
 </script>
 
 {#if $totalAmountsByCategories?.length}

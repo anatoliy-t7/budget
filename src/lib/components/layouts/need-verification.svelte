@@ -1,4 +1,5 @@
 <script>
+	import { fade } from 'svelte/transition';
 	import { authModel } from '$lib/stores/pocketbase';
 	import { pb, loading } from '$lib/stores/pocketbase';
 	import { PUBLIC_APP_NAME } from '$env/static/public';
@@ -24,7 +25,7 @@
 	}
 </script>
 
-<div class=" flex h-screen items-center justify-center">
+<div transition:fade class="flex h-screen items-center justify-center">
 	<div class="prose-xl relative max-w-3xl rounded-xl bg-white p-6">
 		<p>
 			Thank you for joining "{PUBLIC_APP_NAME}"!

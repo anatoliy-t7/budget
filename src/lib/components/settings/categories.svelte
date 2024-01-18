@@ -32,7 +32,7 @@
 		name: null,
 		icon: null,
 		type: 'expenses',
-		budget: $authModel?.budget,
+		ledger: $authModel?.ledger,
 	};
 
 	$: disabled = !category?.name;
@@ -70,7 +70,7 @@
 	}
 
 	/**
-	 * @param {{ id: null; name: null; icon: null; type: string; budget: any; }} item
+	 * @param {{ id: null; name: null; icon: null; type: string; ledger: any; }} item
 	 */
 	async function onOpenEdit(item) {
 		category = item;
@@ -124,7 +124,7 @@
 								{item.type}
 							</div>
 							<div class="col-span-2 flex justify-end">
-								{#if item.budget}
+								{#if item.ledger}
 									<button
 										on:click={() => onOpenEdit(item)}
 										class="click hidden hover:text-sky-500 group-hover:flex">

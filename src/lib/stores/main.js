@@ -4,7 +4,7 @@ import { PUBLIC_DOMAIN } from '$env/static/public';
 export const loading = writable(false);
 export const categories = writable(null);
 export const accounts = writable(null);
-export const budget = writable(null);
+export const ledger = writable(null);
 export const fileToken = writable('');
 export const editProfile = writable(false);
 export const billingPortalUrl = writable(null);
@@ -13,9 +13,9 @@ export async function getCategories() {
 	const coll = pb.collection('categories');
 
 	const res = await coll.getFullList({
-		filter: `budget = "${pb.authStore.model?.budget}" || budget = ""`,
+		filter: `ledger = "${pb.authStore.model?.ledger}" || ledger = ""`,
 		sort: '+name',
-		fields: 'id,name,icon,type,popular,budget',
+		fields: 'id,name,icon,type,popular,ledger',
 	});
 
 	categories.set(res);
@@ -24,7 +24,7 @@ export async function getCategories() {
 export async function getAccounts() {
 	const coll = pb.collection('accounts');
 	const res = await coll.getFullList({
-		filter: `budget = "${pb.authStore.model?.budget}"`,
+		filter: `ledger = "${pb.authStore.model?.ledger}"`,
 		sort: '-name',
 		fields: 'id,name,currency',
 	});
@@ -33,20 +33,20 @@ export async function getAccounts() {
 
 export async function getBudget() {
 	const auth = get(authModel);
-	if (auth && auth?.expand?.budget) {
-		budget.set(auth.expand.budget);
+	if (auth && auth?.expand?.ledger) {
+		ledger.set(auth.expand.ledger);
 	}
 }
 
 export async function resetAll() {
-	budget.set(null);
+	ledger.set(null);
 	categories.set(null);
 	accounts.set(null);
 	fileToken.set('');
 }
 
 export async function getBillingPortalUrl() {
-	await fetch(`${PUBLIC_DOMAIN}/api/stripe/billing-portal?budgetId=${pb.authStore.model?.budget}`)
+	await fetch(`${PUBLIC_DOMAIN}/api/billing-portal?ledgerId=${pb.authStore.model?.ledger}`)
 		.then((res) => res.json())
 		.then((res) => {
 			billingPortalUrl.set(res.url);

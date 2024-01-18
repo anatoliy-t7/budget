@@ -1,3 +1,66 @@
+export const PRODUCT_LIST = [
+	{
+		id: 'prod_PMUsGEh6otDI7V',
+		name: 'Starter',
+		access: 1,
+		trial: true,
+		description: 'A Starter plan to get you started!',
+		features: ['MIT Licence', 'Fast Performance', 'Stripe Integration'],
+		prices: [
+			{
+				id: 'price_1OXmAbFpaScIaMO0HoEsbSIH',
+				price: 7,
+				period: 'monthly',
+			},
+			{
+				id: 'price_1OXltgFpaScIaMO02G44xZNo',
+				price: 77,
+				period: 'yearly',
+			},
+		],
+	},
+	{
+		id: 'prod_PMUuZt6qm71Mdm',
+		name: 'Family',
+		access: 2,
+		trial: false,
+		description: 'A Family plan to get you started!',
+		features: ['MIT Licence', 'Fast Performance', 'Stripe Integration'],
+		prices: [
+			{
+				id: 'price_1OXlukFpaScIaMO05dVdpLSi',
+				price: 24,
+				period: 'monthly',
+			},
+			{
+				id: 'price_1OXlvCFpaScIaMO08DthcNkh',
+				price: 264,
+				period: 'yearly',
+			},
+		],
+	},
+	{
+		id: 'prod_PMUwsTr2albht0',
+		name: 'Community',
+		access: 3,
+		trial: false,
+		description: 'A Community plan to get you started!',
+		features: ['MIT Licence', 'Fast Performance', 'Stripe Integration'],
+		prices: [
+			{
+				id: 'price_1OXmBTFpaScIaMO0ldGGOQvG',
+				price: 56,
+				period: 'monthly',
+			},
+			{
+				id: 'price_1OXlwpFpaScIaMO09feNEXoW',
+				price: 617,
+				period: 'yearly',
+			},
+		],
+	},
+];
+
 export const MONTHS = [
 	{
 		value: 0,
@@ -46,24 +109,6 @@ export const MONTHS = [
 	{
 		value: 11,
 		label: 'December',
-	},
-];
-
-export const PRODUCT_LIST = [
-	{
-		id: 'prod_PMUsGEh6otDI7V',
-		name: 'Starter',
-		access: 1,
-	},
-	{
-		id: 'prod_PMUuZt6qm71Mdm',
-		name: 'Family',
-		access: 2,
-	},
-	{
-		id: 'prod_PMUwsTr2albht0',
-		name: 'Community',
-		access: 3,
 	},
 ];
 

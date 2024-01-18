@@ -12,7 +12,7 @@
 <div class="flex flex-wrap gap-4">
 	<button
 		on:click={() => (openOverview = true)}
-		class="flex min-w-[225px] justify-between gap-4 rounded-xl border border-white bg-white p-6 text-left hover:border-gray-400">
+		class="flex min-w-[225px] justify-between gap-4 rounded-xl border border-gray-300 bg-white p-6 text-left hover:border-gray-400">
 		<div>
 			<div class=" text-gray-500">Income</div>
 			{#if Number($totalOverview?.income) >= 0}
@@ -28,7 +28,7 @@
 
 	<button
 		on:click={() => (openOverview = true)}
-		class=" flex min-w-[225px] items-center justify-between gap-4 rounded-xl border border-white bg-white p-6 text-left hover:border-gray-400">
+		class=" flex min-w-[225px] items-center justify-between gap-4 rounded-xl border border-gray-300 bg-white p-6 text-left hover:border-gray-400">
 		<div>
 			<div class=" text-gray-500">Expenses</div>
 			{#if Number($totalOverview?.expenses) >= 0}
@@ -44,7 +44,7 @@
 
 	<button
 		on:click={() => (openOverview = true)}
-		class=" flex min-w-[225px] items-center justify-between gap-4 rounded-xl border border-white bg-white p-6 text-left hover:border-gray-400">
+		class=" flex min-w-[225px] items-center justify-between gap-4 rounded-xl border border-gray-300 bg-white p-6 text-left hover:border-gray-400">
 		<div>
 			<div class=" text-gray-500">Balance</div>
 			{#if Number($totalOverview?.balance) >= 0}
