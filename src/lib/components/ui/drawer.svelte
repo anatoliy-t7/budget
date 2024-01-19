@@ -44,15 +44,15 @@
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
 			transition:fade={{ delay: 0, duration: 300 }}
-			class="pointer-events-auto fixed bottom-0 left-0 right-0 top-0 z-50 h-screen w-screen transform-gpu cursor-pointer overflow-hidden bg-gray-700 bg-opacity-50 transition"
+			class="transform-gpu py-safe fixed top-0 bottom-0 left-0 right-0 z-50 w-screen h-screen overflow-hidden transition bg-gray-700 bg-opacity-50 cursor-pointer pointer-events-auto"
 			on:click={onClose}>
 		</div>
 		<div
 			transition:slide={{ delay: 0, duration: 400, easing: cubicOut, axis: 'x' }}
-			class="{maxWidth} z-60 fixed inset-y-0 right-0 z-50 h-screen w-full overflow-y-auto bg-gray-50 px-8 py-6 text-gray-600">
-			<div class="absolute right-6 top-6">
-				<button on:click={onClose} class="hovered click">
-					<X class="h-6 w-6" />
+			class="{maxWidth} z-60 fixed inset-y-0 right-0 z-50 h-screen w-full overflow-y-auto bg-gray-50 px-8 text-gray-600 py-safe sm:py-6">
+			<div class="right-6 top-6 absolute">
+				<button on:click={onClose} class="hovered click mt-safe">
+					<X class="w-6 h-6" />
 				</button>
 			</div>
 			<slot />

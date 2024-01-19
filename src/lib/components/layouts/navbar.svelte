@@ -27,7 +27,7 @@
 	</div>
 
 	<div class="col-span-3 flex items-center justify-end gap-4">
-		<div>trial gone: {trialGone()}</div>
+		<!-- <div>trial gone: {trialGone()}</div> -->
 		<div>
 			<Dropdown>
 				<div slot="trigger">

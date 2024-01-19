@@ -5,8 +5,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+	html {
+		height: -webkit-fill-available;
+	}
+
+	body {
+		height: -webkit-fill-available;
+	}
+
+	/* If using React, set height on the root div as well */
+	#root {
+		height: -webkit-fill-available;
+	}
+}
+
 body {
-	@apply bg-gray-100 font-sans text-gray-900;
+	@apply bg-brand font-sans text-gray-900;
 }
 
 [type='text'],
@@ -30,25 +45,25 @@ button {
 	@apply cursor-pointer;
 }
 .click {
-	@apply transition duration-300 active:scale-95;
+	@apply active:scale-95 transition duration-300;
 }
 
 table {
 	@apply w-full table-auto;
 }
 table thead th {
-	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
+	@apply p-3 text-sm font-semibold text-left text-gray-600 border-b border-gray-100;
 }
 table tbody tr {
 	@apply whitespace-nowrap even:bg-gray-50 hover:bg-gray-100;
 }
 table tbody td {
-	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;
+	@apply first:rounded-l-lg last:rounded-r-lg p-3 text-sm;
 }
 
 .page {
-	min-height: calc(100vh - 24px);
-	@apply h-full w-full;
+	/* min-height: calc(100vh - 24px); */
+	@apply w-full h-full overflow-y-auto;
 }
 
 input::-webkit-outer-spin-button,
@@ -63,11 +78,11 @@ input[type='number'] {
 
 .hovered,
 .hovered svg {
-	@apply relative z-20 block cursor-pointer outline-none;
+	@apply relative z-20 block outline-none cursor-pointer;
 }
 .hovered:after {
 	content: '';
-	@apply absolute inset-0 -z-0 m-auto h-10 w-10 rounded-full bg-gray-100 opacity-0;
+	@apply -z-0 absolute inset-0 w-10 h-10 m-auto bg-gray-100 rounded-full opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);
@@ -113,7 +128,7 @@ h1 {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-	@apply rounded-lg bg-gray-100;
+	@apply bg-gray-100 rounded-lg;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -121,7 +136,7 @@ h1 {
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-	@apply rounded-lg bg-gray-200;
+	@apply bg-gray-200 rounded-lg;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {

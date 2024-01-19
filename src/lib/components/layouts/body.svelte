@@ -20,10 +20,10 @@
 
 <Navbar />
 
-<div class="{isMobile() ? '' : 'ml-72'} flex h-full w-auto gap-4">
+<div class="{isMobile() ? '' : 'ml-72'} flex h-full md:gap-4">
 	<Sidebar />
 
-	<main class="{isMobile() ? 'px-4 pb-24 pt-20' : 'mt-2 pr-8 pt-24'} page relative">
+	<main class="{isMobile() ? 'my-20 px-4' : 'pr-8 pt-24'} page mx-auto max-w-screen-2xl">
 		<slot />
 	</main>
 </div>

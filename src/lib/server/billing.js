@@ -1,38 +1,52 @@
 import { stripe } from '$lib/server/stripe';
-import { env } from '$env/dynamic/private';
 import { pb } from '$lib/stores/pocketbase';
 import { PUBLIC_DOMAIN } from '$env/static/public';
 
 /**
  * @param {string} userId
  * @param {string} priceId
- * @param {string} token
+ * @param {number} access
  */
-export async function createCheckout(userId, priceId, token) {
-	pb.authStore.save(token, null);
-
+export async function createCheckout(userId, priceId, access) {
 	const user = await pb.collection('users').getOne(userId, {});
 
 	const ledger = await pb.collection('ledgers').getOne(user.ledger, {
 		fields: 'id,stripe',
 	});
 
-	const metadata = {
-		ledgerId: ledger.id,
-		userId: user.id,
-	};
+	let subscription_data;
 
-	return stripe.checkout.sessions.create({
-		success_url: absoluteURL('/?checkout_session_id={CHECKOUT_SESSION_ID}'),
-		cancel_url: absoluteURL('/'),
+	if (access === 1) {
+		subscription_data = {
+			trial_settings: {
+				end_behavior: {
+					missing_payment_method: 'cancel',
+				},
+			},
+			trial_period_days: 30,
+			metadata: {
+				ledgerId: ledger.id,
+				userId: user.id,
+			},
+		};
+	} else {
+		subscription_data = {
+			metadata: {
+				ledgerId: ledger.id,
+				userId: user.id,
+			},
+		};
+	}
+
+	return await stripe.checkout.sessions.create({
+		ui_mode: 'embedded',
+		return_url: absoluteURL('/?session_id={CHECKOUT_SESSION_ID}'),
 		currency: 'usd',
 		mode: 'subscription',
 		customer_email: user.email,
 		client_reference_id: user.id,
-		metadata,
-		subscription_data: {
-			metadata,
-		},
+		subscription_data,
+		payment_method_collection: 'if_required',
 		line_items: [
 			{
 				price: priceId,

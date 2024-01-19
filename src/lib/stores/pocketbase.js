@@ -1,19 +1,11 @@
 import PocketBase, { RecordService } from 'pocketbase';
-import { readable, writable } from 'svelte/store';
-import { invalidateAll } from '$app/navigation';
+import { writable } from 'svelte/store';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 import { alertOnFailure } from '$lib/utils/utils';
 
 export const loading = writable(false);
-
 export const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-
-export const authModel = readable(null, function (set) {
-	pb.authStore.onChange((token, model) => {
-		set(model);
-		invalidateAll(); // re-run load functions for current page
-	}, true);
-});
+export const authModel = writable();
 
 /*
  * Save (create/update) a record (a plain object). Automatically converts to
@@ -73,9 +65,14 @@ function object2formdata(obj) {
 export async function providerLogin(provider, authCollection) {
 	loading.set(true);
 
+	let w = window.open();
+
 	await alertOnFailure(async () => {
 		const authResponse = await authCollection.authWithOAuth2({
 			provider: provider.name,
+			urlCallback: (url) => {
+				w.location.href = url;
+			},
 			createData: {
 				emailVisibility: true,
 				verified: true,

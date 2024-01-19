@@ -42,7 +42,7 @@
 	.pwa-toast {
 		position: fixed;
 		right: 0;
-		bottom: 0;
+		bottom: 64px;
 		margin: 16px;
 		padding: 12px;
 		border: 1px solid #8885;

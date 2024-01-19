@@ -1,16 +1,16 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { SvelteKitPWA } from '@vite-pwa/sveltekit'
+import { SvelteKitPWA } from '@vite-pwa/sveltekit';
 import { defineConfig } from 'vite';
-import Icons from 'unplugin-icons/vite'
-import { visualizer } from "rollup-plugin-visualizer";
+import Icons from 'unplugin-icons/vite';
+// import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
 	plugins: [
 		sveltekit(),
-		visualizer({
-			emitFile: true,
-			filename: "stats.html",
-		}),
+		// visualizer({
+		// 	emitFile: true,
+		// 	filename: "stats.html",
+		// }),
 		SvelteKitPWA({
 			srcDir: './src',
 			mode: 'production',
@@ -25,8 +25,8 @@ export default defineConfig({
 				start_url: '/',
 				scope: '/',
 				display: 'standalone',
-				theme_color: "#ffffff",
-				background_color: "#ffffff",
+				theme_color: '#ffffff',
+				background_color: '#ffffff',
 				icons: [
 					{
 						src: '/pwa-192x192.png',
@@ -51,10 +51,10 @@ export default defineConfig({
 			// if you have shared info in svelte config file put in a separate module and use it also here
 			kit: {
 				includeVersionFile: true,
-			}
+			},
 		}),
 		Icons({
 			compiler: 'svelte',
-		})
+		}),
 	],
 });

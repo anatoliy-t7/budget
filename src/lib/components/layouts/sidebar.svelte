@@ -46,41 +46,42 @@
 </script>
 
 {#if isMobile()}
-	<div
-		class="fixed bottom-0 left-0 z-30 flex w-full justify-between border-t border-gray-200 bg-white px-8 py-3 text-gray-900">
-		<a href={links[0].url} class="click rounded-xl p-2">
-			<svelte:component
-				this={activeUrl.pathname === links[0].url ? links[0].iconActive : links[0].icon}
-				class="h-6 w-6" />
-		</a>
+	<div class="fixed bottom-0 left-0 z-30 w-full border-t border-gray-200 bg-white">
+		<div class="flex items-center justify-between px-8 pt-2 text-gray-900 sm:pb-2">
+			<a href={links[0].url} class="click rounded-xl p-2">
+				<svelte:component
+					this={activeUrl.pathname === links[0].url ? links[0].iconActive : links[0].icon}
+					class="h-6 w-6" />
+			</a>
 
-		<a href={links[1].url} class="click rounded-xl p-2">
-			<svelte:component
-				this={activeUrl.pathname === links[1].url ? links[1].iconActive : links[1].icon}
-				class="h-6 w-6" />
-		</a>
+			<a href={links[1].url} class="click rounded-xl p-2">
+				<svelte:component
+					this={activeUrl.pathname === links[1].url ? links[1].iconActive : links[1].icon}
+					class="h-6 w-6" />
+			</a>
 
-		<div class="">
-			<button on:click={() => openEdit()} class="click">
-				<IconAdd class="h-10 w-10" />
-			</button>
+			<div class="">
+				<button on:click={() => openEdit()} class="click">
+					<IconAdd class="h-10 w-10" />
+				</button>
+			</div>
+
+			<a href={links[2].url} class="click rounded-xl p-2">
+				<svelte:component
+					this={activeUrl.pathname === links[2].url ? links[2].iconActive : links[2].icon}
+					class="h-6 w-6" />
+			</a>
+
+			<a href={links[3].url} class="click rounded-xl p-2">
+				<svelte:component
+					this={activeUrl.pathname === links[3].url ? links[3].iconActive : links[3].icon}
+					class="h-6 w-6" />
+			</a>
 		</div>
-
-		<a href={links[2].url} class="click rounded-xl p-2">
-			<svelte:component
-				this={activeUrl.pathname === links[2].url ? links[2].iconActive : links[2].icon}
-				class="h-6 w-6" />
-		</a>
-
-		<a href={links[3].url} class="click rounded-xl p-2">
-			<svelte:component
-				this={activeUrl.pathname === links[3].url ? links[3].iconActive : links[3].icon}
-				class="h-6 w-6" />
-		</a>
 	</div>
 {:else}
 	<div class="fixed left-0 top-16 z-40 flex h-full min-h-screen w-72 flex-col justify-between p-8">
-		<div class="space-y-1 pt-2 text-gray-700">
+		<div class="space-y-1 text-gray-700">
 			<div class="pb-7">
 				<button
 					on:click={() => openEdit()}
