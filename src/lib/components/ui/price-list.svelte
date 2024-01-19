@@ -1,22 +1,45 @@
 <script>
+	import { PUBLIC_DOMAIN } from '$env/static/public';
+	import { pb } from '$lib/stores/pocketbase';
 	import { PRODUCT_LIST } from '$lib/utils/constants';
-	import { flip } from 'svelte/animate';
-	import { fade, slide } from 'svelte/transition';
+	import { alertOnFailure } from '$lib/utils/utils';
+	import { fade } from 'svelte/transition';
 	import IconCheck from '~icons/tabler/check';
 
 	let period = 'monthly';
 	let periods = ['monthly', 'yearly'];
+	let loading = false;
 
-	function onSubscribe(product) {
-		console.log(product);
+	/**
+	 * @param {{ id: string; name: string; access: number; trial: boolean; description: string; features: string[]; prices: { id: string; price: number; period: string; }[]; }} product
+	 */
+	async function onSubscribe(product) {
+		loading = true;
+
+		let priceId = period === 'monthly' ? product.prices[0].id : product.prices[1].id;
+
+		await alertOnFailure(async () => {
+			const res = await fetch(
+				`${PUBLIC_DOMAIN}/api/checkout?userId=${pb.authStore.model?.id}&priceId=${priceId}`,
+				{
+					headers: {
+						Authorization: pb.authStore.token,
+					},
+				},
+			);
+
+			console.log('res', res);
+
+			loading = false;
+		});
 	}
 </script>
 
 <div>
-	<div class="text-center text-2xl font-medium">Select your plan</div>
+	<div class="text-2xl font-medium text-center">Select your plan</div>
 
-	<div class="pb-4 pt-8">
-		<div class=" mx-auto flex w-64 rounded-lg bg-gray-200">
+	<div class="pt-8 pb-4">
+		<div class=" flex w-64 mx-auto bg-gray-200 rounded-lg">
 			{#each periods as item}
 				<button
 					on:click={() => (period = item)}
@@ -30,13 +53,13 @@
 		</div>
 	</div>
 
-	<div class="mx-auto max-w-6xl">
-		<div class="grid grid-cols-2 items-center gap-8 lg:grid-cols-3">
+	<div class="max-w-6xl mx-auto">
+		<div class="lg:grid-cols-3 grid items-center grid-cols-2 gap-8">
 			{#each PRODUCT_LIST as product}
 				<div
-					class="md:hauto flex flex-col rounded-3xl border border-gray-300 bg-white p-5 sm:p-6 md:p-8 xl:p-10">
+					class="md:hauto rounded-3xl sm:p-6 md:p-8 xl:p-10 flex flex-col p-5 bg-white border border-gray-300">
 					<span class=" text-2xl font-semibold text-gray-800"> {product.name} </span>
-					<div class="mt-2 text-2xl font-bold text-gray-900 md:text-3xl">
+					<div class="md:text-3xl mt-2 text-2xl font-bold text-gray-900">
 						{#if period === 'monthly'}
 							<span in:fade={{ duration: 200, delay: 200 }}>
 								{product.prices[0].price} $
@@ -47,21 +70,21 @@
 							</span>
 						{/if}
 					</div>
-					<p class="mt-5 text-gray-700 sm:mt-6">
+					<p class="sm:mt-6 mt-5 text-gray-700">
 						{product.description}
 					</p>
-					<ul class="sm:mt6 mt-5 flex flex-col space-y-3 text-gray-600">
+					<ul class="sm:mt6 flex flex-col mt-5 space-y-3 text-gray-600">
 						{#each product.features as feature}
-							<li class="flex items-center gap-x-3">
+							<li class="gap-x-3 flex items-center">
 								<IconCheck />
 								{feature}
 							</li>
 						{/each}
 					</ul>
-					<div class="mt-5 sm:mt-6">
+					<div class="sm:mt-6 mt-5">
 						<button
 							on:click={() => onSubscribe(product)}
-							class="click flex w-full items-center justify-center gap-3 rounded-xl border-amber-400 bg-amber-400 px-6 py-3 font-medium text-gray-800 ring-amber-200 hover:border-amber-500 hover:bg-amber-500 focus:ring-amber-200">
+							class="click rounded-xl border-amber-400 bg-amber-400 ring-amber-200 hover:border-amber-500 hover:bg-amber-500 focus:ring-amber-200 flex items-center justify-center w-full gap-3 px-6 py-3 font-medium text-gray-800">
 							{#if product.trial}
 								Start trial
 							{:else}

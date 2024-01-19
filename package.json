@@ -44,7 +44,8 @@
 		"tslib": "^2.6.2",
 		"typescript": "^5.3.3",
 		"unplugin-icons": "^0.18.1",
-		"vite": "^5.0.10"
+		"vite": "^5.0.10",
+		"rollup-plugin-visualizer": "^5.12.0"
 	},
 	"type": "module",
 	"dependencies": {
@@ -52,8 +53,6 @@
 		"bigpicture": "^2.6.2",
 		"compressorjs": "^1.2.1",
 		"emoji-picker-element": "^1.21.0",
-		"rollup-plugin-visualizer": "^5.12.0",
-		"svelte-frappe-charts": "^1.10.0",
 		"svelte-select": "^5.8.3"
 	}
 }

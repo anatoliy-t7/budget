@@ -1,12 +1,16 @@
 import { stripe } from '$lib/server/stripe';
 import { env } from '$env/dynamic/private';
 import { pb } from '$lib/stores/pocketbase';
+import { PUBLIC_DOMAIN } from '$env/static/public';
 
 /**
  * @param {string} userId
  * @param {string} priceId
+ * @param {string} token
  */
-export async function createCheckout(userId, priceId) {
+export async function createCheckout(userId, priceId, token) {
+	pb.authStore.save(token, null);
+
 	const user = await pb.collection('users').getOne(userId, {});
 
 	const ledger = await pb.collection('ledgers').getOne(user.ledger, {
@@ -66,6 +70,9 @@ export async function syncSubscription(subscriptionId) {
 	});
 }
 
+/**
+ * @param {string | URL} path
+ */
 function absoluteURL(path) {
-	return new URL(path, env.PUBLIC_DOMAIN).toString();
+	return new URL(path, PUBLIC_DOMAIN).toString();
 }
