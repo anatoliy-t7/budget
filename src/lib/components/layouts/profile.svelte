@@ -19,6 +19,8 @@
 		$loading = true;
 		alertOnFailure(async () => {
 			await coll.update(user.id, user);
+
+			// TODO not updated
 			await coll.authRefresh();
 		});
 

@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
 import { authModel, pb } from '$lib/stores/pocketbase';
-import { PUBLIC_DOMAIN } from '$env/static/public';
+
 export const loading = writable(false);
 export const categories = writable(null);
 export const accounts = writable(null);
@@ -43,12 +43,4 @@ export async function resetAll() {
 	categories.set(null);
 	accounts.set(null);
 	fileToken.set('');
-}
-
-export async function getBillingPortalUrl() {
-	await fetch(`${PUBLIC_DOMAIN}/api/billing-portal?ledgerId=${pb.authStore.model?.ledger}`)
-		.then((res) => res.json())
-		.then((res) => {
-			billingPortalUrl.set(res.url);
-		});
 }

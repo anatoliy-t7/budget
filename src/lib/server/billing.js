@@ -1,12 +1,8 @@
+import { PUBLIC_DOMAIN, PUBLIC_POCKETBASE_URL } from '$env/static/public';
 import { stripe } from '$lib/server/stripe';
-import { pb } from '$lib/stores/pocketbase';
-import { PUBLIC_DOMAIN } from '$env/static/public';
+import PocketBase from 'pocketbase';
+const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
 
-/**
- * @param {string} userId
- * @param {string} priceId
- * @param {number} access
- */
 export async function createCheckout(userId, priceId, access) {
 	const user = await pb.collection('users').getOne(userId, {});
 
@@ -38,9 +34,10 @@ export async function createCheckout(userId, priceId, access) {
 		};
 	}
 
+	// @ts-expect-error: stripe
 	return await stripe.checkout.sessions.create({
 		ui_mode: 'embedded',
-		return_url: absoluteURL('/?session_id={CHECKOUT_SESSION_ID}'),
+		return_url: absoluteURL('/welcome?sessionId={CHECKOUT_SESSION_ID}'),
 		currency: 'usd',
 		mode: 'subscription',
 		customer_email: user.email,
@@ -56,37 +53,58 @@ export async function createCheckout(userId, priceId, access) {
 	});
 }
 
-/**
- * @param {string} sessionId
- */
 export async function syncCheckout(sessionId) {
-	const checkout = await stripe.checkout.sessions.retrieve(sessionId);
+	try {
+		const session = await stripe.checkout.sessions.retrieve(sessionId);
+		await syncSubscription(session);
 
-	return syncSubscription(checkout.subscription);
+		return true;
+	} catch (error) {
+		console.error();
+		return false;
+	}
 }
 
-/**
- * @param {string | import("stripe").Stripe.Subscription | null} subscriptionId
- */
-export async function syncSubscription(subscriptionId) {
-	const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-	const { userId } = subscription.metadata;
+export async function syncSubscription(session) {
+	let subscription = null;
+	let userRecord = null;
 
-	const item = subscription.items.data[0];
-	const priceId = item.price.id;
-	const plan = await plans.getBy({ priceId });
+	subscription = await stripe.subscriptions.retrieve(session.subscription);
 
-	await users.update(userId, {
-		customerId: subscription.customer,
-		subscriptionId: subscription.id,
-		status: subscription.status.toUpperCase(),
-		planId: plan.id,
-	});
+	const customer = await stripe.customers.retrieve(session.customer);
+
+	userRecord = await pb.collection('users').getFirstListItem(`email = "${customer?.email}"`);
+
+	const stripeData = {
+		userId: userRecord.id,
+		subscriptionId: session.subscription,
+		customerId: session.customer,
+		productId: subscription.plan?.product,
+		currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+		trial_end: subscription.trial_end,
+		unlimited: 0,
+	};
+
+	await pb.collection('ledgers').update(userRecord.ledger, { stripe: stripeData });
 }
 
-/**
- * @param {string | URL} path
- */
+export async function getBillingPortalUrl(customerId) {
+	let billingPortal = {
+		url: null,
+	};
+	console.log('customerId', customerId);
+	if (customerId) {
+		billingPortal = await stripe.billingPortal.sessions.create({
+			customer: customerId,
+			return_url: PUBLIC_DOMAIN,
+		});
+	} else {
+		billingPortal.url = null;
+	}
+
+	return billingPortal.url;
+}
+
 function absoluteURL(path) {
 	return new URL(path, PUBLIC_DOMAIN).toString();
 }

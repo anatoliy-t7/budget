@@ -7,7 +7,7 @@ pb.authStore.onChange(() => {
 	document.cookie = pb.authStore.exportToCookie({ httpOnly: false });
 }, true);
 
-export const handleError = ({ error, event }) => {
+export const handleError = ({ error }) => {
 	if (dev) {
 		console.error(error);
 	}

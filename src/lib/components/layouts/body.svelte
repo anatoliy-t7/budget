@@ -7,13 +7,22 @@
 	import { editProfile } from '$lib/stores/main';
 	import TransactionView from '$lib/components/layouts/transaction-view.svelte';
 	import TransactionEdit from '$lib/components/layouts/transaction-edit.svelte';
-	import { hasAccess, isMobile } from '$lib/utils/utils';
+	import { checkSubscription, isMobile, trialGone } from '$lib/utils/utils';
 	import { isEditOpen } from '$lib/stores/transactions';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	/**
 	 * @type {TransactionEdit}
 	 */
 	let transactionEditComponent;
+
+	$: if (
+		(trialGone() && $page.url.pathname !== '/welcome') ||
+		(!checkSubscription() && $page.url.pathname !== '/welcome')
+	) {
+		goto('/pricing');
+	}
 </script>
 
 <FirstLoadData />

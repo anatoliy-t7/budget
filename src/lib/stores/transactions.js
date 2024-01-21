@@ -52,14 +52,15 @@ export async function openEdit() {
 	}
 
 	isEditOpen.set(true);
-	transaction.subscribe((value) => {
+	const unsubscribe = transaction.subscribe((value) => {
 		const acs = get(accounts);
 		value.account = acs[0]?.id;
 		value.transfer = acs.length > 1 ? acs[1]?.id : acs[0]?.id;
 	});
 
-	// @ts-ignore
 	historyTransaction.set(JSON.stringify(get(transaction)));
+
+	unsubscribe();
 }
 
 export async function getOverview() {
@@ -69,7 +70,6 @@ export async function getOverview() {
 		await pb.collection('users').authRefresh();
 	}
 
-	// await alertOnFailure(async () => {
 	const res = await fetch(
 		`${PUBLIC_POCKETBASE_URL}/api/overview?ledgerId=${pb.authStore.model?.ledger}&startOf=${range?.start}&endOf=${range?.end}`,
 		{
@@ -89,12 +89,8 @@ export async function getOverview() {
 		await getCurrency(data.defaultCurrency);
 		await getTotalBalance(data);
 	}
-	// });
 }
 
-/**
- * @param {{ data: any[]; defaultCurrency: any; }} data
- */
 export async function getTotalBalance(data) {
 	if (data) {
 		let total = {
@@ -115,7 +111,7 @@ export async function getTotalBalance(data) {
 				total.balance += c.balance / Number(rate[1]);
 			}
 		});
-		// @ts-ignore
+
 		totalOverview.set({
 			income: total.income.toFixed(0),
 			expenses: total.expenses.toFixed(0),
@@ -230,9 +226,6 @@ export async function getTags() {
 	}
 }
 
-/**
- * @param {string} currency
- */
 export async function getCurrency(currency) {
 	if (currency) {
 		let url = `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${currency?.toLowerCase()}.json`;

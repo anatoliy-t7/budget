@@ -1,12 +1,13 @@
 <script>
-	import Graph from '~icons/solar/graph-broken';
-	import GraphBold from '~icons/solar/graph-bold';
+	import IconGraph from '~icons/solar/graph-broken';
+	import IconGraphBold from '~icons/solar/graph-bold';
 	import IconReports from '~icons/solar/chat-square-2-broken';
 	import IconReportsBold from '~icons/solar/chat-square-2-bold';
 	import IconTransfer from '~icons/solar/square-transfer-vertical-broken';
 	import IconTransferBold from '~icons/solar/square-transfer-vertical-bold';
-	import Settings from '~icons/solar/settings-broken';
-	import SettingsBold from '~icons/solar/settings-bold';
+	import IconSupport from '~icons/solar/question-square-broken';
+	import IconSettings from '~icons/solar/settings-broken';
+	import IconSettingsBold from '~icons/solar/settings-bold';
 
 	import IconAdd from '~icons/solar/add-square-linear';
 
@@ -21,8 +22,8 @@
 		{
 			name: 'Overview',
 			url: '/',
-			icon: Graph,
-			iconActive: GraphBold,
+			icon: IconGraph,
+			iconActive: IconGraphBold,
 		},
 		{
 			name: 'Transactions',
@@ -39,8 +40,8 @@
 		{
 			name: 'Settings',
 			url: '/settings',
-			icon: Settings,
-			iconActive: SettingsBold,
+			icon: IconSettings,
+			iconActive: IconSettingsBold,
 		},
 	];
 </script>
@@ -80,7 +81,7 @@
 		</div>
 	</div>
 {:else}
-	<div class="fixed left-0 top-16 z-40 flex h-full min-h-screen w-72 flex-col justify-between p-8">
+	<div class="fixed left-0 top-0 z-40 flex h-full w-72 flex-col justify-between p-8 pt-24">
 		<div class="space-y-1 text-gray-700">
 			<div class="pb-7">
 				<button
@@ -103,6 +104,18 @@
 					{link.name}
 				</a>
 			{/each}
+		</div>
+
+		<div>
+			<a
+				href="/support"
+				class="{activeUrl.pathname === '/support'
+					? 'border-gray-500 font-medium '
+					: 'border-transparent hover:border-gray-400'} click inline-flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-base">
+				<IconSupport class="h-6 w-6" />
+
+				Support
+			</a>
 		</div>
 	</div>
 {/if}

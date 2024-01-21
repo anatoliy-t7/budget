@@ -1,6 +1,3 @@
-import { PUBLIC_DOMAIN } from '$env/static/public';
-import { stripe } from './stripe';
-
 /**
  * @param {string} currency
  */
@@ -35,36 +32,6 @@ export async function getAccounts(pb, ledgerId) {
 		sort: '-name',
 		fields: 'id,name,currency',
 	});
-}
-
-/**
- * @param {{ collection: (arg0: string) => { (): any; new (): any; getOne: { (arg0: any, arg1: { fields: string; }): any; new (): any; }; }; }} pb
- * @param {string} [ledgerId]
- */
-export async function getBillingPortalUrl(pb, ledgerId) {
-	if (!ledgerId) return [];
-	const ledger = await pb.collection('ledgers').getOne(ledgerId, {
-		fields: 'id,stripe',
-	});
-
-	let billingPortal = {
-		url: null,
-	};
-
-	if (ledger.stripe?.customerId) {
-		billingPortal = await stripe.billingPortal.sessions.create({
-			customer: ledger.stripe?.customerId,
-			return_url: absoluteURL('/'),
-		});
-	} else {
-		billingPortal.url = null;
-	}
-
-	return billingPortal.url;
-}
-
-function absoluteURL(path) {
-	return new URL(path, PUBLIC_DOMAIN).toString();
 }
 
 export const serializeNonPOJOs = (obj) => {

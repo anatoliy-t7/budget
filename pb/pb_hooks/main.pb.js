@@ -324,7 +324,7 @@ onRecordAuthRequest((e) => {
 	if (!e.record.getString('ledger')) {
 		const collection = $app.dao().findCollectionByNameOrId('ledgers');
 
-		const newBudget = new Record(collection, {
+		const newLedger = new Record(collection, {
 			defaultCurrency: 'USD',
 			name: 'Default',
 			settings: {
@@ -340,9 +340,9 @@ onRecordAuthRequest((e) => {
 				unlimited: 0,
 			},
 		});
-		$app.dao().saveRecord(newBudget);
+		$app.dao().saveRecord(newLedger);
 
-		e.record.set('ledger', newBudget.id);
+		e.record.set('ledger', newLedger.id);
 		$app.dao().saveRecord(e.record);
 	}
 

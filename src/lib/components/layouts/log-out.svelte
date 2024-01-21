@@ -3,11 +3,13 @@
 	import LogOut from '~icons/solar/logout-linear';
 	import { resetAll as resetAllMainStore } from '$lib/stores/main';
 	import { resetAll } from '$lib/stores/transactions';
+	import { goto } from '$app/navigation';
 
 	function logOut() {
 		resetAllMainStore();
 		resetAll();
 		pb.authStore.clear();
+		goto('/');
 	}
 </script>
 

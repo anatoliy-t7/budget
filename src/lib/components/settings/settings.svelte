@@ -1,6 +1,4 @@
 <script>
-	// @ts-nocheck
-
 	import toast from 'svelte-french-toast';
 	import { alertOnFailure } from '$lib/utils/utils';
 	import { pb } from '$lib/stores/pocketbase';
@@ -53,9 +51,9 @@
 	});
 </script>
 
-<div class="grid gap-6 rounded-xl bg-white p-6">
-	<div class="flex w-full flex-wrap gap-6">
-		<div class="block w-full max-w-64 space-y-1 font-medium">
+<div class="grid gap-6 p-6 bg-white rounded-xl">
+	<div class="flex flex-wrap w-full gap-6">
+		<div class="block w-full space-y-1 font-medium max-w-64">
 			<div class="text-sm">Default Currency</div>
 
 			<Select
@@ -74,7 +72,7 @@
 			</Select>
 		</div>
 
-		<div class="block w-full max-w-64 space-y-1 font-medium">
+		<div class="block w-full space-y-1 font-medium max-w-64">
 			<div class="text-sm">Finance year start from</div>
 
 			<Select

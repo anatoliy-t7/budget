@@ -5,6 +5,7 @@
 	import GoogleIcon from '$lib/components/ui/google-icon.svelte';
 	import Logo from '$lib/components/ui/logo.svelte';
 	import { fade } from 'svelte/transition';
+	import { PUBLIC_APP_NAME } from '$env/static/public';
 
 	export let authType = 'signin';
 
@@ -48,16 +49,20 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Auth | {PUBLIC_APP_NAME}</title>
+</svelte:head>
+
 <div
 	transition:fade
-	class="flex items-center justify-center w-full max-h-screen min-h-screen bg-gray-100">
+	class="flex max-h-screen min-h-screen w-full items-center justify-center bg-gray-100">
 	<div>
 		<div class="flex justify-center pb-6">
 			<Logo />
 		</div>
 
 		<div class="flex w-80 min-w-[360px] flex-col justify-center space-y-8 rounded-lg bg-white p-6">
-			<div class="text-2xl font-medium text-center">
+			<div class="text-center text-2xl font-medium">
 				{#if authType === 'signup'}
 					Sign up for an Account
 				{/if}
@@ -102,7 +107,7 @@
 							<div class="w-full border-t border-gray-300"></div>
 						</div>
 						<div class="relative flex justify-center text-sm">
-							<span class="px-2 font-medium text-gray-400 bg-white"> or </span>
+							<span class="bg-white px-2 font-medium text-gray-400"> or </span>
 						</div>
 					</div>
 
@@ -123,17 +128,17 @@
 						<span>Password</span>
 						<input bind:value={password} disabled={$loading} required type="password" />
 					</label>
-					<div class="text-cyan-600 flex items-center justify-between text-sm">
+					<div class="flex items-center justify-between text-sm text-cyan-600">
 						<button
 							on:click={() => (authType = 'reset')}
 							type="button"
-							class="hover:text-cyan-700 transition-colors">
+							class="transition-colors hover:text-cyan-700">
 							Forgot Your Password?
 						</button>
 						<button
 							on:click={() => toggleAuth()}
 							type="button"
-							class="hover:text-cyan-700 transition-colors">
+							class="transition-colors hover:text-cyan-700">
 							{#if authType === 'signup'}
 								Have an Account?
 							{:else}
@@ -170,7 +175,7 @@
 					<button
 						on:click={() => (authType = 'signin')}
 						type="button"
-						class="hover:text-cyan-700 transition-colors">
+						class="transition-colors hover:text-cyan-700">
 						Return to Sign In
 					</button>
 				</form>

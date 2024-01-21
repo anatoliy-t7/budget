@@ -24,25 +24,13 @@
 
 	const coll = pb.collection('transactions');
 
-	/**
-	 * @type {null | number}
-	 */
 	let transferAmount = null;
 	let disabledCategory = false;
 
 	$: disabled = !$transaction?.amount || !$transaction?.category;
-
 	$: transactionAccount = null;
-	/**
-	 * @type {null | string}
-	 */
-	let transactionAccountId = null;
-
 	$: transferAccount = null;
 
-	/**
-	 * @param {string} type
-	 */
 	async function changedType(type) {
 		if ($transaction.type !== 'transfer') {
 			$transaction.transfer = $accounts?.length > 1 ? $accounts[1]?.id : $accounts[0]?.id;
@@ -52,9 +40,7 @@
 		$transaction.type = type;
 
 		if ($transaction.type === 'transfer') {
-			$selectedCategory = $categories?.find(
-				(/** @type {{ id: string; }} */ c) => c.id == 'catego_transfer',
-			);
+			$selectedCategory = $categories?.find((c) => c.id == 'catego_transfer');
 			disabledCategory = true;
 		} else {
 			$selectedCategory = null;
@@ -65,48 +51,45 @@
 	async function submit() {
 		$loading = true;
 
-		let tran = JSON.parse(JSON.stringify($transaction));
-		tran.account = transactionAccountId;
-
-		if (tran.id) {
+		if ($transaction.id) {
 			alertOnFailure(async () => {
-				await coll.update(tran.id, tran);
-				toast.success(`${tran.type} was updated`);
+				await coll.update($transaction.id, $transaction);
+				toast.success(`${$transaction.type} was updated`);
 
 				$loading = false;
 				await close();
 			});
 		} else {
 			alertOnFailure(async () => {
-				tran.created = dayjs(tran.created)
+				$transaction.created = dayjs($transaction.created)
 					.set('hour', dayjs().get('hour'))
 					.set('minute', dayjs().get('minute'))
 					.set('second', dayjs().get('second'))
 					.toISOString();
 
-				if (tran.type !== 'transfer') {
-					tran.transfer = null;
+				if ($transaction.type !== 'transfer') {
+					$transaction.transfer = null;
 				}
 
-				if (tran.type === 'transfer') {
-					tran.type = 'expenses';
+				if ($transaction.type === 'transfer') {
+					$transaction.type = 'expenses';
 
-					await coll.create(tran);
-					toast.success(`${tran.type} was added`);
+					await coll.create($transaction);
+					toast.success(`${$transaction.type} was added`);
 
-					tran.type = 'income';
-					const fromAccount = tran.transfer;
-					tran.transfer = tran.account;
-					tran.account = fromAccount;
+					$transaction.type = 'income';
+					const fromAccount = $transaction.transfer;
+					$transaction.transfer = $transaction.account;
+					$transaction.account = fromAccount;
 
 					if (transactionAccount?.currency != transferAccount?.currency) {
-						tran.amount = transferAmount;
+						$transaction.amount = transferAmount;
 					}
 				}
 
-				await coll.create(tran);
+				await coll.create($transaction);
 
-				toast.success(`${tran.type} was added`);
+				toast.success(`${$transaction.type} was added`);
 
 				$loading = false;
 				await close();
@@ -150,7 +133,6 @@
 	}
 
 	onMount(() => {
-		transactionAccountId = $transaction?.account;
 		transactionAccount = $accounts?.find((a) => a.id == $transaction?.account);
 		transferAccount = $accounts?.find((a) => a.id == $transaction?.transfer);
 	});
@@ -175,7 +157,7 @@
 				{/if}
 			</div>
 
-			<ListboxAccount bind:value={transactionAccountId} />
+			<ListboxAccount bind:value={$transaction.account} />
 		</div>
 
 		{#if $transaction.type === 'transfer'}
@@ -200,7 +182,7 @@
 			<div class="relative">
 				<input bind:value={$transaction.amount} required type="number" placeholder="100" />
 				{#if transactionAccount}
-					<div class="absolute right-3 top-3 text-gray-400">
+					<div class="absolute text-gray-400 right-3 top-3">
 						{transactionAccount?.currency}
 					</div>
 				{/if}
@@ -212,7 +194,7 @@
 				<div class="relative">
 					<input bind:value={transferAmount} type="number" placeholder="100" />
 					{#if transferAccount}
-						<div class="absolute right-3 top-3 text-gray-400">
+						<div class="absolute text-gray-400 right-3 top-3">
 							{transferAccount?.currency}
 						</div>
 					{/if}
@@ -238,6 +220,8 @@
 			required={true} />
 	</div>
 
+	<div class="pb-6"></div>
+
 	<div class="space-y-1 font-medium">
 		<div class="text-sm">
 			Tags <span class="font-normal text-gray-400">(optional)</span>
@@ -251,7 +235,7 @@
 	<div class="w-full space-y-1 font-medium">
 		<span class="text-sm"> Note <span class="font-normal text-gray-400">(optional)</span> </span>
 		<div class="">
-			<input bind:value={$transaction.note} type="text" />
+			<textarea bind:value={$transaction.note} type="text"></textarea>
 		</div>
 	</div>
 

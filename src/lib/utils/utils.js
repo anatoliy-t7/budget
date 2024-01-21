@@ -114,11 +114,15 @@ export const checkSubscription = () => {
 	const currentBudget = auth?.expand?.ledger;
 	const subscription = currentBudget?.stripe;
 
-	if (subscription.unlimited === 1) {
+	if (subscription?.unlimited === 1) {
 		return 'unlimited'; // make unlimited plan
 	}
 
-	if (!subscription && !subscription?.subscriptionId) {
+	if (!subscription || !subscription?.subscriptionId) {
+		return null;
+	}
+
+	if (trialGone()) {
 		return null;
 	}
 

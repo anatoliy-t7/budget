@@ -45,25 +45,29 @@ button {
 	@apply cursor-pointer;
 }
 .click {
-	@apply active:scale-95 transition duration-300;
+	@apply transition duration-300 active:scale-95;
+}
+
+.link {
+	@apply font-medium text-sky-600 hover:underline;
 }
 
 table {
 	@apply w-full table-auto;
 }
 table thead th {
-	@apply p-3 text-sm font-semibold text-left text-gray-600 border-b border-gray-100;
+	@apply border-b border-gray-100 p-3 text-left text-sm font-semibold text-gray-600;
 }
 table tbody tr {
 	@apply whitespace-nowrap even:bg-gray-50 hover:bg-gray-100;
 }
 table tbody td {
-	@apply first:rounded-l-lg last:rounded-r-lg p-3 text-sm;
+	@apply p-3 text-sm first:rounded-l-lg last:rounded-r-lg;
 }
 
 .page {
 	/* min-height: calc(100vh - 24px); */
-	@apply w-full h-full overflow-y-auto;
+	@apply h-full w-full overflow-y-auto;
 }
 
 input::-webkit-outer-spin-button,
@@ -78,11 +82,11 @@ input[type='number'] {
 
 .hovered,
 .hovered svg {
-	@apply relative z-20 block outline-none cursor-pointer;
+	@apply relative z-20 block cursor-pointer outline-none;
 }
 .hovered:after {
 	content: '';
-	@apply -z-0 absolute inset-0 w-10 h-10 m-auto bg-gray-100 rounded-full opacity-0;
+	@apply absolute inset-0 -z-0 m-auto h-10 w-10 rounded-full bg-gray-100 opacity-0;
 	left: -11px;
 	right: -11px;
 	-webkit-transform: scale(0.3);
@@ -128,7 +132,7 @@ h1 {
 }
 
 .scrollbar::-webkit-scrollbar-track {
-	@apply bg-gray-100 rounded-lg;
+	@apply rounded-lg bg-gray-100;
 }
 
 .scrollbar::-webkit-scrollbar {
@@ -136,7 +140,7 @@ h1 {
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-	@apply bg-gray-200 rounded-lg;
+	@apply rounded-lg bg-gray-200;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {

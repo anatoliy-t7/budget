@@ -1,5 +1,4 @@
 <script>
-	import IconBilling from '~icons/solar/bill-broken';
 	import IconChevronDown from '~icons/solar/alt-arrow-down-linear';
 	import IconUser from '~icons/solar/user-circle-broken';
 	import Dropdown from '../ui/dropdown.svelte';
@@ -8,8 +7,8 @@
 	import MonthRange from '$lib/components/ui/month-range.svelte';
 
 	import { pb } from '$lib/stores/pocketbase';
-	import { billingPortalUrl, editProfile } from '$lib/stores/main';
-	import { trialGone, isMobile } from '$lib/utils/utils';
+	import { editProfile } from '$lib/stores/main';
+	import { isMobile } from '$lib/utils/utils';
 </script>
 
 <div
@@ -52,14 +51,6 @@
 						<IconUser class="h-7 w-7" />
 						Profile
 					</button>
-					{#if $billingPortalUrl}
-						<a
-							href={$billingPortalUrl}
-							class="click flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left hover:bg-gray-100">
-							<IconBilling class="h-7 w-7" />
-							Billings
-						</a>
-					{/if}
 
 					<LogOut />
 				</div>

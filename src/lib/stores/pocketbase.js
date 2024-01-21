@@ -1,4 +1,4 @@
-import PocketBase, { RecordService } from 'pocketbase';
+import PocketBase from 'pocketbase';
 import { writable } from 'svelte/store';
 import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
 import { alertOnFailure } from '$lib/utils/utils';

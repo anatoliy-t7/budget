@@ -1,4 +1,4 @@
-import { getAccounts, getBillingPortalUrl, getCategories } from '$lib/server/main';
+import { getAccounts, getCategories } from '$lib/server/main';
 
 export async function load({ locals }) {
 	let pb = locals.pb;
@@ -6,6 +6,5 @@ export async function load({ locals }) {
 	return {
 		categories: await getCategories(pb, ledgerId),
 		accounts: await getAccounts(pb, ledgerId),
-		billingPortalUrl: await getBillingPortalUrl(pb, ledgerId),
 	};
 }

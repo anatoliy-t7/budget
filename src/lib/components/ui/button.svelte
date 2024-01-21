@@ -36,23 +36,23 @@
 	switch (color) {
 		case 'amber':
 			colorClass =
-				'bg-amber-400 hover:bg-amber-500 ring-amber-200 focus:ring-amber-200 text-gray-800 border-amber-400 hover:border-amber-500';
+				'bg-amber-400 hover:bg-amber-500 ring-amber-200 focus:ring-amber-200 text-gray-800 border-amber-400 hover:border-amber-500 disabled:border-amber-300 disabled:bg-amber-300';
 			break;
 		case 'green':
 			colorClass =
-				'text-green-950 bg-green-300 border-green-300 hover:bg-green-400 ring-green-200 focus:ring-green-200';
+				'text-green-950 bg-green-300 border-green-300 hover:bg-green-400 ring-green-200 focus:ring-green-200 disabled:border-green-200 disabled:bg-green-200';
 			break;
 		case 'outline':
 			colorClass =
-				'bg-white hover:bg-gray-100 focus:bg-gray-100 border-gray-300 focus:border-gray-300 ring-gray-200 focus:ring-gray-200';
+				'bg-white hover:bg-gray-100 focus:bg-gray-100 border-gray-300 focus:border-gray-300 ring-gray-200 focus:ring-gray-200 disabled:border-gray-300 ';
 			break;
 		case 'outline-green':
 			colorClass =
-				'bg-white hover:bg-border-800 hover:bg-green-50 text-green-700 border-green-700 focus:ring-green-600';
+				'bg-white hover:bg-border-800 hover:bg-green-50 text-green-700 border-green-700 focus:ring-green-600 disabled:border-green-600';
 			break;
 		case 'blue':
 			colorClass =
-				'bg-sky-500 hover:bg-sky-400 ring-sky-200 focus:ring-sky-200 text-gray-700 border-sky-500 hover:border-sky-400 text-white';
+				'bg-sky-500 hover:bg-sky-400 ring-sky-200 focus:ring-sky-200 text-gray-700 border-sky-500 hover:border-sky-400 text-white  disabled:border-sky-600 disabled:bg-sky-600';
 			break;
 		default:
 			break;
@@ -74,7 +74,7 @@
 		{!disabled && !loading && 'click'}
         {disabled && !loading && 'cursor-not-allowed'}
         {loading && 'cursor-wait'}
-        inline-flex select-none items-center justify-center gap-2 rounded-lg border font-medium transition focus:outline-none focus:ring-[3px] disabled:border-gray-300 disabled:bg-gray-300">
+        inline-flex select-none items-center justify-center gap-2 rounded-lg border font-medium transition focus:outline-none focus:ring-[3px]">
 	{#if loading}
 		<Loader class="animate-spin" />
 	{/if}
